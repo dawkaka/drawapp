@@ -50,10 +50,6 @@ button {
   cursor: pointer;
 }
 
-.tool:hover {
-  background-color: #faecd2;
-}
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

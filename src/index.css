@@ -7,6 +7,14 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: 400;
+  --accents-1: #FAFAFA;
+  --accents-2: #EAEAEA;
+  --accents-3: #999;
+  --accents-4: #888;
+  --accents-5: #666;
+  --accents-6: #444;
+  --accents-7: #333;
+  --accents-8: #111;
   --tw-gradient-stops: red, orange, yellow, green, blue, indigo, violet;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);

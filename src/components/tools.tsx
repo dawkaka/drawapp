@@ -72,7 +72,7 @@ export default function Tools() {
 }
 
 
-function CanvasTool({ onClick, tool, selectedTool, children }: { onClick: () => void, tool: Tool, selectedTool: Tool, children: ReactNode }) {
+export function CanvasTool({ onClick, tool, selectedTool, children }: { onClick: () => void, tool: Tool, selectedTool: Tool, children: ReactNode }) {
     return (
         <button className="w-fit p-2 rounded hover:bg-[#faecd2]"
             onClick={onClick}

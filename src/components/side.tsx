@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { Color } from "../types"
 import ColorPanel from "./colorpick"
+import { FillToolsOptions } from "./toolOptions"
 import Tools from "./tools"
 
 export default function Side() {
@@ -15,6 +16,7 @@ export default function Side() {
             <div className="relative  w-full h-full">
                 <ColorPanel />
                 <Tools />
+                <FillToolsOptions />
             </div>
             <div
                 className="h-[40px] w-[40px] flex items-center pl-2 cursor-pointer bg-[white] border border-neutral-200 fixed top-[50%] rounded-full translateY(-100%) transition-all"

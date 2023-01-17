@@ -27,7 +27,7 @@ export default function ColorPanel() {
                         <div
                             className="rounded h-[30px] w-[30px]"
                             style={{
-                                border: selected === "stroke" ? "2px solid rebeccapurple" : "",
+                                border: selected === "stroke" ? "2px solid darkorange" : "",
                                 backgroundColor: stroke
                             }}
                             onClick={() => setSelected("stroke")}
@@ -41,7 +41,7 @@ export default function ColorPanel() {
                         <div
                             className="rounded h-[30px] w-[30px] bg-[yellow]"
                             style={{
-                                border: selected === "fill" ? "2px solid rebeccapurple" : "",
+                                border: selected === "fill" ? "2px solid darkorange" : "",
                                 backgroundColor: fill
                             }}
                             onClick={() => setSelected("fill")}

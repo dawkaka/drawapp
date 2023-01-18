@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Color, Tool } from "../types"
 import ColorPanel from "./colorpick"
-import { FillToolsOptions } from "./toolOptions"
+import { FillToolsOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 
 export default function Side() {
@@ -18,9 +18,16 @@ export default function Side() {
             <div className="relative  w-full h-full">
                 <ColorPanel />
                 <Tools setCanvasTool={setTool} />
-                {
-                    (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool == "line") && <FillToolsOptions />
-                }
+                <div className="flex flex-col gap-5 p-2 shadow bg-white mx-3 my-5 rounded p-5">
+                    {
+                        (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool == "line") && <FillToolsOptions />
+                    }
+                    {
+                        tool === "text" && <TextOptions />
+                    }
+                    <Opacity />
+                    <Layers />
+                </div>
             </div>
             <div
                 className="h-[40px] w-[40px] flex items-center pl-2 cursor-pointer bg-[white] border border-neutral-200 fixed top-[50%] rounded-full translateY(-100%) transition-all"

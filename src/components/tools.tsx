@@ -81,6 +81,7 @@ export function CanvasTool({ onClick, tool, selectedTool, children }: { onClick:
             onClick={onClick}
             style={{
                 backgroundColor: selectedTool === tool ? "#faecd2" : "",
+                border: `1px solid ${selectedTool === tool ? "#faecd2" : "var(--accents-2)"}`,
                 fill: selectedTool === tool ? "darkorange" : "none",
                 color: selectedTool === tool ? "darkorange" : ""
             }}

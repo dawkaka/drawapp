@@ -1,9 +1,12 @@
-import { ReactNode, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 import type { Tool } from "../types"
 
 
-export default function Tools() {
+export default function Tools({ setCanvasTool }: { setCanvasTool: (t: Tool) => void }) {
     const [tool, setTool] = useState<Tool>("select")
+    useEffect(() => {
+        setCanvasTool(tool)
+    }, [tool])
     return (
         <div className="bg-white rounded shadow m-3 p-3">
             <div className="flex flex-wrap gap-3">
@@ -28,7 +31,7 @@ export default function Tools() {
 
                 <CanvasTool onClick={() => setTool("ellipse")} tool="ellipse" selectedTool={tool}>
                     <div style={{ width: "22px", height: "22px" }}>
-                        <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" className="" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><g stroke-width="1.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="12" cy="12" r="9"></circle></g></svg>                    </div>
+                        <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" className="" strokeWidth="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><g strokeWidth="1.5"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="12" cy="12" r="9"></circle></g></svg>                    </div>
                 </CanvasTool>
 
                 <CanvasTool onClick={() => setTool("arrow")} tool="arrow" selectedTool={tool}>
@@ -45,7 +48,7 @@ export default function Tools() {
 
                 <CanvasTool onClick={() => setTool("pencil")} tool="pencil" selectedTool={tool}>
                     <div style={{ width: "22px", height: "22px" }}>
-                        <svg aria-hidden="true" focusable="false" role="img" fill="none" viewBox="0 0 20 20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><g strokeWidth="1.25"><path clip-rule="evenodd" d="m7.643 15.69 7.774-7.773a2.357 2.357 0 1 0-3.334-3.334L4.31 12.357a3.333 3.333 0 0 0-.977 2.357v1.953h1.953c.884 0 1.732-.352 2.357-.977Z"></path><path d="m11.25 5.417 3.333 3.333"></path></g></svg>
+                        <svg aria-hidden="true" focusable="false" role="img" fill="none" viewBox="0 0 20 20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><g strokeWidth="1.25"><path clipRule="evenodd" d="m7.643 15.69 7.774-7.773a2.357 2.357 0 1 0-3.334-3.334L4.31 12.357a3.333 3.333 0 0 0-.977 2.357v1.953h1.953c.884 0 1.732-.352 2.357-.977Z"></path><path d="m11.25 5.417 3.333 3.333"></path></g></svg>
                     </div>
                 </CanvasTool>
 

@@ -1,11 +1,13 @@
 import { useState } from "react"
-import { Color } from "../types"
+import { Color, Tool } from "../types"
 import ColorPanel from "./colorpick"
 import { FillToolsOptions } from "./toolOptions"
 import Tools from "./tools"
 
 export default function Side() {
     const [closed, setClosed] = useState(false)
+    const [tool, setTool] = useState<Tool>("select")
+
     return (
         <aside
             className="bg-neutral-50 fixed top-0 left-0 bottom-0 border-r border-neutral-200 overflow-y-auto transition-all"
@@ -15,8 +17,10 @@ export default function Side() {
         >
             <div className="relative  w-full h-full">
                 <ColorPanel />
-                <Tools />
-                <FillToolsOptions />
+                <Tools setCanvasTool={setTool} />
+                {
+                    (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool == "line") && <FillToolsOptions />
+                }
             </div>
             <div
                 className="h-[40px] w-[40px] flex items-center pl-2 cursor-pointer bg-[white] border border-neutral-200 fixed top-[50%] rounded-full translateY(-100%) transition-all"

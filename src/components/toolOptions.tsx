@@ -15,28 +15,28 @@ export function TextOptions() {
         <>
             <FontSize />
             <FontFamily />
+            <TextAlign />
         </>
     )
 }
 
 
-export function FontSize() {
+function FontSize() {
     const [selected, setSelected] = useState("medium")
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font size</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={selected} value="small">
+                <OptionContainer selected={selected} value="small" onClick={setSelected}>
                     <span>S</span>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="medium">
+                <OptionContainer selected={selected} value="medium" onClick={setSelected}>
                     <span>M</span>
                 </OptionContainer>
-
-                <OptionContainer selected={selected} value="large">
+                <OptionContainer selected={selected} value="large" onClick={setSelected}>
                     <span>L</span>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="xlarge">
+                <OptionContainer selected={selected} value="xlarge" onClick={setSelected}>
                     <span>XL</span>
                 </OptionContainer>
 
@@ -45,13 +45,13 @@ export function FontSize() {
     )
 }
 
-export function FontFamily() {
+function FontFamily() {
     const [selected, setSelected] = useState("hand")
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font family</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={selected} value="hand">
+                <OptionContainer selected={selected} value="hand" onClick={setSelected}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                         <g stroke-width="1.25">
                             <path clip-rule="evenodd" d="m7.643 15.69 7.774-7.773a2.357 2.357 0 1 0-3.334-3.334L4.31 12.357a3.333 3.333 0 0 0-.977 2.357v1.953h1.953c.884 0 1.732-.352 2.357-.977Z">
@@ -60,16 +60,52 @@ export function FontFamily() {
                         </g>
                     </svg>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="normal">
+                <OptionContainer selected={selected} value="normal" onClick={setSelected}>
                     <span>A</span>
                 </OptionContainer>
 
-                <OptionContainer selected={selected} value="code">
+                <OptionContainer selected={selected} value="code" onClick={setSelected}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
                         <g clip-path="url(#a)" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5.833 6.667 2.5 10l3.333 3.333M14.167 6.667 17.5 10l-3.333 3.333M11.667 3.333 8.333 16.667"></path>
                         </g>
                         <defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
+                </OptionContainer>
+            </div>
+        </fieldset>
+    )
+}
+
+function TextAlign() {
+    const [selected, setSelected] = useState("left")
+    return (
+        <fieldset className="flex flex-col gap-2">
+            <legend className="text-sm text-[var(--accents-5)] mb-1">Text align</legend>
+            <div className="flex gap-3">
+                <OptionContainer selected={selected} value="left" onClick={setSelected}>
+                    <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <line x1="4" y1="8" x2="20" y2="8"></line><line x1="4" y1="12" x2="12" y2="12"></line><line x1="4" y1="16" x2="16" y2="16"></line></g>
+                    </svg>
+                </OptionContainer>
+                <OptionContainer selected={selected} value="center" onClick={setSelected}>
+                    <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <line x1="4" y1="8" x2="20" y2="8"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                            <line x1="6" y1="16" x2="18" y2="16"></line>
+                        </g>
+                    </svg>
+                </OptionContainer>
+
+                <OptionContainer selected={selected} value="right" onClick={setSelected}>
+                    <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <line x1="4" y1="8" x2="20" y2="8"></line><line x1="10" y1="12" x2="20" y2="12">
+                            </line><line x1="8" y1="16" x2="20" y2="16"></line>
+                        </g>
+                    </svg>
                 </OptionContainer>
             </div>
         </fieldset>
@@ -86,12 +122,10 @@ export function Opacity() {
     )
 }
 
-
-
-function OptionContainer({ selected, value, children }: { selected: string, value: string, children: React.ReactNode }) {
+function OptionContainer({ selected, value, onClick, children }: { selected: string, value: string, onClick: (val: string) => void, children: React.ReactNode }) {
     return (
         <button className="w-fit p-2 rounded hover:bg-[#faecd2]"
-
+            onClick={() => onClick(value)}
             style={{
                 backgroundColor: selected === value ? "#faecd2" : "",
                 border: `1px solid ${selected === value ? "#faecd2" : "var(--accents-2)"}`,
@@ -107,52 +141,47 @@ function OptionContainer({ selected, value, children }: { selected: string, valu
 }
 
 export function Layers() {
-    const [selected, setSelected] = useState(1)
+    const [selected, setSelected] = useState("")
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Layers</legend>
             <div className="flex gap-3">
-                <button className="w-fit p-2 flex items-center border justify-center rounded hover:bg-[#faecd2]" >
-                    <div className="flex items-center justify-center h-[22px] w-[22px]">
-                        <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                            <g clip-path="url(#a)">
-                                <path d="M5.441 9.792h2.451a2.316 2.316 0 0 1 2.316 2.316v2.45a2.316 2.316 0 0 1-2.316 2.317h-2.45a2.316 2.316 0 0 1-2.317-2.316v-2.451a2.316 2.316 0 0 1 2.316-2.316Z" stroke="currentColor" strokeWidth="1.25">
-                                </path>
-                                <path d="M5.441 9.792h2.451a2.316 2.316 0 0 1 2.316 2.316v2.45a2.316 2.316 0 0 1-2.316 2.317h-2.45a2.316 2.316 0 0 1-2.317-2.316v-2.451a2.316 2.316 0 0 1 2.316-2.316Z" stroke="currentColor" strokeWidth="1.25"></path><mask id="SendToBackIcon" fill="#fff">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.167 5.833v2.06a2.941 2.941 0 0 0 2.94 2.94h2.06v.393a2.941 2.941 0 0 1-2.941 2.94h-.393v-2.058a2.941 2.941 0 0 0-2.94-2.941h-2.06v-.393a2.941 2.941 0 0 1 2.942-2.94h.392Z"></path></mask>
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.167 5.833v2.06a2.941 2.941 0 0 0 2.94 2.94h2.06v.393a2.941 2.941 0 0 1-2.941 2.94h-.393v-2.058a2.941 2.941 0 0 0-2.94-2.941h-2.06v-.393a2.941 2.941 0 0 1 2.942-2.94h.392Z" fill="currentColor"></path>
-                                <path d="M9.167 5.833h1.25v-1.25h-1.25v1.25Zm5 5h1.25v-1.25h-1.25v1.25Zm-3.334 3.334h-1.25v1.25h1.25v-1.25Zm-5-5h-1.25v1.25h1.25v-1.25Zm2.084-3.334v2.06h2.5v-2.06h-2.5Zm0 2.06a4.191 4.191 0 0 0 4.19 4.19v-2.5a1.691 1.691 0 0 1-1.69-1.69h-2.5Zm4.19 4.19h2.06v-2.5h-2.06v2.5Zm.81-1.25v.393h2.5v-.393h-2.5Zm0 .393c0 .933-.758 1.69-1.691 1.69v2.5a4.191 4.191 0 0 0 4.19-4.19h-2.5Zm-1.691 1.69h-.393v2.5h.393v-2.5Zm.857 1.25v-2.058h-2.5v2.059h2.5Zm0-2.058a4.191 4.191 0 0 0-4.19-4.191v2.5c.933 0 1.69.757 1.69 1.69h2.5Zm-4.19-4.191h-2.06v2.5h2.06v-2.5Zm-.81 1.25v-.393h-2.5v.393h2.5Zm0-.393c0-.934.758-1.69 1.692-1.69v-2.5a4.191 4.191 0 0 0-4.192 4.19h2.5Zm1.692-1.69h.392v-2.5h-.392v2.5Z" fill="currentColor" mask="url(#SendToBackIcon)"></path>
-                                <path d="M12.108 3.125h2.45a2.316 2.316 0 0 1 2.317 2.316v2.451a2.316 2.316 0 0 1-2.316 2.316h-2.451a2.316 2.316 0 0 1-2.316-2.316v-2.45a2.316 2.316 0 0 1 2.316-2.317Z" stroke="currentColor" strokeWidth="1.25"></path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
-                    </div>
-                </button>
-                <button className="w-fit p-2 flex items-center border justify-center rounded hover:bg-[#faecd2]" >
-                    <div className="flex items-center justify-center h-[22px] w-[22px]">
-                        <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                            <g clip-path="url(#a)" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M6.944 12.5H12.5v1.389a1.389 1.389 0 0 1-1.389 1.389H5.556a1.389 1.389 0 0 1-1.39-1.39V8.334a1.389 1.389 0 0 1 1.39-1.389h1.388" fill="currentColor"></path>
-                                <path d="M13.889 4.167H8.333c-.767 0-1.389.621-1.389 1.389v5.555c0 .767.622 1.389 1.39 1.389h5.555c.767 0 1.389-.622 1.389-1.389V5.556c0-.768-.622-1.39-1.39-1.39Z"></path>
-                            </g><defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs>
-                        </svg>
-                    </div>
-                </button>
-                <button className="w-fit p-2 flex items-center border justify-center rounded hover:bg-[#faecd2]" >
-                    <div className="flex items-center justify-center h-[22px] w-[22px]">
-                        <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                            <g clip-path="url(#a)" stroke="currentColor" strokeWidth="1.25"><path d="M8.775 6.458h2.45a2.316 2.316 0 0 1 2.317 2.316v2.452a2.316 2.316 0 0 1-2.316 2.316H8.774a2.316 2.316 0 0 1-2.317-2.316V8.774a2.316 2.316 0 0 1 2.317-2.316Z" fill="currentColor"></path>
-                                <path d="M5.441 9.792h2.451a2.316 2.316 0 0 1 2.316 2.316v2.45a2.316 2.316 0 0 1-2.316 2.317h-2.45a2.316 2.316 0 0 1-2.317-2.316v-2.451a2.316 2.316 0 0 1 2.316-2.316ZM12.108 3.125h2.45a2.316 2.316 0 0 1 2.317 2.316v2.451a2.316 2.316 0 0 1-2.316 2.316h-2.451a2.316 2.316 0 0 1-2.316-2.316v-2.45a2.316 2.316 0 0 1 2.316-2.317Z">
-                                </path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs>
-                        </svg>
-                    </div>
-                </button>
-                <button className="w-fit p-2 flex items-center border justify-center rounded hover:bg-[#faecd2]" >
-                    <div className="flex items-center justify-center h-[22px] w-[22px]">
-                        <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><g clip-path="url(#a)" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M13.889 4.167H8.333c-.767 0-1.389.622-1.389 1.389v5.555c0 .767.622 1.389 1.39 1.389h5.555c.767 0 1.389-.622 1.389-1.389V5.556c0-.767-.622-1.39-1.39-1.39Z" fill="currentColor"></path>
-                            <path d="M12.5 12.5v1.389a1.389 1.389 0 0 1-1.389 1.389H5.556a1.389 1.389 0 0 1-1.39-1.39V8.334a1.389 1.389 0 0 1 1.39-1.389h1.388">
+                <OptionContainer selected={selected} value="to-back" onClick={setSelected}>
+                    <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                        <g clip-path="url(#a)">
+                            <path d="M5.441 9.792h2.451a2.316 2.316 0 0 1 2.316 2.316v2.45a2.316 2.316 0 0 1-2.316 2.317h-2.45a2.316 2.316 0 0 1-2.317-2.316v-2.451a2.316 2.316 0 0 1 2.316-2.316Z" stroke="currentColor" strokeWidth="1.25">
+                            </path>
+                            <path d="M5.441 9.792h2.451a2.316 2.316 0 0 1 2.316 2.316v2.45a2.316 2.316 0 0 1-2.316 2.317h-2.45a2.316 2.316 0 0 1-2.317-2.316v-2.451a2.316 2.316 0 0 1 2.316-2.316Z" stroke="currentColor" strokeWidth="1.25"></path><mask id="SendToBackIcon" fill="#fff">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.167 5.833v2.06a2.941 2.941 0 0 0 2.94 2.94h2.06v.393a2.941 2.941 0 0 1-2.941 2.94h-.393v-2.058a2.941 2.941 0 0 0-2.94-2.941h-2.06v-.393a2.941 2.941 0 0 1 2.942-2.94h.392Z"></path></mask>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M9.167 5.833v2.06a2.941 2.941 0 0 0 2.94 2.94h2.06v.393a2.941 2.941 0 0 1-2.941 2.94h-.393v-2.058a2.941 2.941 0 0 0-2.94-2.941h-2.06v-.393a2.941 2.941 0 0 1 2.942-2.94h.392Z" fill="currentColor"></path>
+                            <path d="M9.167 5.833h1.25v-1.25h-1.25v1.25Zm5 5h1.25v-1.25h-1.25v1.25Zm-3.334 3.334h-1.25v1.25h1.25v-1.25Zm-5-5h-1.25v1.25h1.25v-1.25Zm2.084-3.334v2.06h2.5v-2.06h-2.5Zm0 2.06a4.191 4.191 0 0 0 4.19 4.19v-2.5a1.691 1.691 0 0 1-1.69-1.69h-2.5Zm4.19 4.19h2.06v-2.5h-2.06v2.5Zm.81-1.25v.393h2.5v-.393h-2.5Zm0 .393c0 .933-.758 1.69-1.691 1.69v2.5a4.191 4.191 0 0 0 4.19-4.19h-2.5Zm-1.691 1.69h-.393v2.5h.393v-2.5Zm.857 1.25v-2.058h-2.5v2.059h2.5Zm0-2.058a4.191 4.191 0 0 0-4.19-4.191v2.5c.933 0 1.69.757 1.69 1.69h2.5Zm-4.19-4.191h-2.06v2.5h2.06v-2.5Zm-.81 1.25v-.393h-2.5v.393h2.5Zm0-.393c0-.934.758-1.69 1.692-1.69v-2.5a4.191 4.191 0 0 0-4.192 4.19h2.5Zm1.692-1.69h.392v-2.5h-.392v2.5Z" fill="currentColor" mask="url(#SendToBackIcon)"></path>
+                            <path d="M12.108 3.125h2.45a2.316 2.316 0 0 1 2.317 2.316v2.451a2.316 2.316 0 0 1-2.316 2.316h-2.451a2.316 2.316 0 0 1-2.316-2.316v-2.45a2.316 2.316 0 0 1 2.316-2.317Z" stroke="currentColor" strokeWidth="1.25"></path>
+                        </g>
+                        <defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs>
+                    </svg>
+                </OptionContainer>
+                <OptionContainer selected={selected} value="step-backward" onClick={setSelected}>
+                    <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                        <g clip-path="url(#a)" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M6.944 12.5H12.5v1.389a1.389 1.389 0 0 1-1.389 1.389H5.556a1.389 1.389 0 0 1-1.39-1.39V8.334a1.389 1.389 0 0 1 1.39-1.389h1.388" fill="currentColor"></path>
+                            <path d="M13.889 4.167H8.333c-.767 0-1.389.621-1.389 1.389v5.555c0 .767.622 1.389 1.39 1.389h5.555c.767 0 1.389-.622 1.389-1.389V5.556c0-.768-.622-1.39-1.39-1.39Z"></path>
+                        </g><defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs>
+                    </svg>
+                </OptionContainer>
+                <OptionContainer selected={selected} value="to-front" onClick={setSelected}>
+                    <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                        <g clip-path="url(#a)" stroke="currentColor" strokeWidth="1.25"><path d="M8.775 6.458h2.45a2.316 2.316 0 0 1 2.317 2.316v2.452a2.316 2.316 0 0 1-2.316 2.316H8.774a2.316 2.316 0 0 1-2.317-2.316V8.774a2.316 2.316 0 0 1 2.317-2.316Z" fill="currentColor"></path>
+                            <path d="M5.441 9.792h2.451a2.316 2.316 0 0 1 2.316 2.316v2.45a2.316 2.316 0 0 1-2.316 2.317h-2.45a2.316 2.316 0 0 1-2.317-2.316v-2.451a2.316 2.316 0 0 1 2.316-2.316ZM12.108 3.125h2.45a2.316 2.316 0 0 1 2.317 2.316v2.451a2.316 2.316 0 0 1-2.316 2.316h-2.451a2.316 2.316 0 0 1-2.316-2.316v-2.45a2.316 2.316 0 0 1 2.316-2.317Z">
                             </path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs>
-                        </svg>
-                    </div>
-                </button>
+                    </svg>
+                </OptionContainer>
+                <OptionContainer selected={selected} value="step-forward" onClick={setSelected}>
+                    <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><g clip-path="url(#a)" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M13.889 4.167H8.333c-.767 0-1.389.622-1.389 1.389v5.555c0 .767.622 1.389 1.39 1.389h5.555c.767 0 1.389-.622 1.389-1.389V5.556c0-.767-.622-1.39-1.39-1.39Z" fill="currentColor"></path>
+                        <path d="M12.5 12.5v1.389a1.389 1.389 0 0 1-1.389 1.389H5.556a1.389 1.389 0 0 1-1.39-1.39V8.334a1.389 1.389 0 0 1 1.39-1.389h1.388">
+                        </path></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs>
+                    </svg>
+                </OptionContainer>
             </div>
         </fieldset>
     )

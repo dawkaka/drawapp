@@ -59,7 +59,8 @@ export default function Tools({ setCanvasTool }: { setCanvasTool: (t: Tool) => v
                 </CanvasTool>
 
                 <CanvasTool onClick={() => setTool("image")} tool="image" selectedTool={tool}>
-                    <div style={{ width: "22px", height: "22px" }}>
+                    <div style={{ width: "22px", height: "22px" }} className="relative">
+                        <input type="file" className="absolute h-[22px] w-[22px] top-0 left-0 opacity-0" />
                         <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" className="" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><g strokeWidth="1.25"><path d="M12.5 6.667h.01"></path><path d="M4.91 2.625h10.18a2.284 2.284 0 0 1 2.285 2.284v10.182a2.284 2.284 0 0 1-2.284 2.284H4.909a2.284 2.284 0 0 1-2.284-2.284V4.909a2.284 2.284 0 0 1 2.284-2.284Z"></path><path d="m3.333 12.5 3.334-3.333c.773-.745 1.726-.745 2.5 0l4.166 4.166"></path><path d="m11.667 11.667.833-.834c.774-.744 1.726-.744 2.5 0l1.667 1.667"></path></g></svg>
                     </div>
                 </CanvasTool>

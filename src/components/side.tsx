@@ -1,4 +1,6 @@
+import { useAtom } from "jotai"
 import { useState } from "react"
+import { appState } from "../jotai"
 import { Color, Tool } from "../types"
 import ColorPanel from "./colorpick"
 import { FillToolsOptions, Layers, Opacity, TextOptions } from "./toolOptions"
@@ -6,8 +8,7 @@ import Tools from "./tools"
 
 export default function Side() {
     const [closed, setClosed] = useState(false)
-    const [tool, setTool] = useState<Tool>("select")
-
+    const [{ tool }] = useAtom(appState)
     return (
         <aside
             className="bg-neutral-50 fixed top-0 left-0 bottom-0 border-r border-neutral-200 overflow-y-auto transition-all"
@@ -17,10 +18,10 @@ export default function Side() {
         >
             <div className="relative  w-full h-full">
                 <ColorPanel />
-                <Tools setCanvasTool={setTool} />
+                <Tools />
                 <div className="flex flex-col gap-5 p-2 shadow bg-white mx-3 my-5 rounded p-5">
                     {
-                        (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool == "line") && <FillToolsOptions />
+                        (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool == "line" || "pencil") && <FillToolsOptions />
                     }
                     {
                         tool === "text" && <TextOptions />

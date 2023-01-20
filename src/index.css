@@ -27,6 +27,10 @@
   -webkit-text-size-adjust: 100%;
 }
 
+* {
+  user-select: none;
+}
+
 html {
   width: 100%;
   height: 100%;

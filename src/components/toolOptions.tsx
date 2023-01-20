@@ -1,5 +1,7 @@
+import { useAtom } from "jotai"
 import { useState } from "react"
-
+import { appState } from "../jotai"
+import type { StrokeWidth } from "../types"
 export function FillToolsOptions() {
     return (
         <>
@@ -189,22 +191,21 @@ export function Layers() {
 
 
 function StrokeWidth() {
-    const [selected, setSelected] = useState(1)
+    const [mainState, setMainState] = useAtom(appState)
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke width</legend>
             <div className="flex gap-3">
-                <FillOption option={1} selectedOption={selected} onClick={(val: number) => setSelected(val)} />
-                <FillOption option={2} selectedOption={selected} onClick={(val: number) => setSelected(val)} />
-                <FillOption option={3} selectedOption={selected} onClick={(val: number) => setSelected(val)} />
-
+                <FillOption option={2} selectedOption={mainState.strokeWidth} onClick={(val: StrokeWidth) => setMainState({ ...mainState, strokeWidth: val })} />
+                <FillOption option={3} selectedOption={mainState.strokeWidth} onClick={(val: StrokeWidth) => setMainState({ ...mainState, strokeWidth: val })} />
+                <FillOption option={4} selectedOption={mainState.strokeWidth} onClick={(val: StrokeWidth) => setMainState({ ...mainState, strokeWidth: val })} />
             </div>
         </fieldset>
 
     )
 }
 
-function FillOption({ onClick, option, selectedOption }: { onClick: (val: number) => void, option: number, selectedOption: number }) {
+function FillOption({ onClick, option, selectedOption }: { onClick: (val: StrokeWidth) => void, option: StrokeWidth, selectedOption: number }) {
     return (
         <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[#faecd2]"
             onClick={() => onClick(option)}
@@ -236,7 +237,7 @@ function StrokeStyle() {
     return (
 
         <fieldset className="flex flex-col gap-2">
-            <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke width</legend>
+            <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke style</legend>
             <div className="flex gap-3">
                 <StrokeStyleOption option={"solid"} selectedOption={selected} onClick={(val: StrokeStyle) => setSelected(val)} />
                 <StrokeStyleOption option={"dotted"} selectedOption={selected} onClick={(val: StrokeStyle) => setSelected(val)} />

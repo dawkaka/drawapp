@@ -1,23 +1,24 @@
+import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
+import { appState } from "../jotai"
 import { Color } from "../types"
 
 
 export default function ColorPanel() {
     const [selectedColor, setSelectedColor] = useState("")
     const [selected, setSelected] = useState<"stroke" | "fill">("fill")
-    const [fill, setFill] = useState("#9999")
-    const [stroke, setStroke] = useState("#000")
-
+    const [main, setAppState] = useAtom(appState)
+    const { fillColor, strokeColor } = main
     useEffect(() => {
         if (selectedColor) {
             if (selected === "stroke") {
-                setStroke(selectedColor)
+                setAppState({ ...main, strokeColor: selectedColor })
             } else {
-                setFill(selectedColor)
+                setAppState({ ...main, fillColor: selectedColor })
             }
         }
-
     }, [selectedColor])
+
     return (
         <div className="flex py-5 px-3 justify-between">
             <div className="flex flex-col">
@@ -28,11 +29,11 @@ export default function ColorPanel() {
                             className="rounded h-[30px] w-[30px]"
                             style={{
                                 border: selected === "stroke" ? "2px solid darkorange" : "",
-                                backgroundColor: stroke
+                                backgroundColor: strokeColor
                             }}
                             onClick={() => setSelected("stroke")}
                         ></div>
-                        <div className="text-neutral-500">{stroke}</div>
+                        <div className="text-neutral-500">{strokeColor}</div>
                     </div>
                 </div>
                 <div className="flex flex-col">
@@ -42,11 +43,11 @@ export default function ColorPanel() {
                             className="rounded h-[30px] w-[30px] bg-[yellow]"
                             style={{
                                 border: selected === "fill" ? "2px solid darkorange" : "",
-                                backgroundColor: fill
+                                backgroundColor: fillColor
                             }}
                             onClick={() => setSelected("fill")}
                         ></div>
-                        <div className="text-neutral-500">{fill}</div>
+                        <div className="text-neutral-500">{fillColor}</div>
                     </div>
                 </div>
             </div>

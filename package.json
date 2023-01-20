@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "jotai": "^1.13.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.7.1",
-    "recoil": "^0.7.6"
+    "react-icons": "^4.7.1"
   },
   "devDependencies": {
     "@types/react": "^18.0.26",

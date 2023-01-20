@@ -123,7 +123,6 @@ export default function Canvas() {
 
 
     function handleMouseUp(event: any) {
-        localStorage.setItem("points", JSON.stringify(points))
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
         if (current) {

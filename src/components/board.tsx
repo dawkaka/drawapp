@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useInitialState } from "../hooks";
 import { appState } from "../jotai";
-import { renderElements, renderPencilDrawing } from "../lib/render";
+import { renderElements, renderCurrentDrawing } from "../lib/render";
 import { CanvasItem, Line, Linear, Pencil, Point } from "../types";
 
 export default function Canvas() {
@@ -111,13 +111,13 @@ export default function Canvas() {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
         ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
-        if (mainState.tool === "pencil") {
-            renderPencilDrawing(ctx, current.pencil)
-        } else {
-            renderPencilDrawing(ctx, current.line)
-        }
         if (points.length > 0) {
             renderElements(ctx, points)
+        }
+        if (mainState.tool === "pencil") {
+            renderCurrentDrawing(ctx, current.pencil)
+        } else {
+            renderCurrentDrawing(ctx, current.line)
         }
     }, [points, current])
 

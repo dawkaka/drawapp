@@ -1,4 +1,4 @@
-import { CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle } from "../types";
+import { Arrow, CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle } from "../types";
 
 export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: CanvasItem) {
     switch (item.type) {
@@ -16,6 +16,9 @@ export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: Canvas
             break;
         case "ellipse":
             ellipseDraw(ctx, item)
+            break;
+        case "arrow":
+            arrowDraw(ctx, item)
             break;
         default:
             break;
@@ -40,6 +43,9 @@ export function renderElements(ctx: CanvasRenderingContext2D, items: CanvasItem[
                 break
             case "ellipse":
                 ellipseDraw(ctx, item)
+                break;
+            case "arrow":
+                arrowDraw(ctx, item)
                 break;
             default:
                 break;
@@ -122,5 +128,30 @@ function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
     ctx.ellipse(item.x + item.width / 2, item.y + item.height / 2, item.width / 2, item.height / 2, 0, 0, 360)
     ctx.fill()
     ctx.stroke();
+    ctx.restore();
+}
+
+function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
+    if (!item.points || item.points.length < 2) return
+    ctx.save()
+    ctx.lineWidth = item.strokeWidth
+    ctx.strokeStyle = item.strokeStyle
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    ctx.beginPath();
+    const points = item.points
+    ctx.moveTo(item.x, item.y)
+    ctx.lineTo(points[1].x, points[1].y)
+    ctx.save();
+    ctx.translate(points[1].x, points[1].y);
+    let angle = Math.atan2(points[1].y - item.y, points[1].x - item.x)
+    ctx.rotate(angle);
+    ctx.moveTo(0, 0);
+    const five = 0.3 * (Math.abs(item.x - points[1].x))
+    ctx.lineTo(Math.max(-five, -25), Math.max(-1 * (five / 0.6), -10));
+    ctx.moveTo(0, 0);
+    ctx.lineTo(Math.max(-five, -25), Math.min(five / 0.6, 10));
+    ctx.stroke();
+    ctx.restore();
     ctx.restore();
 }

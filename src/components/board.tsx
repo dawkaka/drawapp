@@ -78,6 +78,18 @@ export default function Canvas() {
                             fillStyle: mainState.fillColor
                         }
                     })
+                case "arrow":
+                    setCurrent({
+                        ...current,
+                        arrow: {
+                            ...current.arrow,
+                            x: event.pageX - rect.left,
+                            y: event.pageY - rect.top,
+                            strokeStyle: mainState.strokeColor,
+                            strokeWidth: mainState.strokeWidth,
+                        }
+                    })
+                    break;
                 default:
                     break;
             }
@@ -89,8 +101,8 @@ export default function Canvas() {
                         line: {
                             ...current.line,
                             points: [{ x: 0, y: 0 }, {
-                                x: event.pageX - rect.left - current.pencil.x,
-                                y: event.pageY - rect.top - current.pencil.y,
+                                x: event.pageX - rect.left,
+                                y: event.pageY - rect.top,
                             }],
                         }
                     })
@@ -134,6 +146,18 @@ export default function Canvas() {
                             ...current.ellipse,
                             width: event.pageX - rect.left - current.ellipse.x,
                             height: event.pageY - rect.top - current.ellipse.y,
+                        }
+                    })
+                    break;
+                case "arrow":
+                    setCurrent({
+                        ...current,
+                        arrow: {
+                            ...current.arrow,
+                            points: [{ x: 0, y: 0 }, {
+                                x: event.pageX - rect.left,
+                                y: event.pageY - rect.top,
+                            }],
                         }
                     })
                 default:
@@ -187,6 +211,8 @@ export default function Canvas() {
             renderCurrentDrawing(ctx, current.diamond)
         } else if (mainState.tool === "ellipse") {
             renderCurrentDrawing(ctx, current.ellipse)
+        } else if (mainState.tool === "arrow") {
+            renderCurrentDrawing(ctx, current.arrow)
         }
     }, [points, current])
 
@@ -211,6 +237,9 @@ export default function Canvas() {
             } else if (mainState.tool === "ellipse") {
                 setPoints([...points, current.ellipse])
                 localStorage.setItem("points", JSON.stringify([...points, current.ellipse]))
+            } else if (mainState.tool === "arrow") {
+                setPoints([...points, current.arrow])
+                localStorage.setItem("points", JSON.stringify([...points, current.arrow]))
             }
             setCurrent(intialStates)
         }

@@ -30,6 +30,14 @@ export interface Linear extends CanvasItemConstants {
     strokeStyle: string
 }
 
+export interface Box extends CanvasItemConstants {
+    strokeWidth: StrokeWidth;
+    strokeStyle: string;
+    fillStyle: string;
+    edgesType: "sharp" | "round"
+}
+
+
 export interface Pencil extends Linear {
     type: "pencil"
 }
@@ -38,11 +46,8 @@ export interface Line extends Linear {
     type: "line"
 }
 
-export interface Box extends CanvasItemConstants {
-    strokeWidth: StrokeWidth;
-    strokeStyle: string;
-    fillStyle: string;
-    edgesType: "sharp" | "round"
+export interface Arrow extends Linear {
+    type: "arrow"
 }
 
 export interface Rectangle extends Box {
@@ -57,10 +62,10 @@ export interface Ellipse extends Omit<Box, "edgesType"> {
     type: "ellipse"
 }
 
-export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse
+export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow
 
 
 export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "eraser" | "pencil"
 
 
-export interface CurrentState { line: Line, pencil: Pencil, rectangle: Rectangle, diamond: Diamond, ellipse: Ellipse }
+export interface CurrentState { line: Line, pencil: Pencil, rectangle: Rectangle, diamond: Diamond, ellipse: Ellipse, arrow: Arrow }

@@ -57,6 +57,16 @@ export function useInitialState() {
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
+        },
+        arrow: {
+            type: "arrow",
+            points: [{ x: 0, y: 0 }],
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0,
+            strokeStyle: mainState.strokeColor,
+            strokeWidth: mainState.strokeWidth
         }
     }
     return initialState

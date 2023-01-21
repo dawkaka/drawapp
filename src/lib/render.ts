@@ -1,4 +1,4 @@
-import { CanvasItem, Diamond, Line, Linear, Pencil, Point, Rectangle } from "../types";
+import { CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle } from "../types";
 
 export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: CanvasItem) {
     switch (item.type) {
@@ -11,6 +11,12 @@ export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: Canvas
         case "rectangle":
             rectangleDraw(ctx, item)
             break
+        case "diamond":
+            diamondDraw(ctx, item)
+            break;
+        case "ellipse":
+            ellipseDraw(ctx, item)
+            break;
         default:
             break;
     }
@@ -29,6 +35,12 @@ export function renderElements(ctx: CanvasRenderingContext2D, items: CanvasItem[
             case "rectangle":
                 rectangleDraw(ctx, item)
                 break
+            case "diamond":
+                diamondDraw(ctx, item)
+                break
+            case "ellipse":
+                ellipseDraw(ctx, item)
+                break;
             default:
                 break;
         }
@@ -85,12 +97,30 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
 function diamondDraw(ctx: CanvasRenderingContext2D, item: Diamond) {
     ctx.save();
     ctx.translate(item.x, item.y);
+    ctx.lineWidth = item.strokeWidth
+    ctx.strokeStyle = item.strokeStyle
+    ctx.fillStyle = item.fillStyle
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
     ctx.beginPath();
-    ctx.moveTo(0, item.height / 2);
-    ctx.lineTo(item.width / 2, 0);
-    ctx.lineTo(0, -1 * item.height / 2);
-    ctx.lineTo(-1 * item.width / 2, 0);
+    ctx.moveTo(item.width / 2, 0)
+    ctx.lineTo(item.width, item.height / 2);
+    ctx.lineTo(item.width / 2, item.height);
+    ctx.lineTo(0, item.height / 2)
     ctx.closePath();
+    ctx.fill()
+    ctx.stroke();
+    ctx.restore();
+}
+
+function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
+    ctx.save()
+    ctx.lineWidth = item.strokeWidth
+    ctx.strokeStyle = item.strokeStyle
+    ctx.fillStyle = item.fillStyle
+    ctx.beginPath();
+    ctx.ellipse(item.x + item.width / 2, item.y + item.height / 2, item.width / 2, item.height / 2, 0, 0, 360)
+    ctx.fill()
     ctx.stroke();
     ctx.restore();
 }

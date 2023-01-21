@@ -53,7 +53,14 @@ export interface Diamond extends Box {
     type: "diamond"
 }
 
-export type CanvasItem = Pencil | Line | Rectangle | Diamond
+export interface Ellipse extends Omit<Box, "edgesType"> {
+    type: "ellipse"
+}
+
+export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse
 
 
 export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "eraser" | "pencil"
+
+
+export interface CurrentState { line: Line, pencil: Pencil, rectangle: Rectangle, diamond: Diamond, ellipse: Ellipse }

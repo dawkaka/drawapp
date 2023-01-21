@@ -3,14 +3,14 @@ import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useInitialState } from "../hooks";
 import { appState } from "../jotai";
 import { renderElements, renderCurrentDrawing } from "../lib/render";
-import { CanvasItem, Line, Linear, Pencil, Point, Rectangle } from "../types";
+import { CanvasItem, CurrentState, Diamond, Line, Pencil, Rectangle } from "../types";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, startRectX: 0, startRectY: 0 })
     const [mainState] = useAtom(appState)
     const [points, setPoints] = useState<CanvasItem[]>([])
     const intialStates = useInitialState()
-    const [current, setCurrent] = useState<{ line: Line, pencil: Pencil, rectangle: Rectangle }>(intialStates)
+    const [current, setCurrent] = useState<CurrentState>(intialStates)
 
 
     function updateState(event: any, rect: DOMRect, drawInProcess: boolean) {
@@ -45,6 +45,32 @@ export default function Canvas() {
                         ...current,
                         rectangle: {
                             ...current.rectangle,
+                            x: event.pageX - rect.left,
+                            y: event.pageY - rect.top,
+                            strokeStyle: mainState.strokeColor,
+                            strokeWidth: mainState.strokeWidth,
+                            fillStyle: mainState.fillColor
+                        }
+                    })
+                    break;
+                case "diamond":
+                    setCurrent({
+                        ...current,
+                        diamond: {
+                            ...current.diamond,
+                            x: event.pageX - rect.left,
+                            y: event.pageY - rect.top,
+                            strokeStyle: mainState.strokeColor,
+                            strokeWidth: mainState.strokeWidth,
+                            fillStyle: mainState.fillColor
+                        }
+                    })
+                    break;
+                case "ellipse":
+                    setCurrent({
+                        ...current,
+                        ellipse: {
+                            ...current.ellipse,
                             x: event.pageX - rect.left,
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
@@ -88,6 +114,26 @@ export default function Canvas() {
                             ...current.rectangle,
                             width: event.pageX - rect.left - current.rectangle.x,
                             height: event.pageY - rect.top - current.rectangle.y,
+                        }
+                    })
+                    break;
+                case "diamond":
+                    setCurrent({
+                        ...current,
+                        diamond: {
+                            ...current.diamond,
+                            width: event.pageX - rect.left - current.diamond.x,
+                            height: event.pageY - rect.top - current.diamond.y,
+                        }
+                    })
+                    break;
+                case "ellipse":
+                    setCurrent({
+                        ...current,
+                        ellipse: {
+                            ...current.ellipse,
+                            width: event.pageX - rect.left - current.ellipse.x,
+                            height: event.pageY - rect.top - current.ellipse.y,
                         }
                     })
                 default:
@@ -135,8 +181,12 @@ export default function Canvas() {
             renderCurrentDrawing(ctx, current.pencil)
         } else if (mainState.tool === "line") {
             renderCurrentDrawing(ctx, current.line)
-        } else {
+        } else if (mainState.tool === "rectangle") {
             renderCurrentDrawing(ctx, current.rectangle)
+        } else if (mainState.tool === "diamond") {
+            renderCurrentDrawing(ctx, current.diamond)
+        } else if (mainState.tool === "ellipse") {
+            renderCurrentDrawing(ctx, current.ellipse)
         }
     }, [points, current])
 
@@ -152,16 +202,20 @@ export default function Canvas() {
                 setPoints([...points, current.line])
                 localStorage.setItem("points", JSON.stringify([...points, current.line]))
 
-            } else {
+            } else if (mainState.tool === "rectangle") {
                 setPoints([...points, current.rectangle])
                 localStorage.setItem("points", JSON.stringify([...points, current.rectangle]))
-
+            } else if (mainState.tool === "diamond") {
+                setPoints([...points, current.diamond])
+                localStorage.setItem("points", JSON.stringify([...points, current.diamond]))
+            } else if (mainState.tool === "ellipse") {
+                setPoints([...points, current.ellipse])
+                localStorage.setItem("points", JSON.stringify([...points, current.ellipse]))
             }
             setCurrent(intialStates)
         }
         setState({ ...state, drawInProcess: false })
     }
-
 
     return (
         <canvas

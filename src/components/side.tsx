@@ -21,7 +21,7 @@ export default function Side() {
                 <Tools />
                 <div className="flex flex-col gap-5 p-2 shadow bg-white mx-3 my-5 rounded p-5">
                     {
-                        (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool == "line" || "pencil") && <FillToolsOptions />
+                        (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool === "line" || tool === "pencil") && <FillToolsOptions />
                     }
                     {
                         tool === "text" && <TextOptions />

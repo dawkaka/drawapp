@@ -3,14 +3,14 @@ import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useInitialState } from "../hooks";
 import { appState } from "../jotai";
 import { renderElements, renderCurrentDrawing } from "../lib/render";
-import { CanvasItem, Line, Linear, Pencil, Point } from "../types";
+import { CanvasItem, Line, Linear, Pencil, Point, Rectangle } from "../types";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, startRectX: 0, startRectY: 0 })
     const [mainState] = useAtom(appState)
     const [points, setPoints] = useState<CanvasItem[]>([])
     const intialStates = useInitialState()
-    const [current, setCurrent] = useState<{ line: Line, pencil: Pencil }>(intialStates)
+    const [current, setCurrent] = useState<{ line: Line, pencil: Pencil, rectangle: Rectangle }>(intialStates)
 
 
     function updateState(event: any, rect: DOMRect, drawInProcess: boolean) {
@@ -20,14 +20,11 @@ export default function Canvas() {
                     setCurrent({
                         ...current,
                         line: {
-                            type: "line",
-                            points: [{ x: 0, y: 0 }],
-                            width: 0,
-                            height: 0,
+                            ...current.line,
                             x: event.pageX - rect.left,
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
-                            strokeWidth: mainState.strokeWidth
+                            strokeWidth: mainState.strokeWidth,
                         }
                     })
                     break;
@@ -35,14 +32,24 @@ export default function Canvas() {
                     setCurrent({
                         ...current,
                         pencil: {
-                            type: "pencil",
-                            points: [{ x: 0, y: 0 }],
-                            width: 0,
-                            height: 0,
+                            ...current.pencil,
                             x: event.pageX - rect.left,
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
-                            strokeWidth: mainState.strokeWidth
+                            strokeWidth: mainState.strokeWidth,
+                        }
+                    })
+                    break;
+                case "rectangle":
+                    setCurrent({
+                        ...current,
+                        rectangle: {
+                            ...current.rectangle,
+                            x: event.pageX - rect.left,
+                            y: event.pageY - rect.top,
+                            strokeStyle: mainState.strokeColor,
+                            strokeWidth: mainState.strokeWidth,
+                            fillStyle: mainState.fillColor
                         }
                     })
                 default:
@@ -73,6 +80,16 @@ export default function Canvas() {
                             }]
                         }
                     })
+                    break;
+                case "rectangle":
+                    setCurrent({
+                        ...current,
+                        rectangle: {
+                            ...current.rectangle,
+                            width: event.pageX - rect.left - current.rectangle.x,
+                            height: event.pageY - rect.top - current.rectangle.y,
+                        }
+                    })
                 default:
                     break;
             }
@@ -94,7 +111,7 @@ export default function Canvas() {
         let ctx = c!.getContext("2d")!;
         ctx.canvas.width = window.devicePixelRatio * window.innerWidth
         ctx.canvas.height = window.devicePixelRatio * window.innerHeight
-        renderElements(ctx, JSON.parse(localStorage.getItem("points")!))
+        renderElements(ctx, JSON.parse(localStorage.getItem("points") || "[]"))
     }, [])
 
 
@@ -116,8 +133,10 @@ export default function Canvas() {
         }
         if (mainState.tool === "pencil") {
             renderCurrentDrawing(ctx, current.pencil)
-        } else {
+        } else if (mainState.tool === "line") {
             renderCurrentDrawing(ctx, current.line)
+        } else {
+            renderCurrentDrawing(ctx, current.rectangle)
         }
     }, [points, current])
 
@@ -128,10 +147,16 @@ export default function Canvas() {
         if (current) {
             if (mainState.tool === "pencil") {
                 setPoints([...points, current.pencil])
-            } else {
+                localStorage.setItem("points", JSON.stringify([...points, current.pencil]))
+            } else if (mainState.tool === "line") {
                 setPoints([...points, current.line])
+                localStorage.setItem("points", JSON.stringify([...points, current.line]))
+
+            } else {
+                setPoints([...points, current.rectangle])
+                localStorage.setItem("points", JSON.stringify([...points, current.rectangle]))
+
             }
-            localStorage.setItem("points", JSON.stringify([...points, current]))
             setCurrent(intialStates)
         }
         setState({ ...state, drawInProcess: false })

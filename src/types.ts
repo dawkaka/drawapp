@@ -45,7 +45,15 @@ export interface Box extends CanvasItemConstants {
     edgesType: "sharp" | "round"
 }
 
-export type CanvasItem = Pencil | Line
+export interface Rectangle extends Box {
+    type: "rectangle"
+}
+
+export interface Diamond extends Box {
+    type: "diamond"
+}
+
+export type CanvasItem = Pencil | Line | Rectangle | Diamond
 
 
 export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "eraser" | "pencil"

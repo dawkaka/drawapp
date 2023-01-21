@@ -78,6 +78,7 @@ export default function Canvas() {
                             fillStyle: mainState.fillColor
                         }
                     })
+                    break;
                 case "arrow":
                     setCurrent({
                         ...current,

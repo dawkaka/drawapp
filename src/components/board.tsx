@@ -172,8 +172,8 @@ export default function Canvas() {
                         arrow: {
                             ...current.arrow,
                             points: [{ x: 0, y: 0 }, {
-                                x: event.pageX - rect.left,
-                                y: event.pageY - rect.top,
+                                x: event.pageX - rect.left - current.arrow.x,
+                                y: event.pageY - rect.top - current.arrow.y,
                             }],
                         }
                     })

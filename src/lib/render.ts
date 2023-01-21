@@ -140,17 +140,18 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     ctx.lineJoin = "round"
     ctx.beginPath();
     const points = item.points
-    ctx.moveTo(item.x, item.y)
+    ctx.translate(item.x, item.y)
+    ctx.moveTo(0, 0)
     ctx.lineTo(points[1].x, points[1].y)
     ctx.save();
     ctx.translate(points[1].x, points[1].y);
-    let angle = Math.atan2(points[1].y - item.y, points[1].x - item.x)
+    let angle = Math.atan2(points[1].y, points[1].x)
     ctx.rotate(angle);
     ctx.moveTo(0, 0);
-    const five = 0.3 * (Math.max(Math.abs(item.y - points[1].y), Math.abs(item.x - points[1].x)))
-    ctx.lineTo(Math.max(-five, -25), Math.max(-1 * (five / 0.6), -10));
+    const five = 0.3 * (Math.max(Math.abs(points[1].y), Math.abs(points[1].x)))
+    ctx.lineTo(Math.max(-five, -25), Math.max(-1 * (five * 0.4), -10));
     ctx.moveTo(0, 0);
-    ctx.lineTo(Math.max(-five, -25), Math.min(five / 0.6, 10));
+    ctx.lineTo(Math.max(-five, -25), Math.min(five * 0.4, 10));
     ctx.stroke();
     ctx.restore();
     ctx.restore();

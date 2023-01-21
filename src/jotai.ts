@@ -6,4 +6,5 @@ export const appState = atom<AppState>({
     strokeWidth: 3,
     tool: "line",
     fillColor: "transparent",
+    imageBlob: "",
 })

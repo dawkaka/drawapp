@@ -3,7 +3,7 @@ import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useInitialState } from "../hooks";
 import { appState } from "../jotai";
 import { renderElements, renderCurrentDrawing } from "../lib/render";
-import { CanvasItem, CurrentState, Diamond, Line, Pencil, Rectangle } from "../types";
+import { CanvasItem, CurrentState } from "../types";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, startRectX: 0, startRectY: 0 })
@@ -11,7 +11,7 @@ export default function Canvas() {
     const [points, setPoints] = useState<CanvasItem[]>([])
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
-
+    console.log(mainState.imageBlob)
 
     function updateState(event: any, rect: DOMRect, drawInProcess: boolean) {
         if (!drawInProcess) {
@@ -91,6 +91,22 @@ export default function Canvas() {
                         }
                     })
                     break;
+                case "image":
+                    if (mainState.imageBlob) {
+                        setCurrent({
+                            ...current,
+                            image: {
+                                ...current.image,
+                                x: event.pageX - rect.left,
+                                y: event.pageY - rect.top,
+                                strokeStyle: mainState.strokeColor,
+                                strokeWidth: mainState.strokeWidth,
+                                fillStyle: mainState.fillColor,
+                                data: mainState.imageBlob
+                            }
+                        })
+                    }
+                    break;
                 default:
                     break;
             }
@@ -161,6 +177,22 @@ export default function Canvas() {
                             }],
                         }
                     })
+                    break;
+                case "image":
+                    if (mainState.imageBlob) {
+                        setCurrent({
+                            ...current,
+                            image: {
+                                ...current.image,
+                                x: event.pageX - rect.left,
+                                y: event.pageY - rect.top,
+                                strokeStyle: mainState.strokeColor,
+                                strokeWidth: mainState.strokeWidth,
+                                fillStyle: mainState.fillColor,
+                                data: mainState.imageBlob
+                            }
+                        })
+                    }
                 default:
                     break;
             }

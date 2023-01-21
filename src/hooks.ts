@@ -67,6 +67,18 @@ export function useInitialState() {
             y: 0,
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth
+        },
+        image: {
+            type: "image",
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0,
+            data: mainState.imageBlob,
+            strokeStyle: mainState.strokeColor,
+            strokeWidth: mainState.strokeWidth,
+            fillStyle: mainState.fillColor,
+            edgesType: "sharp"
         }
     }
     return initialState

@@ -8,6 +8,7 @@ export interface AppState {
     strokeWidth: StrokeWidth,
     tool: Tool,
     fillColor: string,
+    imageBlob: string
 }
 
 export type Point = {
@@ -62,10 +63,15 @@ export interface Ellipse extends Omit<Box, "edgesType"> {
     type: "ellipse"
 }
 
-export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow
+export interface Image extends Box {
+    type: "image",
+    data: string
+}
+
+export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image
 
 
 export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "eraser" | "pencil"
 
 
-export interface CurrentState { line: Line, pencil: Pencil, rectangle: Rectangle, diamond: Diamond, ellipse: Ellipse, arrow: Arrow }
+export interface CurrentState { line: Line, pencil: Pencil, rectangle: Rectangle, diamond: Diamond, ellipse: Ellipse, arrow: Arrow, image: Image }

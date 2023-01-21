@@ -147,7 +147,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     let angle = Math.atan2(points[1].y - item.y, points[1].x - item.x)
     ctx.rotate(angle);
     ctx.moveTo(0, 0);
-    const five = 0.3 * (Math.abs(item.x - points[1].x))
+    const five = 0.3 * (Math.max(Math.abs(item.y - points[1].y), Math.abs(item.x - points[1].x)))
     ctx.lineTo(Math.max(-five, -25), Math.max(-1 * (five / 0.6), -10));
     ctx.moveTo(0, 0);
     ctx.lineTo(Math.max(-five, -25), Math.min(five / 0.6, 10));

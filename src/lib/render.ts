@@ -60,6 +60,7 @@ function pencilDraw(ctx: CanvasRenderingContext2D, item: Pencil) {
     ctx.strokeStyle = item.strokeStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    ctx.globalAlpha = item.opacity
     ctx.beginPath();
     for (let i = 0; i < item.points.length; i++) {
         let p = item.points[i]
@@ -77,6 +78,7 @@ function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
     ctx.strokeStyle = item.strokeStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    ctx.globalAlpha = item.opacity
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
@@ -97,6 +99,8 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
     ctx.fillStyle = item.fillStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    ctx.globalAlpha = item.opacity
+
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
@@ -118,6 +122,7 @@ function diamondDraw(ctx: CanvasRenderingContext2D, item: Diamond) {
     ctx.fillStyle = item.fillStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    ctx.globalAlpha = item.opacity
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
@@ -139,6 +144,7 @@ function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = item.strokeStyle
     ctx.fillStyle = item.fillStyle
+    ctx.globalAlpha = item.opacity
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
@@ -158,6 +164,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     ctx.strokeStyle = item.strokeStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    ctx.globalAlpha = item.opacity
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {

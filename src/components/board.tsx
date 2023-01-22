@@ -1,9 +1,9 @@
 import { useAtom } from "jotai";
-import { MouseEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState } from "../jotai";
 import { renderElements, renderCurrentDrawing } from "../lib/render";
-import { CanvasItem, CurrentState } from "../types";
+import { CurrentState } from "../types";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, drew: false, startRectX: 0, startRectY: 0 })
@@ -24,7 +24,8 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
-                            stroke: mainState.stroke
+                            stroke: mainState.stroke,
+                            opacity: mainState.opacity
                         }
                     })
                     break;
@@ -37,6 +38,7 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
+                            opacity: mainState.opacity
                         }
                     })
                     break;
@@ -50,7 +52,8 @@ export default function Canvas() {
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
-                            stroke: mainState.stroke
+                            stroke: mainState.stroke,
+                            opacity: mainState.opacity,
                         }
                     })
                     break;
@@ -64,7 +67,8 @@ export default function Canvas() {
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
-                            stroke: mainState.stroke
+                            stroke: mainState.stroke,
+                            opacity: mainState.opacity,
                         }
                     })
                     break;
@@ -78,7 +82,8 @@ export default function Canvas() {
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
-                            stroke: mainState.stroke
+                            stroke: mainState.stroke,
+                            opacity: mainState.opacity,
                         }
                     })
                     break;
@@ -91,7 +96,8 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
-                            stroke: mainState.stroke
+                            stroke: mainState.stroke,
+                            opacity: mainState.opacity,
                         }
                     })
                     break;
@@ -106,7 +112,8 @@ export default function Canvas() {
                                 strokeStyle: mainState.strokeColor,
                                 strokeWidth: mainState.strokeWidth,
                                 fillStyle: mainState.fillColor,
-                                data: mainState.imageBlob
+                                data: mainState.imageBlob,
+                                opacity: mainState.opacity,
                             }
                         })
                     }

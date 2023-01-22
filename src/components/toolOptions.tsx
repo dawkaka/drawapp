@@ -115,11 +115,13 @@ function TextAlign() {
 }
 
 export function Opacity() {
-    const [opacity, setOpacity] = useState(1)
+    const [appState, setAppState] = useAtom(AppState)
     return (
         <div className="w-full">
             <h6 className="text-sm text-[var(--accents-5)] mb-1">Opacity</h6>
-            <input type="range" className="accent-[darkorange] cursor-resize w-full" onChange={(e) => setOpacity(e.target.valueAsNumber)} value={opacity} min={0} max={1} step={0.1} />
+            <input type="range" className="accent-[darkorange] cursor-resize w-full"
+                onChange={(e) => setAppState({ ...appState, opacity: e.target.valueAsNumber })}
+                value={appState.opacity} min={0.1} max={1} step={0.1} />
         </div>
     )
 }

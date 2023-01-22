@@ -15,7 +15,8 @@ export function useInitialState() {
             y: 0,
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
-            stroke: mainState.stroke
+            stroke: mainState.stroke,
+            opacity: mainState.opacity,
         },
         pencil: {
             type: "pencil",
@@ -25,7 +26,8 @@ export function useInitialState() {
             x: 0,
             y: 0,
             strokeStyle: mainState.strokeColor,
-            strokeWidth: mainState.strokeWidth
+            strokeWidth: mainState.strokeWidth,
+            opacity: mainState.opacity,
         },
         rectangle: {
             type: "rectangle",
@@ -37,7 +39,8 @@ export function useInitialState() {
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
             edgesType: "sharp",
-            stroke: mainState.stroke
+            stroke: mainState.stroke,
+            opacity: mainState.opacity,
         },
         diamond: {
             type: "diamond",
@@ -49,7 +52,8 @@ export function useInitialState() {
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
             edgesType: "sharp",
-            stroke: mainState.stroke
+            stroke: mainState.stroke,
+            opacity: mainState.opacity,
         },
         ellipse: {
             type: "ellipse",
@@ -60,7 +64,8 @@ export function useInitialState() {
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
-            stroke: mainState.stroke
+            stroke: mainState.stroke,
+            opacity: mainState.opacity,
         },
         arrow: {
             type: "arrow",
@@ -71,7 +76,8 @@ export function useInitialState() {
             y: 0,
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
-            stroke: mainState.stroke
+            stroke: mainState.stroke,
+            opacity: mainState.opacity,
         },
         image: {
             type: "image",
@@ -83,7 +89,8 @@ export function useInitialState() {
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
-            edgesType: "sharp"
+            edgesType: "sharp",
+            opacity: mainState.opacity,
         }
     }
     return initialState

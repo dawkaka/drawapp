@@ -9,7 +9,8 @@ export interface AppState {
     tool: Tool,
     stroke: Stroke,
     fillColor: string,
-    imageBlob: string
+    imageBlob: string,
+    opacity: number
 }
 
 export type Point = {
@@ -22,6 +23,7 @@ interface CanvasItemConstants {
     height: number;
     x: number;
     y: number;
+    opacity: number
 }
 
 export type StrokeWidth = 2 | 3 | 4

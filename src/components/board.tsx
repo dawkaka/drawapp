@@ -6,12 +6,11 @@ import { renderElements, renderCurrentDrawing } from "../lib/render";
 import { CanvasItem, CurrentState } from "../types";
 
 export default function Canvas() {
-    const [state, setState] = useState({ drawInProcess: false, startRectX: 0, startRectY: 0 })
-    const [mainState] = useAtom(appState)
+    const [state, setState] = useState({ drawInProcess: false, drew: false, startRectX: 0, startRectY: 0 })
+    const [mainState, updaetMainState] = useAtom(appState)
     const [points, setPoints] = useState<CanvasItem[]>([])
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
-    console.log(mainState.imageBlob)
 
     function updateState(event: any, rect: DOMRect, drawInProcess: boolean) {
         if (!drawInProcess) {
@@ -210,7 +209,7 @@ export default function Canvas() {
         updateState(event, rect, state.drawInProcess)
         setState({
             drawInProcess: true, startRectX: event.pageX - rect.left,
-            startRectY: event.pageY - rect.top
+            startRectY: event.pageY - rect.top, drew: false
         });
     }
 
@@ -228,6 +227,7 @@ export default function Canvas() {
         let rect = c.getBoundingClientRect();
         if (state.drawInProcess) {
             updateState(event, rect, true)
+            setState({ ...state, drew: true })
         }
     }
 
@@ -280,6 +280,9 @@ export default function Canvas() {
                 localStorage.setItem("points", JSON.stringify([...points, current.arrow]))
             }
             setCurrent(intialStates)
+        }
+        if (state.drew) {
+            updaetMainState({ ...mainState, tool: "select" })
         }
         setState({ ...state, drawInProcess: false })
     }

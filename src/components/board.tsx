@@ -25,6 +25,7 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
+                            stroke: mainState.stroke
                         }
                     })
                     break;
@@ -49,7 +50,8 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
-                            fillStyle: mainState.fillColor
+                            fillStyle: mainState.fillColor,
+                            stroke: mainState.stroke
                         }
                     })
                     break;
@@ -62,7 +64,8 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
-                            fillStyle: mainState.fillColor
+                            fillStyle: mainState.fillColor,
+                            stroke: mainState.stroke
                         }
                     })
                     break;
@@ -75,7 +78,8 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
-                            fillStyle: mainState.fillColor
+                            fillStyle: mainState.fillColor,
+                            stroke: mainState.stroke
                         }
                     })
                     break;
@@ -88,6 +92,7 @@ export default function Canvas() {
                             y: event.pageY - rect.top,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
+                            stroke: mainState.stroke
                         }
                     })
                     break;

@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
 import { appState } from "../jotai"
-import type { StrokeWidth } from "../types"
+import type { Stroke, StrokeWidth } from "../types"
 export function FillToolsOptions() {
     return (
         <>
@@ -230,18 +230,19 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
     )
 }
 
-type StrokeStyle = "solid" | "dashed" | "dotted"
 
 function StrokeStyle() {
-    const [selected, setSelected] = useState<StrokeStyle>("solid")
+    const [mainState, setSelected] = useAtom(appState)
+    const { stroke: selected } = mainState
+
     return (
 
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke style</legend>
             <div className="flex gap-3">
-                <StrokeStyleOption option={"solid"} selectedOption={selected} onClick={(val: StrokeStyle) => setSelected(val)} />
-                <StrokeStyleOption option={"dotted"} selectedOption={selected} onClick={(val: StrokeStyle) => setSelected(val)} />
-                <StrokeStyleOption option={"dashed"} selectedOption={selected} onClick={(val: StrokeStyle) => setSelected(val)} />
+                <StrokeStyleOption option={"solid"} selectedOption={selected} onClick={(val: Stroke) => setSelected({ ...mainState, stroke: val })} />
+                <StrokeStyleOption option={"dotted"} selectedOption={selected} onClick={(val: Stroke) => setSelected({ ...mainState, stroke: val })} />
+                <StrokeStyleOption option={"dashed"} selectedOption={selected} onClick={(val: Stroke) => setSelected({ ...mainState, stroke: val })} />
 
             </div>
         </fieldset>
@@ -249,7 +250,7 @@ function StrokeStyle() {
 }
 
 
-function StrokeStyleOption({ onClick, option, selectedOption }: { onClick: (val: StrokeStyle) => void, option: StrokeStyle, selectedOption: StrokeStyle }) {
+function StrokeStyleOption({ onClick, option, selectedOption }: { onClick: (val: Stroke) => void, option: Stroke, selectedOption: Stroke }) {
     return (
         <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[#faecd2]"
             onClick={() => onClick(option)}

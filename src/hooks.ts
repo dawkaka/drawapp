@@ -14,7 +14,8 @@ export function useInitialState() {
             x: 0,
             y: 0,
             strokeStyle: mainState.strokeColor,
-            strokeWidth: mainState.strokeWidth
+            strokeWidth: mainState.strokeWidth,
+            stroke: mainState.stroke
         },
         pencil: {
             type: "pencil",
@@ -35,7 +36,8 @@ export function useInitialState() {
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
-            edgesType: "sharp"
+            edgesType: "sharp",
+            stroke: mainState.stroke
         },
         diamond: {
             type: "diamond",
@@ -46,7 +48,8 @@ export function useInitialState() {
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
-            edgesType: "sharp"
+            edgesType: "sharp",
+            stroke: mainState.stroke
         },
         ellipse: {
             type: "ellipse",
@@ -57,6 +60,7 @@ export function useInitialState() {
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
+            stroke: mainState.stroke
         },
         arrow: {
             type: "arrow",
@@ -66,7 +70,8 @@ export function useInitialState() {
             x: 0,
             y: 0,
             strokeStyle: mainState.strokeColor,
-            strokeWidth: mainState.strokeWidth
+            strokeWidth: mainState.strokeWidth,
+            stroke: mainState.stroke
         },
         image: {
             type: "image",

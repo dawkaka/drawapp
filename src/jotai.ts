@@ -4,6 +4,7 @@ import { AppState } from "./types";
 export const appState = atom<AppState>({
     strokeColor: "black",
     strokeWidth: 3,
+    stroke: "solid",
     tool: "line",
     fillColor: "transparent",
     imageBlob: "",

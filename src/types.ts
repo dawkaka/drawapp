@@ -7,6 +7,7 @@ export interface AppState {
     strokeColor: string,
     strokeWidth: StrokeWidth,
     tool: Tool,
+    stroke: Stroke,
     fillColor: string,
     imageBlob: string
 }
@@ -24,22 +25,25 @@ interface CanvasItemConstants {
 }
 
 export type StrokeWidth = 2 | 3 | 4
+export type Stroke = "dashed" | "solid" | "dotted"
 
 export interface Linear extends CanvasItemConstants {
     points: Point[];
     strokeWidth: StrokeWidth;
-    strokeStyle: string
+    strokeStyle: string;
+    stroke: Stroke
 }
 
 export interface Box extends CanvasItemConstants {
     strokeWidth: StrokeWidth;
     strokeStyle: string;
     fillStyle: string;
-    edgesType: "sharp" | "round"
+    edgesType: "sharp" | "round";
+    stroke: Stroke
 }
 
 
-export interface Pencil extends Linear {
+export interface Pencil extends Omit<Linear, "stroke"> {
     type: "pencil"
 }
 
@@ -63,7 +67,7 @@ export interface Ellipse extends Omit<Box, "edgesType"> {
     type: "ellipse"
 }
 
-export interface Image extends Box {
+export interface Image extends Omit<Box, "stroke"> {
     type: "image",
     data: string
 }

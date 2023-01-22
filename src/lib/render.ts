@@ -77,6 +77,11 @@ function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
     ctx.strokeStyle = item.strokeStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    if (item.stroke === "dotted") {
+        ctx.setLineDash([2, 5]);
+    } else if (item.stroke === "dashed") {
+        ctx.setLineDash([5, 15]);
+    }
     ctx.beginPath();
     const points = item.points
     ctx.moveTo(item.x, item.y)
@@ -92,6 +97,11 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
     ctx.fillStyle = item.fillStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    if (item.stroke === "dotted") {
+        ctx.setLineDash([2, 5]);
+    } else if (item.stroke === "dashed") {
+        ctx.setLineDash([5, 15]);
+    }
     ctx.beginPath()
     ctx.rect(item.x, item.y, item.width, item.height)
     ctx.fill()
@@ -108,6 +118,11 @@ function diamondDraw(ctx: CanvasRenderingContext2D, item: Diamond) {
     ctx.fillStyle = item.fillStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    if (item.stroke === "dotted") {
+        ctx.setLineDash([2, 5]);
+    } else if (item.stroke === "dashed") {
+        ctx.setLineDash([5, 15]);
+    }
     ctx.beginPath();
     ctx.moveTo(item.width / 2, 0)
     ctx.lineTo(item.width, item.height / 2);
@@ -124,6 +139,11 @@ function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = item.strokeStyle
     ctx.fillStyle = item.fillStyle
+    if (item.stroke === "dotted") {
+        ctx.setLineDash([2, 5]);
+    } else if (item.stroke === "dashed") {
+        ctx.setLineDash([5, 15]);
+    }
     ctx.beginPath();
     ctx.ellipse(item.x + item.width / 2, item.y + item.height / 2, item.width / 2, item.height / 2, 0, 0, 360)
     ctx.fill()
@@ -138,12 +158,22 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     ctx.strokeStyle = item.strokeStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    if (item.stroke === "dotted") {
+        ctx.setLineDash([2, 5]);
+    } else if (item.stroke === "dashed") {
+        ctx.setLineDash([5, 15]);
+    }
     ctx.beginPath();
     const points = item.points
     ctx.translate(item.x, item.y)
     ctx.moveTo(0, 0)
     ctx.lineTo(points[1].x, points[1].y)
     ctx.save();
+    if (item.stroke === "dotted") {
+        ctx.setLineDash([2, 5]);
+    } else if (item.stroke === "dashed") {
+        ctx.setLineDash([5, 15]);
+    }
     ctx.translate(points[1].x, points[1].y);
     let angle = Math.atan2(points[1].y, points[1].x)
     ctx.rotate(angle);

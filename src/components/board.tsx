@@ -1,14 +1,14 @@
 import { useAtom } from "jotai";
 import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { useInitialState } from "../hooks";
-import { appState } from "../jotai";
+import { AppDrawings, AppState } from "../jotai";
 import { renderElements, renderCurrentDrawing } from "../lib/render";
 import { CanvasItem, CurrentState } from "../types";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, drew: false, startRectX: 0, startRectY: 0 })
-    const [mainState, updaetMainState] = useAtom(appState)
-    const [points, setPoints] = useState<CanvasItem[]>([])
+    const [mainState, updaetMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
 
@@ -218,7 +218,7 @@ export default function Canvas() {
         let ctx = c!.getContext("2d")!;
         ctx.canvas.width = window.devicePixelRatio * window.innerWidth
         ctx.canvas.height = window.devicePixelRatio * window.innerHeight
-        renderElements(ctx, JSON.parse(localStorage.getItem("points") || "[]"))
+        renderElements(ctx, JSON.parse(localStorage.getItem("canvasItems") || "[]"))
     }, [])
 
 
@@ -236,8 +236,8 @@ export default function Canvas() {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
         ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
-        if (points.length > 0) {
-            renderElements(ctx, points)
+        if (items.length > 0) {
+            renderElements(ctx, items)
         }
         if (mainState.tool === "pencil") {
             renderCurrentDrawing(ctx, current.pencil)
@@ -252,7 +252,7 @@ export default function Canvas() {
         } else if (mainState.tool === "arrow") {
             renderCurrentDrawing(ctx, current.arrow)
         }
-    }, [points, current])
+    }, [items, current])
 
 
     function handleMouseUp(event: any) {
@@ -260,24 +260,25 @@ export default function Canvas() {
         let ctx = c.getContext('2d')!;
         if (current) {
             if (mainState.tool === "pencil") {
-                setPoints([...points, current.pencil])
-                localStorage.setItem("points", JSON.stringify([...points, current.pencil]))
+                setItems([...items, current.pencil])
+                localStorage.setItem("canvasItems", JSON.stringify([...items, current.pencil]))
             } else if (mainState.tool === "line") {
-                setPoints([...points, current.line])
-                localStorage.setItem("points", JSON.stringify([...points, current.line]))
+                setItems([...items, current.line])
+                localStorage.setItem("canvasItems", JSON.stringify([...items, current.line]))
 
             } else if (mainState.tool === "rectangle") {
-                setPoints([...points, current.rectangle])
-                localStorage.setItem("points", JSON.stringify([...points, current.rectangle]))
+                setItems([...items, current.rectangle])
+                localStorage.setItem("canvasItems", JSON.stringify([...items, current.rectangle]))
             } else if (mainState.tool === "diamond") {
-                setPoints([...points, current.diamond])
-                localStorage.setItem("points", JSON.stringify([...points, current.diamond]))
+                setItems([...items, current.diamond])
+                localStorage.setItem("canvasItems", JSON.stringify([...items, current.diamond]))
+
             } else if (mainState.tool === "ellipse") {
-                setPoints([...points, current.ellipse])
-                localStorage.setItem("points", JSON.stringify([...points, current.ellipse]))
+                setItems([...items, current.ellipse])
+                localStorage.setItem("canvasItems", JSON.stringify([...items, current.ellipse]))
             } else if (mainState.tool === "arrow") {
-                setPoints([...points, current.arrow])
-                localStorage.setItem("points", JSON.stringify([...points, current.arrow]))
+                setItems([...items, current.arrow])
+                localStorage.setItem("canvasItems", JSON.stringify([...items, current.arrow]))
             }
             setCurrent(intialStates)
         }

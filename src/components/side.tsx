@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
-import { appState } from "../jotai"
+import { AppState } from "../jotai"
 import { Color, Tool } from "../types"
 import ColorPanel from "./colorpick"
 import { FillToolsOptions, Layers, Opacity, TextOptions } from "./toolOptions"
@@ -8,7 +8,7 @@ import Tools from "./tools"
 
 export default function Side() {
     const [closed, setClosed] = useState(false)
-    const [{ tool }] = useAtom(appState)
+    const [{ tool }] = useAtom(AppState)
     return (
         <aside
             className="bg-neutral-50 fixed top-0 left-0 bottom-0 border-r border-neutral-200 overflow-y-auto transition-all"

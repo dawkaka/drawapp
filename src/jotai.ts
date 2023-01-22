@@ -1,7 +1,7 @@
 import { atom } from "jotai";
-import { AppState } from "./types";
+import { AppState as AppStateType, CanvasItem } from "./types";
 
-export const appState = atom<AppState>({
+export const AppState = atom<AppStateType>({
     strokeColor: "black",
     strokeWidth: 3,
     stroke: "solid",
@@ -9,3 +9,6 @@ export const appState = atom<AppState>({
     fillColor: "transparent",
     imageBlob: "",
 })
+
+
+export const AppDrawings = atom<CanvasItem[]>([])

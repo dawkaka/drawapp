@@ -1,11 +1,11 @@
 import { useAtom, useSetAtom } from "jotai"
 import { ReactNode, useEffect, useState } from "react"
-import { appState } from "../jotai"
+import { AppState } from "../jotai"
 import type { Tool } from "../types"
 
 
 export default function Tools() {
-    const [app, setState] = useAtom(appState)
+    const [app, setState] = useAtom(AppState)
     const tool = app.tool
 
 

@@ -1,13 +1,13 @@
 import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
-import { appState } from "../jotai"
+import { AppState } from "../jotai"
 import { Color } from "../types"
 
 
 export default function ColorPanel() {
     const [selectedColor, setSelectedColor] = useState("")
     const [selected, setSelected] = useState<"stroke" | "fill">("fill")
-    const [main, setAppState] = useAtom(appState)
+    const [main, setAppState] = useAtom(AppState)
     const { fillColor, strokeColor } = main
     useEffect(() => {
         if (selectedColor) {

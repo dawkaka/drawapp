@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
-import { appState } from "../jotai"
+import { AppState } from "../jotai"
 import type { Stroke, StrokeWidth } from "../types"
 export function FillToolsOptions() {
     return (
@@ -170,7 +170,7 @@ export function Layers() {
 
 
 function StrokeWidth() {
-    const [mainState, setMainState] = useAtom(appState)
+    const [mainState, setMainState] = useAtom(AppState)
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke width</legend>
@@ -211,7 +211,7 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
 
 
 function StrokeStyle() {
-    const [mainState, setSelected] = useAtom(appState)
+    const [mainState, setSelected] = useAtom(AppState)
     const { stroke: selected } = mainState
 
     return (

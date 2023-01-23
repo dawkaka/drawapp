@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState } from "../jotai";
 import { renderElements, renderCurrentDrawing } from "../lib/render";
+import { getRandomID } from "../lib/utils";
 import { CurrentState } from "../types";
 
 export default function Canvas() {
@@ -128,6 +129,7 @@ export default function Canvas() {
                         ...current,
                         line: {
                             ...current.line,
+                            id: getRandomID(),
                             points: [{ x: 0, y: 0 }, {
                                 x: event.pageX - rect.left,
                                 y: event.pageY - rect.top,
@@ -140,6 +142,7 @@ export default function Canvas() {
                         ...current,
                         pencil: {
                             ...current.pencil,
+                            id: getRandomID(),
                             points: [...current.pencil.points, {
                                 x: event.pageX - rect.left - current.pencil.x,
                                 y: event.pageY - rect.top - current.pencil.y,
@@ -152,6 +155,7 @@ export default function Canvas() {
                         ...current,
                         rectangle: {
                             ...current.rectangle,
+                            id: getRandomID(),
                             width: event.pageX - rect.left - current.rectangle.x,
                             height: event.pageY - rect.top - current.rectangle.y,
                         }
@@ -162,6 +166,7 @@ export default function Canvas() {
                         ...current,
                         diamond: {
                             ...current.diamond,
+                            id: getRandomID(),
                             width: event.pageX - rect.left - current.diamond.x,
                             height: event.pageY - rect.top - current.diamond.y,
                         }
@@ -172,6 +177,7 @@ export default function Canvas() {
                         ...current,
                         ellipse: {
                             ...current.ellipse,
+                            id: getRandomID(),
                             width: event.pageX - rect.left - current.ellipse.x,
                             height: event.pageY - rect.top - current.ellipse.y,
                         }
@@ -182,6 +188,7 @@ export default function Canvas() {
                         ...current,
                         arrow: {
                             ...current.arrow,
+                            id: getRandomID(),
                             points: [{ x: 0, y: 0 }, {
                                 x: event.pageX - rect.left - current.arrow.x,
                                 y: event.pageY - rect.top - current.arrow.y,
@@ -195,6 +202,7 @@ export default function Canvas() {
                             ...current,
                             image: {
                                 ...current.image,
+                                id: getRandomID(),
                                 x: event.pageX - rect.left,
                                 y: event.pageY - rect.top,
                                 strokeStyle: mainState.strokeColor,

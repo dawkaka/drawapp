@@ -9,6 +9,7 @@ export const AppState = atom<AppStateType>({
     opacity: 1,
     fillColor: "transparent",
     imageBlob: "",
+    selectedItem: ""
 })
 
 

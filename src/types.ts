@@ -10,7 +10,8 @@ export interface AppState {
     stroke: Stroke,
     fillColor: string,
     imageBlob: string,
-    opacity: number
+    opacity: number,
+    selectedItem: string
 }
 
 export type Point = {
@@ -19,6 +20,7 @@ export type Point = {
 }
 
 interface CanvasItemConstants {
+    id: string | undefined
     width: number;
     height: number;
     x: number;

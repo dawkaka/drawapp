@@ -1,17 +1,19 @@
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useInitialState } from "../hooks";
-import { AppDrawings, AppState } from "../jotai";
-import { renderElements, renderCurrentDrawing } from "../lib/render";
-import { getRandomID } from "../lib/utils";
+import { AppDrawings, AppState, SelectionAtom } from "../jotai";
+import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
+import { getBoundingBox, getRandomID } from "../lib/utils";
 import { CurrentState } from "../types";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, drew: false, startRectX: 0, startRectY: 0 })
-    const [mainState, updaetMainState] = useAtom(AppState)
+    const [mainState, updateMainState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
+
+    const [selectedItem] = useAtom(SelectionAtom)
 
     function updateState(event: any, rect: DOMRect, drawInProcess: boolean) {
         if (!drawInProcess) {
@@ -236,7 +238,6 @@ export default function Canvas() {
         renderElements(ctx, JSON.parse(localStorage.getItem("canvasItems") || "[]"))
     }, [])
 
-
     function handleMouseMove(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let rect = c.getBoundingClientRect();
@@ -267,38 +268,52 @@ export default function Canvas() {
         } else if (mainState.tool === "arrow") {
             renderCurrentDrawing(ctx, current.arrow)
         }
-    }, [items, current])
+
+        if (selectedItem) {
+            const bounds = getBoundingBox(selectedItem)
+            if (bounds) {
+                renderBounds(ctx, bounds)
+            }
+        }
+    }, [items, current, selectedItem])
 
 
     function handleMouseUp(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
+        let itemID = ""
         if (current) {
             if (mainState.tool === "pencil") {
                 setItems([...items, current.pencil])
+                itemID = current.pencil.id
                 localStorage.setItem("canvasItems", JSON.stringify([...items, current.pencil]))
             } else if (mainState.tool === "line") {
                 setItems([...items, current.line])
                 localStorage.setItem("canvasItems", JSON.stringify([...items, current.line]))
+                itemID = current.line.id
 
             } else if (mainState.tool === "rectangle") {
                 setItems([...items, current.rectangle])
                 localStorage.setItem("canvasItems", JSON.stringify([...items, current.rectangle]))
+                itemID = current.rectangle.id
             } else if (mainState.tool === "diamond") {
                 setItems([...items, current.diamond])
+                itemID = current.diamond.id
                 localStorage.setItem("canvasItems", JSON.stringify([...items, current.diamond]))
 
             } else if (mainState.tool === "ellipse") {
+                itemID = current.ellipse.id
                 setItems([...items, current.ellipse])
                 localStorage.setItem("canvasItems", JSON.stringify([...items, current.ellipse]))
             } else if (mainState.tool === "arrow") {
+                itemID = current.arrow.id
                 setItems([...items, current.arrow])
                 localStorage.setItem("canvasItems", JSON.stringify([...items, current.arrow]))
             }
             setCurrent(intialStates)
         }
         if (state.drew) {
-            updaetMainState({ ...mainState, tool: "select" })
+            updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
         setState({ ...state, drawInProcess: false })
     }

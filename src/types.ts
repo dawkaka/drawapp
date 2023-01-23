@@ -11,7 +11,7 @@ export interface AppState {
     fillColor: string,
     imageBlob: string,
     opacity: number,
-    selectedItem: string
+    selectedItemID: string
 }
 
 export type Point = {
@@ -78,6 +78,24 @@ export interface Image extends Omit<Box, "stroke"> {
 
 export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image
 
+export type BoundingBox = { x: number, y: number, width: number, height: number }
+
+type BoxSelection = {
+    type: "rectangle" | "ellipse" | "diamond";
+    x: number;
+    y: number;
+    width: number;
+    height: number
+}
+
+type LinearSelection = {
+    type: "line" | "arrow"
+    x: number;
+    y: number;
+    points: Point[]
+}
+
+export type SelectedItem = BoxSelection | LinearSelection
 
 export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "eraser" | "pencil"
 

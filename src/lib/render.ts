@@ -1,4 +1,4 @@
-import { Arrow, CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle } from "../types";
+import { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle } from "../types";
 
 export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: CanvasItem) {
     switch (item.type) {
@@ -192,4 +192,14 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     ctx.stroke();
     ctx.restore();
     ctx.restore();
+}
+
+export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox) {
+    ctx.save()
+    ctx.lineWidth = 2
+    ctx.strokeStyle = "darkorange"
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
+    ctx.restore()
 }

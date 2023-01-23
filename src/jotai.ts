@@ -23,10 +23,10 @@ export const SelectionAtom = atom((get): SelectedItem | null => {
             case "rectangle":
             case "ellipse":
             case "diamond":
-                return { type: item.type, x: item.x, y: item.y, width: item.width, height: item.height }
+                return { type: item.type, x: item.x, y: item.y, width: item.width, height: item.height, strokeWidth: item.strokeWidth }
             case "line":
             case "arrow":
-                return { type: item.type, x: item.x, y: item.y, points: item.points }
+                return { type: item.type, x: item.x, y: item.y, points: item.points, strokeWidth: item.strokeWidth }
             default:
                 break;
         }

@@ -133,8 +133,8 @@ export default function Canvas() {
                             ...current.line,
                             id: getRandomID(),
                             points: [{ x: 0, y: 0 }, {
-                                x: event.pageX - rect.left,
-                                y: event.pageY - rect.top,
+                                x: event.pageX - rect.left - current.line.x,
+                                y: event.pageY - rect.top - current.line.y,
                             }],
                         }
                     })
@@ -228,6 +228,7 @@ export default function Canvas() {
             drawInProcess: true, startRectX: event.pageX - rect.left,
             startRectY: event.pageY - rect.top, drew: false
         });
+        updateMainState({ ...mainState, selectedItemID: "" })
     }
 
     useEffect(() => {

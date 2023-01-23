@@ -16,7 +16,12 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
         case "rectangle":
         case "ellipse":
         case "diamond":
-            return { x: item.x, y: item.y, width: item.width, height: item.height }
+            return {
+                x: item.x - item.strokeWidth - 1,
+                y: item.y - item.strokeWidth - 1,
+                width: item.width + item.strokeWidth * 2 + 2,
+                height: item.height + item.strokeWidth * 2 + 2
+            }
         case "line":
         case "arrow":
             if (item.points.length > 1) {

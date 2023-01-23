@@ -85,14 +85,16 @@ type BoxSelection = {
     x: number;
     y: number;
     width: number;
-    height: number
+    height: number;
+    strokeWidth: number;
 }
 
 type LinearSelection = {
     type: "line" | "arrow"
     x: number;
     y: number;
-    points: Point[]
+    points: Point[];
+    strokeWidth: number
 }
 
 export type SelectedItem = BoxSelection | LinearSelection

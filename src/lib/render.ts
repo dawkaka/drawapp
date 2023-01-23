@@ -86,7 +86,8 @@ function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
     }
     ctx.beginPath();
     const points = item.points
-    ctx.moveTo(item.x, item.y)
+    ctx.translate(item.x, item.y)
+    ctx.moveTo(0, 0)
     ctx.lineTo(points[1].x, points[1].y)
     ctx.stroke()
     ctx.restore()
@@ -196,7 +197,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
 
 export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox) {
     ctx.save()
-    ctx.lineWidth = 2
+    ctx.lineWidth = 3
     ctx.strokeStyle = "darkorange"
     ctx.lineCap = "round"
     ctx.lineJoin = "round"

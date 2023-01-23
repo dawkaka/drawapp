@@ -7,6 +7,7 @@ export function useInitialState() {
     const [mainState] = useAtom(AppState)
     const initialState: CurrentState = {
         line: {
+            id: "",
             type: "line",
             points: [{ x: 0, y: 0 }],
             width: 0,
@@ -19,6 +20,7 @@ export function useInitialState() {
             opacity: mainState.opacity,
         },
         pencil: {
+            id: "",
             type: "pencil",
             points: [{ x: 0, y: 0 }],
             width: 0,
@@ -30,6 +32,7 @@ export function useInitialState() {
             opacity: mainState.opacity,
         },
         rectangle: {
+            id: "",
             type: "rectangle",
             width: 0,
             height: 0,
@@ -43,6 +46,7 @@ export function useInitialState() {
             opacity: mainState.opacity,
         },
         diamond: {
+            id: "",
             type: "diamond",
             width: 0,
             height: 0,
@@ -56,6 +60,7 @@ export function useInitialState() {
             opacity: mainState.opacity,
         },
         ellipse: {
+            id: "",
             type: "ellipse",
             width: 0,
             height: 0,
@@ -68,6 +73,7 @@ export function useInitialState() {
             opacity: mainState.opacity,
         },
         arrow: {
+            id: "",
             type: "arrow",
             points: [{ x: 0, y: 0 }],
             width: 0,
@@ -80,6 +86,7 @@ export function useInitialState() {
             opacity: mainState.opacity,
         },
         image: {
+            id: "",
             type: "image",
             width: 0,
             height: 0,

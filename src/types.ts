@@ -20,7 +20,7 @@ export type Point = {
 }
 
 interface CanvasItemConstants {
-    id?: string
+    id: string
     width: number;
     height: number;
     x: number;

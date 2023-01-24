@@ -105,3 +105,5 @@ export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "a
 
 
 export interface CurrentState { line: Line, pencil: Pencil, rectangle: Rectangle, diamond: Diamond, ellipse: Ellipse, arrow: Arrow, image: Image }
+
+export type LayerMoves = "to-back" | "step-backward" | "to-front" | "step-forward"

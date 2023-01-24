@@ -1,7 +1,6 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
 import { AppState } from "../jotai"
-import { Color, Tool } from "../types"
 import ColorPanel from "./colorpick"
 import { FillToolsOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"

@@ -1,4 +1,4 @@
-import { BoundingBox, CanvasItem, SelectedItem } from "../types"
+import { BoundingBox, CanvasItem, LayerMoves, SelectedItem } from "../types"
 import { renderBounds } from "./render"
 
 export function getRandomID() {
@@ -82,4 +82,25 @@ export function moveItem(dX: number, dY: number, item: SelectedItem, items: Canv
         return items
     }
     return null
+}
+
+export function moveItemPosition(type: LayerMoves, item: SelectedItem, items: CanvasItem[]) {
+    const targetIndex = items.findIndex(val => val.id === item.id)
+    let temp = items[targetIndex]
+    if (type === "step-backward" && targetIndex > 0) {
+        items[targetIndex] = items[targetIndex - 1]
+        items[targetIndex - 1] = temp
+    } else if (type === "step-forward" && targetIndex < items.length - 1) {
+        items[targetIndex] = items[targetIndex + 1]
+        items[targetIndex + 1] = temp
+    } else if (type === "to-back" && targetIndex !== 0) {
+        items = items.filter(t => t.id !== item.id)
+        items.unshift(temp)
+        return items
+    } else if (type === "to-front" && targetIndex < items.length - 1) {
+        items = items.filter(t => t.id !== item.id)
+        items.push(temp)
+        return items
+    }
+    return [...items]
 }

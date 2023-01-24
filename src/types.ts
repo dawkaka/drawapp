@@ -82,6 +82,7 @@ export type BoundingBox = { x: number, y: number, width: number, height: number 
 
 type BoxSelection = {
     type: "rectangle" | "ellipse" | "diamond";
+    id: string;
     x: number;
     y: number;
     width: number;
@@ -91,6 +92,7 @@ type BoxSelection = {
 
 type LinearSelection = {
     type: "line" | "arrow"
+    id: string;
     x: number;
     y: number;
     points: Point[];

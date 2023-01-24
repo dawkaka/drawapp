@@ -197,7 +197,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
 
 export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox) {
     ctx.save()
-    ctx.lineWidth = 3
+    ctx.lineWidth = 1
     ctx.strokeStyle = "darkorange"
     ctx.lineCap = "round"
     ctx.lineJoin = "round"

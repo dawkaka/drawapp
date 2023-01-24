@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
-import { getBoundingBox, getRandomID } from "../lib/utils";
+import { getBoundingBox, getRandomID, isWithinItem, moveItem } from "../lib/utils";
 import { CurrentState } from "../types";
 
 export default function Canvas() {
-    const [state, setState] = useState({ drawInProcess: false, drew: false, startRectX: 0, startRectY: 0 })
+    const [state, setState] = useState({ drawInProcess: false, drew: false, startRectX: 0, startRectY: 0, moveStart: false })
     const [mainState, updateMainState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
@@ -222,13 +222,25 @@ export default function Canvas() {
     }
 
     function handleMouseDown(event: any) {
-        let rect = document.getElementById("canvas")!.getBoundingClientRect();
-        updateState(event, rect, state.drawInProcess)
-        setState({
-            drawInProcess: true, startRectX: event.pageX - rect.left,
-            startRectY: event.pageY - rect.top, drew: false
-        });
-        updateMainState({ ...mainState, selectedItemID: "" })
+        if (mainState.tool !== "select") {
+            let rect = document.getElementById("canvas")!.getBoundingClientRect();
+            updateState(event, rect, state.drawInProcess)
+            setState({
+                ...state,
+                drawInProcess: true, startRectX: event.pageX - rect.left,
+                startRectY: event.pageY - rect.top
+            });
+        } else if (mainState.selectedItemID !== "" && selectedItem !== null) {
+            let px = event.pageX as number
+            let py = event.pageY as number
+            if (isWithinItem(px, py, selectedItem)) {
+                setState({
+                    ...state, moveStart: true, startRectX: px,
+                    startRectY: py
+                })
+            }
+        }
+
     }
 
     useEffect(() => {
@@ -245,6 +257,14 @@ export default function Canvas() {
         if (state.drawInProcess) {
             updateState(event, rect, true)
             setState({ ...state, drew: true })
+        } else if (state.moveStart && selectedItem) {
+            let px = event.pageX as number
+            let py = event.pageY as number
+            setState({ ...state, startRectX: px, startRectY: py })
+            const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items)
+            if (updatedItems) {
+                setItems([...updatedItems])
+            }
         }
     }
 
@@ -313,10 +333,10 @@ export default function Canvas() {
             }
             setCurrent(intialStates)
         }
-        if (state.drew) {
+        if (state.drew && mainState.tool !== "select") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
-        setState({ ...state, drawInProcess: false })
+        setState({ ...state, drawInProcess: false, moveStart: false, drew: false })
     }
 
     return (

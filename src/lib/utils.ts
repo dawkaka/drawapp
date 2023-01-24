@@ -44,7 +44,7 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
         if (bounds.width < 0 && bounds.height < 0) {
             sx += bounds.width
             ex = -1 * bounds.width
-            sy += bounds.width
+            sy += bounds.height
             ey = -1 * bounds.height
         } else if (bounds.width < 0 && bounds.height > 0) {
             sx += bounds.width

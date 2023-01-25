@@ -21,14 +21,14 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
             let sy = item.height < 0 ? item.y + item.strokeWidth + 1 : item.y - item.strokeWidth - 1
             let ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 : item.width + item.strokeWidth * 2 + 2
             let ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 : item.height + item.strokeWidth * 2 + 2
-            let ptl = { x: sx, y: sy, width: -10, height: -10 }
-            let ptr = { x: sx + ex, y: sy, width: 10, height: -10 }
-            let pbl = { x: sx, y: sy + ey, width: -10, height: 10 }
+            let ptl = { x: sx - 10, y: sy - 10, width: 10, height: 10 }
+            let ptr = { x: sx + ex, y: sy - 10, width: 10, height: 10 }
+            let pbl = { x: sx - 10, y: sy + ey, width: 10, height: 10 }
             let pbr = { x: sx + ex, y: sy + ey, width: 10, height: 10 }
-            let mt = { x: sx + 5 + ex / 2, y: sy, width: -10, height: -10 }
-            let mr = { x: sx + ex, y: sy + 5 + ey / 2, width: 10, height: -10 }
+            let mt = { x: sx - 5 + ex / 2, y: sy - 10, width: 10, height: 10 }
+            let mr = { x: sx + ex, y: sy - 5 + ey / 2, width: 10, height: 10 }
             let mb = { x: sx - 5 + ex / 2, y: sy + ey, width: 10, height: 10 }
-            let ml = { x: sx, y: sy + 5 + ey / 2, width: -10, height: -10 }
+            let ml = { x: sx - 10, y: sy - 5 + ey / 2, width: 10, height: 10 }
 
             return {
                 type: item.type,
@@ -99,6 +99,28 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
     return false
 }
 
+export function isWithinResizeArea(pointerX: number, pointerY: number, item: SelectedItem) {
+    const bounds = getBoundingBox(item)
+    if (bounds) {
+        switch (bounds.type) {
+            case "rectangle":
+            case "ellipse":
+            case "diamond":
+                for (const [key, val] of Object.entries(bounds.resizeAreas)) {
+                    if (pointerX > val.x && pointerY > val.y && pointerX < val.x + 10 && pointerY < val.y + 10) {
+                        return key
+                    }
+                }
+                break;
+            case "arrow":
+            case "line":
+            default:
+                break;
+        }
+    }
+    return ""
+}
+
 export function moveItem(dX: number, dY: number, item: SelectedItem, items: CanvasItem[]) {
     const targetIndex = items.findIndex(val => val.id === item.id)
     if (targetIndex > -1) {
@@ -128,4 +150,53 @@ export function moveItemPosition(type: LayerMoves, item: SelectedItem, items: Ca
         return items
     }
     return [...items]
+}
+
+
+export function resizeSelected(dir: string, dx: number, dy: number, item: SelectedItem, items: CanvasItem[]) {
+    const targetIndex = items.findIndex(val => val.id === item.id)
+    if (targetIndex === -1) return items
+    if (dir === "pbr") {
+        items[targetIndex].width += dx
+        items[targetIndex].height += dy
+        return [...items]
+    }
+    if (dir === "ptl") {
+        items[targetIndex].x += dx
+        items[targetIndex].y += dy
+        items[targetIndex].width += -1 * dx
+        items[targetIndex].height += -1 * dy
+        return [...items]
+    }
+    if (dir === "ptr") {
+        items[targetIndex].width += dx
+        items[targetIndex].y += dy
+        items[targetIndex].height += -1 * dy
+        return [...items]
+    }
+    if (dir === "pbl") {
+        items[targetIndex].width += - 1 * dx
+        items[targetIndex].height += dy
+        items[targetIndex].x += dx
+        return [...items]
+    }
+    if (dir === "mb") {
+        items[targetIndex].height += dy
+        return [...items]
+    }
+    if (dir === "mt") {
+        items[targetIndex].y += dy
+        items[targetIndex].height += - 1 * dy
+        return [...items]
+    }
+    if (dir === "mr") {
+        items[targetIndex].width += dx
+        return [...items]
+    }
+    if (dir === "ml") {
+        items[targetIndex].x += dx
+        items[targetIndex].width += -1 * dx
+        return [...items]
+    }
+    return items
 }

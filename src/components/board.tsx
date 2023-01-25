@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
-import { getBoundingBox, getRandomID, isWithinItem, moveItem } from "../lib/utils";
+import { getBoundingBox, getRandomID, isWithinItem, isWithinResizeArea, moveItem, resizeSelected } from "../lib/utils";
 import { CurrentState } from "../types";
 
 export default function Canvas() {
-    const [state, setState] = useState({ drawInProcess: false, drew: false, startRectX: 0, startRectY: 0, moveStart: false })
+    const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, startRectX: 0, startRectY: 0, moveStart: false })
     const [mainState, updateMainState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
@@ -230,17 +230,23 @@ export default function Canvas() {
                 drawInProcess: true, startRectX: event.pageX - rect.left,
                 startRectY: event.pageY - rect.top
             });
-        } else if (mainState.selectedItemID !== "" && selectedItem !== null) {
+        } else if (selectedItem !== null) {
             let px = event.pageX as number
             let py = event.pageY as number
-            if (isWithinItem(px, py, selectedItem)) {
+            const resizeDir = isWithinResizeArea(px, py, selectedItem)
+            if (resizeDir) {
+                setState({
+                    ...state, startRectX: px,
+                    startRectY: py,
+                    resizeDir: resizeDir
+                })
+            } else if (isWithinItem(px, py, selectedItem)) {
                 setState({
                     ...state, moveStart: true, startRectX: px,
                     startRectY: py
                 })
             }
         }
-
     }
 
     useEffect(() => {
@@ -265,6 +271,12 @@ export default function Canvas() {
             if (updatedItems) {
                 setItems([...updatedItems])
             }
+        } else if (state.resizeDir && selectedItem) {
+            let px = event.pageX as number
+            let py = event.pageY as number
+            setState({ ...state, startRectX: px, startRectY: py })
+            const updatedItems = resizeSelected(state.resizeDir, px - state.startRectX, py - state.startRectY, selectedItem, items)
+            setItems(updatedItems)
         }
     }
 
@@ -336,7 +348,7 @@ export default function Canvas() {
         if (state.drew && mainState.tool !== "select") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
-        setState({ ...state, drawInProcess: false, moveStart: false, drew: false })
+        setState({ ...state, drawInProcess: false, moveStart: false, drew: false, resizeDir: "" })
     }
 
     return (

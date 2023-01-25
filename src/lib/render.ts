@@ -202,5 +202,20 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
+    switch (bounds.type) {
+        case "rectangle":
+        case "ellipse":
+        case "diamond":
+            for (let p of Object.values(bounds.resizeAreas)) {
+                ctx.strokeRect(p.x, p.y, p.width, p.height)
+            }
+            break;
+        case "line":
+        case "arrow":
+
+            break;
+        default:
+            break;
+    }
     ctx.restore()
 }

@@ -78,7 +78,16 @@ export interface Image extends Omit<Box, "stroke"> {
 
 export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image
 
-export type BoundingBox = { x: number, y: number, width: number, height: number }
+type RectBounds = { x: number, y: number, width: number, height: number }
+
+export type BoundingBox = RectBounds & {
+    type: "rectangle" | "ellipse" | "diamond",
+    resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, mt: RectBounds, mr: RectBounds, mb: RectBounds, ml: RectBounds }
+} |
+    RectBounds & {
+        type: "arrow" | "line",
+        curveControl: Point
+    }
 
 type BoxSelection = {
     type: "rectangle" | "ellipse" | "diamond";

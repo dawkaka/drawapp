@@ -17,16 +17,41 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
         case "rectangle":
         case "ellipse":
         case "diamond":
+            let sx = item.width < 0 ? item.x + item.strokeWidth + 1 : item.x - item.strokeWidth - 1
+            let sy = item.height < 0 ? item.y + item.strokeWidth + 1 : item.y - item.strokeWidth - 1
+            let ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 : item.width + item.strokeWidth * 2 + 2
+            let ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 : item.height + item.strokeWidth * 2 + 2
+            let ptl = { x: sx, y: sy, width: -10, height: -10 }
+            let ptr = { x: sx + ex, y: sy, width: 10, height: -10 }
+            let pbl = { x: sx, y: sy + ey, width: -10, height: 10 }
+            let pbr = { x: sx + ex, y: sy + ey, width: 10, height: 10 }
+            let mt = { x: sx + 5 + ex / 2, y: sy, width: -10, height: -10 }
+            let mr = { x: sx + ex, y: sy + 5 + ey / 2, width: 10, height: -10 }
+            let mb = { x: sx - 5 + ex / 2, y: sy + ey, width: 10, height: 10 }
+            let ml = { x: sx, y: sy + 5 + ey / 2, width: -10, height: -10 }
+
             return {
-                x: item.width < 0 ? item.x + item.strokeWidth + 1 : item.x - item.strokeWidth - 1,
-                y: item.height < 0 ? item.y + item.strokeWidth + 1 : item.y - item.strokeWidth - 1,
-                width: item.width < 0 ? item.width - item.strokeWidth * 2 - 2 : item.width + item.strokeWidth * 2 + 2,
-                height: item.height < 0 ? item.height - item.strokeWidth * 2 - 2 : item.height + item.strokeWidth * 2 + 2
+                type: item.type,
+                x: sx,
+                y: sy,
+                width: ex,
+                height: ey,
+                resizeAreas: {
+                    ptl, ptr, pbl, pbr,
+                    mt, mr, mb, ml
+                }
             }
         case "line":
         case "arrow":
             if (item.points.length > 1) {
-                return { x: item.x, y: item.y, width: item.points[1].x, height: item.points[1].y }
+                return {
+                    type: item.type,
+                    x: item.x,
+                    y: item.y,
+                    width: item.points[1].x,
+                    height: item.points[1].y,
+                    curveControl: { x: item.points[1].x / 2, y: item.points[1].y / 2 }
+                }
             }
         default:
             break;

@@ -212,7 +212,9 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             break;
         case "line":
         case "arrow":
-
+            ctx.strokeRect(bounds.x - 5, bounds.y - 5, 10, 10)
+            ctx.strokeRect(bounds.x + bounds.width - 5, bounds.y + bounds.height - 5, 10, 10)
+            ctx.strokeRect(bounds.curveControl.x - 5, bounds.curveControl.y - 5, 10, 10)
             break;
         default:
             break;

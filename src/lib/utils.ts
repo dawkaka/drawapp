@@ -50,7 +50,7 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                     y: item.y,
                     width: item.points[1].x,
                     height: item.points[1].y,
-                    curveControl: { x: item.points[1].x / 2, y: item.points[1].y / 2 }
+                    curveControl: { x: item.x + item.points[1].x / 2, y: item.y + item.points[1].y / 2 }
                 }
             }
         default:

@@ -88,7 +88,7 @@ function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
     const points = item.points
     ctx.translate(item.x, item.y)
     ctx.moveTo(0, 0)
-    ctx.lineTo(points[1].x, points[1].y)
+    ctx.quadraticCurveTo(points[0].x, points[0].y, points[1].x, points[1].y)
     ctx.stroke()
     ctx.restore()
 }
@@ -175,7 +175,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     const points = item.points
     ctx.translate(item.x, item.y)
     ctx.moveTo(0, 0)
-    ctx.lineTo(points[1].x, points[1].y)
+    ctx.quadraticCurveTo(points[0].x, points[0].y, points[1].x, points[1].y)
     ctx.save();
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);

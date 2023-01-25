@@ -50,7 +50,7 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                     y: item.y,
                     width: item.points[1].x,
                     height: item.points[1].y,
-                    curveControl: { x: item.x + item.points[1].x / 2, y: item.y + item.points[1].y / 2 }
+                    curveControl: { x: item.x + item.points[0].x, y: item.y + item.points[0].y }
                 }
             }
         default:
@@ -117,7 +117,6 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
                 if (pointerX > bounds.x - 5 && pointerX < bounds.x + 10 && pointerY > bounds.y - 5 && pointerY < bounds.y + 10) {
                     return "ps"
                 }
-                console.log(pointerX - bounds.x, bounds.width, pointerY - bounds.y, bounds.height)
                 if (
                     pointerX - bounds.x > bounds.width - 5 &&
                     pointerX - bounds.x < bounds.width + 10 &&
@@ -125,6 +124,15 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
                     pointerY - bounds.y < bounds.height + 10
                 ) {
                     return "pe"
+                }
+
+                if (
+                    pointerX > bounds.curveControl.x - 5 &&
+                    pointerX < bounds.curveControl.x + 10 &&
+                    pointerY > bounds.curveControl.y - 5 &&
+                    pointerY < bounds.curveControl.y + 10
+                ) {
+                    return "pc"
                 }
                 break
             default:
@@ -217,8 +225,13 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             items[targetIndex].x += dx
             items[targetIndex].y += dy
             if (item.points.length > 1) {
+                const { x, y } = item.points[1]
                 item.points[1].x += -dx
                 item.points[1].y += -dy
+                if (item.points[0].x === x / 2 && item.points[0].y === y / 2) {
+                    item.points[0].x += -dx / 2
+                    item.points[0].y += -dy / 2
+                }
             }
         }
         return [...items]
@@ -228,11 +241,27 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
         let item = items[targetIndex]
         if (item.type === "arrow" || item.type === "line") {
             if (item.points.length > 1) {
+                const { x, y } = item.points[1]
                 item.points[1].x += dx
                 item.points[1].y += dy
+                if (item.points[0].x === x / 2 && item.points[0].y === y / 2) {
+                    item.points[0].x += dx / 2
+                    item.points[0].y += dy / 2
+                }
             }
         }
         return [...items]
     }
+
+    // if (dir === "pc") {
+    //     let item = items[targetIndex]
+    //     if (item.type === "arrow" || item.type === "line") {
+    //         if (item.points.length > 1) {
+    //             item.points[0].x += dx
+    //             item.points[0].y += dy
+    //         }
+    //     }
+    //     return [...items]
+    // }
     return items
 }

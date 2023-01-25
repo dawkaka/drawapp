@@ -132,10 +132,15 @@ export default function Canvas() {
                         line: {
                             ...current.line,
                             id: getRandomID(),
-                            points: [{ x: 0, y: 0 }, {
-                                x: event.pageX - rect.left - current.line.x,
-                                y: event.pageY - rect.top - current.line.y,
-                            }],
+                            points: [
+                                {
+                                    x: (event.pageX - rect.left - current.line.x) / 2,
+                                    y: (event.pageY - rect.top - current.line.y) / 2
+                                },
+                                {
+                                    x: event.pageX - rect.left - current.line.x,
+                                    y: event.pageY - rect.top - current.line.y,
+                                }],
                         }
                     })
                     break;
@@ -191,10 +196,16 @@ export default function Canvas() {
                         arrow: {
                             ...current.arrow,
                             id: getRandomID(),
-                            points: [{ x: 0, y: 0 }, {
-                                x: event.pageX - rect.left - current.arrow.x,
-                                y: event.pageY - rect.top - current.arrow.y,
-                            }],
+                            points: [
+                                {
+                                    x: (event.pageX - rect.left - current.arrow.x) / 2,
+                                    y: (event.pageY - rect.top - current.arrow.y) / 2
+                                },
+                                {
+                                    x: event.pageX - rect.left - current.arrow.x,
+                                    y: event.pageY - rect.top - current.arrow.y,
+                                }
+                            ],
                         }
                     })
                     break;

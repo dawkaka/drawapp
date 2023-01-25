@@ -114,6 +114,19 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
                 break;
             case "arrow":
             case "line":
+                if (pointerX > bounds.x - 5 && pointerX < bounds.x + 10 && pointerY > bounds.y - 5 && pointerY < bounds.y + 10) {
+                    return "ps"
+                }
+                console.log(pointerX - bounds.x, bounds.width, pointerY - bounds.y, bounds.height)
+                if (
+                    pointerX - bounds.x > bounds.width - 5 &&
+                    pointerX - bounds.x < bounds.width + 10 &&
+                    pointerY - bounds.y > bounds.height - 5 &&
+                    pointerY - bounds.y < bounds.height + 10
+                ) {
+                    return "pe"
+                }
+                break
             default:
                 break;
         }
@@ -196,6 +209,29 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
     if (dir === "ml") {
         items[targetIndex].x += dx
         items[targetIndex].width += -1 * dx
+        return [...items]
+    }
+    if (dir === "ps") {
+        let item = items[targetIndex]
+        if (item.type === "arrow" || item.type === "line") {
+            items[targetIndex].x += dx
+            items[targetIndex].y += dy
+            if (item.points.length > 1) {
+                item.points[1].x += -dx
+                item.points[1].y += -dy
+            }
+        }
+        return [...items]
+    }
+
+    if (dir === "pe") {
+        let item = items[targetIndex]
+        if (item.type === "arrow" || item.type === "line") {
+            if (item.points.length > 1) {
+                item.points[1].x += dx
+                item.points[1].y += dy
+            }
+        }
         return [...items]
     }
     return items

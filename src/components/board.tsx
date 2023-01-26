@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
-import { getBoundingBox, getRandomID, isWithinItem, isWithinResizeArea, moveItem, resizeSelected } from "../lib/utils";
+import { getBoundingBox, getItemEnclosingPoint, getRandomID, isWithinItem, isWithinResizeArea, moveItem, resizeSelected } from "../lib/utils";
 import { CurrentState } from "../types";
 
 export default function Canvas() {
@@ -323,8 +323,6 @@ export default function Canvas() {
 
 
     function handleMouseUp(event: any) {
-        let c = document.getElementById("canvas") as HTMLCanvasElement
-        let ctx = c.getContext('2d')!;
         let itemID = ""
         if (current) {
             if (mainState.tool === "pencil") {
@@ -362,12 +360,20 @@ export default function Canvas() {
         setState({ ...state, drawInProcess: false, moveStart: false, drew: false, resizeDir: "" })
     }
 
+    function handleClick(event: any) {
+        let c = document.getElementById("canvas") as HTMLCanvasElement
+        let ctx = c.getContext('2d')!;
+
+        updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
+
+    }
     return (
         <canvas
             id="canvas"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
+            onDoubleClick={handleClick}
         >
         </canvas>
     )

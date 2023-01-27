@@ -11,7 +11,10 @@ export interface AppState {
     fillColor: string,
     imageBlob: string,
     opacity: number,
-    selectedItemID: string
+    selectedItemID: string,
+    fontFamily: string,
+    fontSize: number,
+    textStyle: "fill" | "stroke"
 }
 
 export type Point = {
@@ -76,7 +79,15 @@ export interface Image extends Omit<Box, "stroke"> {
     data: string
 }
 
-export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image
+export interface Text extends CanvasItemConstants {
+    type: "text"
+    text: string,
+    textStyle: "fill" | "stroke",
+    fontFamily: string,
+    fontSize: number
+}
+
+export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image | Text
 
 type RectBounds = { x: number, y: number, width: number, height: number }
 
@@ -113,6 +124,11 @@ export type SelectedItem = BoxSelection | LinearSelection
 export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "eraser" | "pencil"
 
 
-export interface CurrentState { line: Line, pencil: Pencil, rectangle: Rectangle, diamond: Diamond, ellipse: Ellipse, arrow: Arrow, image: Image }
+export interface CurrentState {
+    line: Line, pencil: Pencil, rectangle: Rectangle,
+    diamond: Diamond, ellipse: Ellipse,
+    arrow: Arrow, image: Image,
+    text: Text
+}
 
 export type LayerMoves = "to-back" | "step-backward" | "to-front" | "step-forward"

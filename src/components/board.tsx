@@ -121,6 +121,19 @@ export default function Canvas() {
                         })
                     }
                     break;
+                case "text":
+                    setCurrent({
+                        ...current,
+                        text: {
+                            ...current.text,
+                            x: event.pageX - rect.left,
+                            y: event.pageY - rect.top,
+                            opacity: mainState.opacity,
+                            fontFamily: mainState.fontFamily,
+                            fontSize: mainState.fontSize,
+                            textStyle: mainState.textStyle,
+                        }
+                    })
                 default:
                     break;
             }
@@ -324,6 +337,7 @@ export default function Canvas() {
 
     function handleMouseUp(event: any) {
         let itemID = ""
+        if (mainState.tool === "text") return
         if (current) {
             if (mainState.tool === "pencil") {
                 setItems([...items, current.pencil])
@@ -367,13 +381,30 @@ export default function Canvas() {
         updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
 
     }
+    function handleText(event: any) {
+        console.log("here")
+        if (mainState.tool === "text") {
+            setCurrent({
+                ...current,
+                text: {
+                    ...current.text,
+                    text: current.text.text += "ha"
+                }
+            })
+        }
+    }
+
+    console.log(current.text)
     return (
         <canvas
+            className="appearance-none outline-0"
             id="canvas"
+            tabIndex={0}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onDoubleClick={handleClick}
+            onKeyDown={handleText}
         >
         </canvas>
     )

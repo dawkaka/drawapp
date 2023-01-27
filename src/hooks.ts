@@ -98,6 +98,19 @@ export function useInitialState() {
             fillStyle: mainState.fillColor,
             edgesType: "sharp",
             opacity: mainState.opacity,
+        },
+        text: {
+            id: "",
+            opacity: mainState.opacity,
+            type: "text",
+            width: 0,
+            height: 0,
+            x: 0,
+            y: 0,
+            text: "",
+            textStyle: mainState.textStyle,
+            fontFamily: mainState.fontFamily,
+            fontSize: mainState.fontSize
         }
     }
     return initialState

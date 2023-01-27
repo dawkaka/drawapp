@@ -9,7 +9,10 @@ export const AppState = atom<AppStateType>({
     opacity: 1,
     fillColor: "transparent",
     imageBlob: "",
-    selectedItemID: ""
+    selectedItemID: "",
+    fontFamily: "Arial",
+    fontSize: 25,
+    textStyle: "fill"
 })
 
 export const AppDrawings = atom<CanvasItem[]>([])

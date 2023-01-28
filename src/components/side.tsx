@@ -10,7 +10,7 @@ export default function Side() {
     const [{ tool }] = useAtom(AppState)
     return (
         <aside
-            className="bg-neutral-50 fixed top-0 left-0 bottom-0 border-r border-neutral-200 overflow-y-auto transition-all"
+            className="bg-neutral-50 fixed top-0 left-0 bottom-0 border-r border-neutral-200 overflow-y-auto transition-all z-10"
             style={{
                 width: closed ? 0 : "300px"
             }}

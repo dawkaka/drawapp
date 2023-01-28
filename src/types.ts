@@ -82,6 +82,9 @@ export interface Image extends Omit<Box, "stroke"> {
 export interface Text extends CanvasItemConstants {
     type: "text"
     text: string,
+    strokeWidth: StrokeWidth;
+    strokeStyle: string;
+    fillStyle: string;
     textStyle: "fill" | "stroke",
     fontFamily: string,
     fontSize: number

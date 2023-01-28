@@ -132,6 +132,9 @@ export default function Canvas() {
                             fontFamily: mainState.fontFamily,
                             fontSize: mainState.fontSize,
                             textStyle: mainState.textStyle,
+                            strokeWidth: mainState.strokeWidth,
+                            strokeStyle: mainState.strokeColor,
+                            fillStyle: mainState.fillColor,
                         }
                     })
                 default:
@@ -278,7 +281,7 @@ export default function Canvas() {
         let ctx = c!.getContext("2d")!;
         ctx.canvas.width = window.devicePixelRatio * window.innerWidth
         ctx.canvas.height = window.devicePixelRatio * window.innerHeight
-        renderElements(ctx, JSON.parse(localStorage.getItem("canvasItems") || "[]"))
+        setItems(JSON.parse(localStorage.getItem("canvasItems") || "[]"))
     }, [])
 
     function handleMouseMove(event: any) {
@@ -294,6 +297,7 @@ export default function Canvas() {
             const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items)
             if (updatedItems) {
                 setItems([...updatedItems])
+
             }
         } else if (state.resizeDir && selectedItem) {
             let px = event.pageX as number
@@ -303,7 +307,7 @@ export default function Canvas() {
             setItems(updatedItems)
         }
     }
-
+    console.log(items)
 
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
@@ -311,7 +315,9 @@ export default function Canvas() {
         ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
         if (items.length > 0) {
             renderElements(ctx, items)
+            localStorage.setItem("canvasItems", JSON.stringify(items))
         }
+
         if (mainState.tool === "pencil") {
             renderCurrentDrawing(ctx, current.pencil)
         } else if (mainState.tool === "line") {
@@ -324,6 +330,8 @@ export default function Canvas() {
             renderCurrentDrawing(ctx, current.ellipse)
         } else if (mainState.tool === "arrow") {
             renderCurrentDrawing(ctx, current.arrow)
+        } else if (mainState.tool === "text") {
+            renderCurrentDrawing(ctx, current.text)
         }
 
         if (selectedItem) {
@@ -337,36 +345,31 @@ export default function Canvas() {
 
     function handleMouseUp(event: any) {
         let itemID = ""
-        if (mainState.tool === "text") return
         if (current) {
             if (mainState.tool === "pencil") {
                 setItems([...items, current.pencil])
                 itemID = current.pencil.id
-                localStorage.setItem("canvasItems", JSON.stringify([...items, current.pencil]))
             } else if (mainState.tool === "line") {
-                setItems([...items, current.line])
-                localStorage.setItem("canvasItems", JSON.stringify([...items, current.line]))
                 itemID = current.line.id
-
+                if (current.line.id !== "") {
+                    setItems([...items, current.line])
+                }
             } else if (mainState.tool === "rectangle") {
                 setItems([...items, current.rectangle])
-                localStorage.setItem("canvasItems", JSON.stringify([...items, current.rectangle]))
                 itemID = current.rectangle.id
             } else if (mainState.tool === "diamond") {
                 setItems([...items, current.diamond])
                 itemID = current.diamond.id
-                localStorage.setItem("canvasItems", JSON.stringify([...items, current.diamond]))
-
             } else if (mainState.tool === "ellipse") {
                 itemID = current.ellipse.id
                 setItems([...items, current.ellipse])
-                localStorage.setItem("canvasItems", JSON.stringify([...items, current.ellipse]))
             } else if (mainState.tool === "arrow") {
                 itemID = current.arrow.id
                 setItems([...items, current.arrow])
-                localStorage.setItem("canvasItems", JSON.stringify([...items, current.arrow]))
             }
-            setCurrent(intialStates)
+            if (mainState.tool !== "text") {
+                setCurrent(intialStates)
+            }
         }
         if (state.drew && mainState.tool !== "select") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
@@ -377,35 +380,79 @@ export default function Canvas() {
     function handleClick(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
-
         updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
-
-    }
-    function handleText(event: any) {
-        console.log("here")
-        if (mainState.tool === "text") {
-            setCurrent({
-                ...current,
-                text: {
-                    ...current.text,
-                    text: current.text.text += "ha"
-                }
-            })
-        }
     }
 
-    console.log(current.text)
+    // function handleText(event: React.KeyboardEvent<HTMLCanvasElement>) {
+    //     if (mainState.tool === "text") {
+    //         if (event.key === "Shift"
+    //             || event.key === "Control"
+    //             || event.key === "CapsLock"
+    //             || event.key === "Alt"
+    //             || event.key === "Escape"
+    //             || event.key === "ArrowLeft"
+    //             || event.key === "ArrowRight"
+    //             || event.key === "ArrowUp"
+    //             || event.key === "ArrowDown") return;
+    //         let text = current.text.text
+    //         if (event.key === "Backspace") {
+    //             text = text.substring(0, text.length - 1)
+    //         } else if (event.key === "Enter") {
+    //             text += "\n"
+    //         } else {
+    //             text += event.key
+    //         }
+    //         setCurrent({
+    //             ...current,
+    //             text: {
+    //                 ...current.text,
+    //                 text
+    //             }
+    //         })
+    //     }
+    // }
+
     return (
-        <canvas
-            className="appearance-none outline-0"
-            id="canvas"
-            tabIndex={0}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onDoubleClick={handleClick}
-            onKeyDown={handleText}
-        >
-        </canvas>
+        <main className="relative">
+            {mainState.tool === "text" ? <div
+                className="absolute outline-0"
+                onBlur={(e) => {
+                    const target = e.target as HTMLInputElement
+                    const itemID = getRandomID()
+                    console.log(target.innerText)
+                    const textItem = {
+                        ...current.text,
+                        id: itemID,
+                        text: target.innerText
+                    }
+                    setCurrent(prevState => ({
+                        ...prevState,
+                        text: textItem
+                    }))
+                    setItems([...items, textItem])
+                    updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
+                }}
+                style={{
+                    top: current.text.y + 3 - current.text.fontSize / 2,
+                    left: current.text.x,
+                    fontFamily: current.text.fontFamily,
+                    fontSize: current.text.fontSize
+                }}
+                contentEditable
+            >Write Text</div>
+                : null
+            }
+            <canvas
+                className="appearance-none outline-0"
+                id="canvas"
+                tabIndex={0}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onClick={handleClick}
+            >
+            </canvas>
+        </main>
+
     )
 }

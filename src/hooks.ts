@@ -110,7 +110,10 @@ export function useInitialState() {
             text: "",
             textStyle: mainState.textStyle,
             fontFamily: mainState.fontFamily,
-            fontSize: mainState.fontSize
+            fontSize: mainState.fontSize,
+            strokeWidth: mainState.strokeWidth,
+            strokeStyle: mainState.strokeColor,
+            fillStyle: mainState.fillColor,
         }
     }
     return initialState

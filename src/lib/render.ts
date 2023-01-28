@@ -1,4 +1,4 @@
-import { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle } from "../types";
+import { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle, Text } from "../types";
 
 export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: CanvasItem) {
     switch (item.type) {
@@ -20,6 +20,8 @@ export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: Canvas
         case "arrow":
             arrowDraw(ctx, item)
             break;
+        case "text":
+            textDraw(ctx, item)
         default:
             break;
     }
@@ -47,6 +49,8 @@ export function renderElements(ctx: CanvasRenderingContext2D, items: CanvasItem[
             case "arrow":
                 arrowDraw(ctx, item)
                 break;
+            case "text":
+                textDraw(ctx, item)
             default:
                 break;
         }
@@ -219,5 +223,17 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
         default:
             break;
     }
+    ctx.restore()
+}
+
+function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
+    ctx.save()
+    ctx.lineWidth = item.strokeWidth
+    ctx.strokeStyle = item.strokeStyle
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    ctx.globalAlpha = item.opacity
+    ctx.font = `${item.fontSize}px ${item.fontFamily}`
+    ctx.fillText(item.text, item.x, item.y + item.fontSize / 2)
     ctx.restore()
 }

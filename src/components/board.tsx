@@ -4,7 +4,7 @@ import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
 import { getBoundingBox, getItemEnclosingPoint, getRandomID, isWithinItem, isWithinResizeArea, moveItem, resizeSelected } from "../lib/utils";
-import { CurrentState } from "../types";
+import { CurrentState, Text } from "../types";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, startRectX: 0, startRectY: 0, moveStart: false })
@@ -417,11 +417,22 @@ export default function Canvas() {
                 onBlur={(e) => {
                     const target = e.target as HTMLInputElement
                     const itemID = getRandomID()
-                    const textItem = {
+                    const textLines = target.innerText.split("\n")
+                    let max = 0
+                    for (let line of textLines) {
+                        if (line.length > max) {
+                            max = line.length
+                        }
+                    }
+
+                    const textItem: Text = {
                         ...current.text,
                         id: itemID,
-                        text: target.innerText
+                        text: target.innerText,
+                        width: max * current.text.fontSize,
+                        height: textLines.length * current.text.fontSize
                     }
+                    console.log(textItem)
                     setCurrent(prevState => ({
                         ...prevState,
                         text: textItem
@@ -429,6 +440,7 @@ export default function Canvas() {
                     setItems([...items, textItem])
                     updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
                 }}
+                tabIndex={0}
                 style={{
                     top: current.text.y + 3 - current.text.fontSize / 2,
                     left: current.text.x,

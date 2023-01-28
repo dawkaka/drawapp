@@ -94,7 +94,7 @@ export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow |
 
 type RectBounds = { x: number, y: number, width: number, height: number }
 
-export type BoundingBox = RectBounds & {
+export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
     type: "rectangle" | "ellipse" | "diamond",
     resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, mt: RectBounds, mr: RectBounds, mb: RectBounds, ml: RectBounds }
 } |
@@ -103,8 +103,9 @@ export type BoundingBox = RectBounds & {
         curveControl: Point
     }
 
+
 type BoxSelection = {
-    type: "rectangle" | "ellipse" | "diamond";
+    type: "rectangle" | "ellipse" | "diamond" | "text";
     id: string;
     x: number;
     y: number;

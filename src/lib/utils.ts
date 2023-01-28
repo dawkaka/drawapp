@@ -53,6 +53,15 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                     curveControl: { x: item.x + item.points[0].x, y: item.y + item.points[0].y }
                 }
             }
+            break;
+        case "text":
+            return {
+                type: "text",
+                x: item.x,
+                y: item.y,
+                width: item.width,
+                height: item.height
+            }
         default:
             break;
     }
@@ -84,6 +93,7 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
             case "rectangle":
             case "ellipse":
             case "diamond":
+            case "text":
                 if (pointerX < sx || pointerY < sy) return false
                 if (pointerX > sx + ex || pointerY > sy + ey) return false
                 return true
@@ -295,8 +305,23 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
                         { x: item.x - 15, y: item.y + item.height }
                     )
                 ) {
+
                     return item.id
                 }
+                break;
+            case "text":
+                if (
+                    isPointInsidePolygon(pointerX, pointerY,
+                        { x: item.x, y: item.y },
+                        { x: item.x + item.width, y: item.y },
+                        { x: item.x + item.width, y: item.y + item.height },
+                        { x: item.x, y: item.y + item.height }
+                    )
+                ) {
+
+                    return item.id
+                }
+
             default:
                 break;
         }

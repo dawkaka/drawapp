@@ -205,21 +205,26 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
     ctx.strokeStyle = "darkorange"
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
-    ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
     switch (bounds.type) {
         case "rectangle":
         case "ellipse":
         case "diamond":
+            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
             for (let p of Object.values(bounds.resizeAreas)) {
                 ctx.strokeRect(p.x, p.y, p.width, p.height)
             }
             break;
         case "line":
         case "arrow":
+            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
             ctx.strokeRect(bounds.x - 5, bounds.y - 5, 10, 10)
             ctx.strokeRect(bounds.x + bounds.width - 5, bounds.y + bounds.height - 5, 10, 10)
             ctx.strokeRect(bounds.curveControl.x - 5, bounds.curveControl.y - 5, 10, 10)
             break;
+        case "text":
+            ctx.strokeStyle = "red"
+            ctx.strokeRect(bounds.x, bounds.y - 10, bounds.width, bounds.height)
+            break
         default:
             break;
     }

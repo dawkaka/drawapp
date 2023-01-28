@@ -5,12 +5,12 @@ export const AppState = atom<AppStateType>({
     strokeColor: "black",
     strokeWidth: 3,
     stroke: "solid",
-    tool: "line",
+    tool: "select",
     opacity: 1,
     fillColor: "transparent",
     imageBlob: "",
     selectedItemID: "",
-    fontFamily: "Arial",
+    fontFamily: "Kalam",
     fontSize: 25,
     textStyle: "fill"
 })

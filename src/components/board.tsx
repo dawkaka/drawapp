@@ -416,28 +416,32 @@ export default function Canvas() {
                 className="absolute outline-0"
                 onBlur={(e) => {
                     const target = e.target as HTMLInputElement
+                    let c = document.getElementById("canvas") as HTMLCanvasElement
+                    let ctx = c.getContext('2d')!;
+                    ctx.save()
+                    ctx.font = `bold ${current.text.fontSize}px ${current.text.fontFamily}`
                     const itemID = getRandomID()
                     const textLines = target.innerText.split("\n")
-                    let max = 0
+                    let max = ""
                     for (let line of textLines) {
-                        if (line.length > max) {
-                            max = line.length
+                        if (line.length > max.length) {
+                            max = line
                         }
                     }
-
                     const textItem: Text = {
                         ...current.text,
                         id: itemID,
                         text: target.innerText,
-                        width: max * current.text.fontSize,
+                        width: ctx.measureText(max).width,
                         height: textLines.length * current.text.fontSize
                     }
-                    console.log(textItem)
+                    ctx.restore()
                     setCurrent(prevState => ({
                         ...prevState,
                         text: textItem
                     }))
                     setItems([...items, textItem])
+                    setCurrent(intialStates)
                     updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
                 }}
                 tabIndex={0}
@@ -445,7 +449,9 @@ export default function Canvas() {
                     top: current.text.y + 3 - current.text.fontSize / 2,
                     left: current.text.x,
                     fontFamily: current.text.fontFamily,
-                    fontSize: current.text.fontSize
+                    fontSize: current.text.fontSize,
+                    color: current.text.strokeStyle,
+                    fontWeight: "bold",
                 }}
                 contentEditable
             >Write Text</div>

@@ -25,21 +25,22 @@ export function TextOptions() {
 
 
 function FontSize() {
-    const [selected, setSelected] = useState("medium")
+    const [mainState, setMainState] = useAtom(AppState)
+
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font size</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={selected} value="small" onClick={setSelected}>
+                <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
                     <span>S</span>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="medium" onClick={setSelected}>
+                <OptionContainer selected={String(mainState.fontSize)} value="25" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
                     <span>M</span>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="large" onClick={setSelected}>
+                <OptionContainer selected={String(mainState.fontSize)} value="30" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
                     <span>L</span>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="xlarge" onClick={setSelected}>
+                <OptionContainer selected={String(mainState.fontSize)} value="48" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
                     <span>XL</span>
                 </OptionContainer>
 
@@ -49,12 +50,12 @@ function FontSize() {
 }
 
 function FontFamily() {
-    const [selected, setSelected] = useState("hand")
+    const [mainState, setMainState] = useAtom(AppState)
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font family</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={selected} value="hand" onClick={setSelected}>
+                <OptionContainer selected={mainState.fontFamily} value="Kalam" onClick={(val: string) => setMainState({ ...mainState, fontFamily: val })}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g strokeWidth="1.25">
                             <path clipRule="evenodd" d="m7.643 15.69 7.774-7.773a2.357 2.357 0 1 0-3.334-3.334L4.31 12.357a3.333 3.333 0 0 0-.977 2.357v1.953h1.953c.884 0 1.732-.352 2.357-.977Z">
@@ -63,11 +64,11 @@ function FontFamily() {
                         </g>
                     </svg>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="normal" onClick={setSelected}>
+                <OptionContainer selected={mainState.fontFamily} value="Arial" onClick={(val: string) => setMainState({ ...mainState, fontFamily: val })}>
                     <span>A</span>
                 </OptionContainer>
 
-                <OptionContainer selected={selected} value="code" onClick={setSelected}>
+                <OptionContainer selected={mainState.fontFamily} value="Sans Serif" onClick={(val: string) => setMainState({ ...mainState, fontFamily: val })}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g clipPath="url(#a)" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M5.833 6.667 2.5 10l3.333 3.333M14.167 6.667 17.5 10l-3.333 3.333M11.667 3.333 8.333 16.667"></path>
@@ -75,7 +76,7 @@ function FontFamily() {
                         <defs><clipPath id="a"><path fill="#fff" d="M0 0h20v20H0z"></path></clipPath></defs></svg>
                 </OptionContainer>
             </div>
-        </fieldset>
+        </fieldset >
     )
 }
 

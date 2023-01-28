@@ -222,7 +222,6 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             ctx.strokeRect(bounds.curveControl.x - 5, bounds.curveControl.y - 5, 10, 10)
             break;
         case "text":
-            ctx.strokeStyle = "red"
             ctx.strokeRect(bounds.x, bounds.y - 10, bounds.width, bounds.height)
             break
         default:
@@ -237,8 +236,9 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     ctx.strokeStyle = item.strokeStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
+    ctx.fillStyle = item.strokeStyle
     ctx.globalAlpha = item.opacity
-    ctx.font = `${item.fontSize}px ${item.fontFamily}`
+    ctx.font = `bold ${item.fontSize}px ${item.fontFamily}`
     ctx.fillText(item.text, item.x, item.y + item.fontSize / 2)
     ctx.restore()
 }

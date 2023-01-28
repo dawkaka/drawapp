@@ -307,8 +307,6 @@ export default function Canvas() {
             setItems(updatedItems)
         }
     }
-    console.log(items)
-
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
@@ -419,7 +417,6 @@ export default function Canvas() {
                 onBlur={(e) => {
                     const target = e.target as HTMLInputElement
                     const itemID = getRandomID()
-                    console.log(target.innerText)
                     const textItem = {
                         ...current.text,
                         id: itemID,

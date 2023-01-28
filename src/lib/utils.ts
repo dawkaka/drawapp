@@ -57,10 +57,10 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
         case "text":
             return {
                 type: "text",
-                x: item.x,
-                y: item.y,
-                width: item.width,
-                height: item.height
+                x: item.x - 10,
+                y: item.y - 10,
+                width: item.width + 20,
+                height: item.height + 20
             }
         default:
             break;
@@ -355,4 +355,18 @@ function isPointInsidePolygon(cx: number, cy: number, p1: Point, p2: Point, p3: 
         }
     }
     return intersections % 2 != 0;
+}
+
+
+export function getSelectedItem(id: string, items: CanvasItem[]): CanvasItem | undefined {
+    return items.find(item => item.id === id)
+}
+
+export function updateSingleItem(id: string, newVAlue: CanvasItem, items: CanvasItem[]): CanvasItem[] {
+    const targetIndex = items.findIndex(item => item.id === id)
+    if (targetIndex >= 0) {
+        items[targetIndex] = newVAlue
+        return [...items]
+    }
+    return items
 }

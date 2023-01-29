@@ -67,8 +67,8 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                 type: item.type,
                 x: item.x,
                 y: item.y,
-                width: 500,
-                height: 500,
+                width: item.width,
+                height: item.height,
                 resizeAreas: {
                     ptl: { x: item.x - 10, y: item.y - 10, width: 10, height: 10 },
                     ptr: { x: item.x + item.width, y: item.y - 10, width: 10, height: 10 },
@@ -108,6 +108,7 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
             case "ellipse":
             case "diamond":
             case "text":
+            case "image":
                 if (pointerX < sx || pointerY < sy) return false
                 if (pointerX > sx + ex || pointerY > sy + ey) return false
                 return true
@@ -115,10 +116,6 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
             case "line":
                 if (pointerX < sx || pointerY < sy) return false
                 if (pointerX > sx + ex || pointerY > sy + ey) return false
-                return true
-            case "image":
-                if (pointerX < item.x || pointerY < item.y) return false
-                if (pointerX > item.width + item.x || pointerY > item.height + item.y) return false
                 return true
             default:
                 break;
@@ -134,6 +131,7 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
             case "rectangle":
             case "ellipse":
             case "diamond":
+            case "image":
                 for (const [key, val] of Object.entries(bounds.resizeAreas)) {
                     if (pointerX > val.x && pointerY > val.y && pointerX < val.x + 10 && pointerY < val.y + 10) {
                         return key

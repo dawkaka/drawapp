@@ -93,10 +93,6 @@ export function useInitialState() {
             x: 0,
             y: 0,
             data: mainState.imageBlob,
-            strokeStyle: mainState.strokeColor,
-            strokeWidth: mainState.strokeWidth,
-            fillStyle: mainState.fillColor,
-            edgesType: "sharp",
             opacity: mainState.opacity,
         },
         text: {

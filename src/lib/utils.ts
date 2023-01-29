@@ -56,11 +56,25 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
             break;
         case "text":
             return {
-                type: "text",
+                type: item.type,
                 x: item.x - 10,
                 y: item.y - 10,
                 width: item.width + 20,
                 height: item.height + 20
+            }
+        case "image":
+            return {
+                type: item.type,
+                x: item.x,
+                y: item.y,
+                width: 500,
+                height: 500,
+                resizeAreas: {
+                    ptl: { x: item.x - 10, y: item.y - 10, width: 10, height: 10 },
+                    ptr: { x: item.x + item.width, y: item.y - 10, width: 10, height: 10 },
+                    pbl: { x: item.x - 10, y: item.height + item.y, width: 10, height: 10 },
+                    pbr: { x: item.x + item.width, y: item.height + item.y, width: 10, height: 10 }
+                }
             }
         default:
             break;
@@ -101,6 +115,10 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
             case "line":
                 if (pointerX < sx || pointerY < sy) return false
                 if (pointerX > sx + ex || pointerY > sy + ey) return false
+                return true
+            case "image":
+                if (pointerX < item.x || pointerY < item.y) return false
+                if (pointerX > item.width + item.x || pointerY > item.height + item.y) return false
                 return true
             default:
                 break;
@@ -157,9 +175,9 @@ export function moveItem(dX: number, dY: number, item: SelectedItem, items: Canv
     if (targetIndex > -1) {
         items[targetIndex].x += dX
         items[targetIndex].y += dY
-        return items
+        return [...items]
     }
-    return null
+    return items
 }
 
 export function moveItemPosition(type: LayerMoves, item: SelectedItem, items: CanvasItem[]) {
@@ -297,6 +315,7 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
             case "diamond":
             case "ellipse":
             case "rectangle":
+            case "image":
                 if (
                     isPointInsidePolygon(pointerX, pointerY,
                         { x: item.x - 15, y: item.y },

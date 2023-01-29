@@ -104,23 +104,23 @@ export default function Canvas() {
                         }
                     })
                     break;
-                case "image":
-                    if (mainState.imageBlob) {
-                        setCurrent({
-                            ...current,
-                            image: {
-                                ...current.image,
-                                x: event.pageX - rect.left,
-                                y: event.pageY - rect.top,
-                                strokeStyle: mainState.strokeColor,
-                                strokeWidth: mainState.strokeWidth,
-                                fillStyle: mainState.fillColor,
-                                data: mainState.imageBlob,
-                                opacity: mainState.opacity,
-                            }
-                        })
-                    }
-                    break;
+                // case "image":
+                //     if (mainState.imageBlob) {
+                //         setCurrent({
+                //             ...current,
+                //             image: {
+                //                 ...current.image,
+                //                 x: event.pageX - rect.left,
+                //                 y: event.pageY - rect.top,
+                //                 strokeStyle: mainState.strokeColor,
+                //                 strokeWidth: mainState.strokeWidth,
+                //                 fillStyle: mainState.fillColor,
+                //                 data: mainState.imageBlob,
+                //                 opacity: mainState.opacity,
+                //             }
+                //         })
+                //     }
+                //     break;
                 case "text":
                     setCurrent({
                         ...current,
@@ -225,22 +225,22 @@ export default function Canvas() {
                         }
                     })
                     break;
-                case "image":
-                    if (mainState.imageBlob) {
-                        setCurrent({
-                            ...current,
-                            image: {
-                                ...current.image,
-                                id: getRandomID(),
-                                x: event.pageX - rect.left,
-                                y: event.pageY - rect.top,
-                                strokeStyle: mainState.strokeColor,
-                                strokeWidth: mainState.strokeWidth,
-                                fillStyle: mainState.fillColor,
-                                data: mainState.imageBlob
-                            }
-                        })
-                    }
+                // case "image":
+                //     if (mainState.imageBlob) {
+                //         setCurrent({
+                //             ...current,
+                //             image: {
+                //                 ...current.image,
+                //                 id: getRandomID(),
+                //                 x: event.pageX - rect.left,
+                //                 y: event.pageY - rect.top,
+                //                 strokeStyle: mainState.strokeColor,
+                //                 strokeWidth: mainState.strokeWidth,
+                //                 fillStyle: mainState.fillColor,
+                //                 data: mainState.imageBlob
+                //             }
+                //         })
+                //     }
                 default:
                     break;
             }

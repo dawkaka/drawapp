@@ -74,7 +74,7 @@ export interface Ellipse extends Omit<Box, "edgesType"> {
     type: "ellipse"
 }
 
-export interface Image extends Omit<Box, "stroke"> {
+export interface Image extends CanvasItemConstants {
     type: "image",
     data: string
 }
@@ -102,10 +102,14 @@ export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
         type: "arrow" | "line",
         curveControl: Point
     }
+    | RectBounds & {
+        type: "image"
+        resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds }
+    }
 
 
 type BoxSelection = {
-    type: "rectangle" | "ellipse" | "diamond" | "text";
+    type: "rectangle" | "ellipse" | "diamond" | "text" | "image";
     id: string;
     x: number;
     y: number;

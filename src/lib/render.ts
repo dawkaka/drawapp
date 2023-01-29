@@ -1,4 +1,6 @@
-import { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Line, Linear, Pencil, Point, Rectangle, Text } from "../types";
+import type { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Image, Line, Pencil, Rectangle, Text } from "../types";
+
+let imageData: any = {}
 
 export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: CanvasItem) {
     switch (item.type) {
@@ -27,35 +29,45 @@ export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: Canvas
     }
 }
 
+export async function renderElements(ctx: CanvasRenderingContext2D, items: CanvasItem[]) {
+    const ims = items.filter(item => item.type === "image") as Image[]
+    if (ims.length > Object.keys(imageData).length) {
+        imageData = await loadImages(ims) as any
+    }
 
-export function renderElements(ctx: CanvasRenderingContext2D, items: CanvasItem[]) {
     items.forEach(item => {
         switch (item.type) {
             case "pencil":
-                pencilDraw(ctx, item)
+                pencilDraw(ctx, item);
                 break;
             case "line":
-                lineDraw(ctx, item)
+                lineDraw(ctx, item);
                 break;
             case "rectangle":
-                rectangleDraw(ctx, item)
-                break
+                rectangleDraw(ctx, item);
+                break;
             case "diamond":
-                diamondDraw(ctx, item)
-                break
+                diamondDraw(ctx, item);
+                break;
             case "ellipse":
-                ellipseDraw(ctx, item)
+                ellipseDraw(ctx, item);
                 break;
             case "arrow":
-                arrowDraw(ctx, item)
+                arrowDraw(ctx, item);
                 break;
             case "text":
-                textDraw(ctx, item)
+                textDraw(ctx, item);
+                break;
+            case "image":
+                imageDraw(ctx, item, imageData[item.id]);
+                break;
             default:
                 break;
         }
-    })
+    });
 }
+
+
 
 
 function pencilDraw(ctx: CanvasRenderingContext2D, item: Pencil) {
@@ -209,6 +221,7 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
         case "rectangle":
         case "ellipse":
         case "diamond":
+        case "image":
             ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
             for (let p of Object.values(bounds.resizeAreas)) {
                 ctx.strokeRect(p.x, p.y, p.width, p.height)
@@ -241,4 +254,32 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     ctx.font = `bold ${item.fontSize}px ${item.fontFamily}`
     ctx.fillText(item.text, item.x, item.y + item.fontSize / 2)
     ctx.restore()
+}
+
+function imageDraw(ctx: CanvasRenderingContext2D, item: Image, imageData: HTMLImageElement) {
+    ctx.save();
+    ctx.globalAlpha = item.opacity;
+    ctx.drawImage(imageData, item.x, item.y, item.width, item.height);
+    ctx.restore();
+}
+
+function loadImages(images: Image[]) {
+    let data: any = {
+    }
+    return new Promise((resolve, reject) => {
+
+        for (let im of images) {
+            const image = new Image();
+            image.src = im.data;
+            image.onload = function () {
+                data[im.id] = image
+                if (Object.keys(data).length === images.length) {
+                    resolve(data)
+                }
+            };
+            image.onerror = function (error) {
+                reject(error);
+            };
+        }
+    });
 }

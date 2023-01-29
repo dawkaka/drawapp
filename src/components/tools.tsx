@@ -1,16 +1,17 @@
 import { useAtom, useSetAtom } from "jotai"
 import { ReactNode, useEffect, useState } from "react"
-import { AppState } from "../jotai"
-import type { Tool } from "../types"
+import { AppDrawings, AppState } from "../jotai"
+import { getRandomID } from "../lib/utils"
+import type { Image, Tool } from "../types"
 
 
 export default function Tools() {
     const [app, setState] = useAtom(AppState)
     const tool = app.tool
+    const [items, setItems] = useAtom(AppDrawings)
 
 
     function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
-
         const fs = e.currentTarget.files
         if (fs) {
             const extInd = fs[0].name.lastIndexOf(".")
@@ -21,7 +22,20 @@ export default function Tools() {
             const reader = new FileReader()
             reader.readAsDataURL(fs[0])
             reader.onload = () => {
-                setState({ ...app, imageBlob: reader.result as string })
+                const imageItem: Image = {
+                    id: getRandomID(),
+                    type: "image",
+                    data: reader.result as string,
+                    x: window.innerWidth / 2,
+                    y: window.innerHeight / 2,
+                    width: 500,
+                    height: 500,
+                    opacity: 1,
+                }
+                const add = [...items, imageItem]
+                setItems(add)
+                setState({ ...app, selectedItemID: imageItem.id })
+                localStorage.setItem("canvasItems", JSON.stringify(add))
                 e.target.value = ""
             }
         }

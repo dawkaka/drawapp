@@ -259,7 +259,8 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
 function imageDraw(ctx: CanvasRenderingContext2D, item: Image, imageData: HTMLImageElement) {
     ctx.save();
     ctx.globalAlpha = item.opacity;
-    ctx.drawImage(imageData, item.x, item.y, item.width, item.height);
+    ctx.scale(item.width < 0 ? -1 : 1, item.height < 0 ? -1 : 1)
+    ctx.drawImage(imageData, item.width < 0 ? -item.x - item.width : item.x, item.height < 0 ? -item.y - item.height : item.y, item.width, item.height);
     ctx.restore();
 }
 

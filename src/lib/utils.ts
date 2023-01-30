@@ -389,6 +389,10 @@ export function updateSingleItem(id: string, newVAlue: CanvasItem, items: Canvas
     return items
 }
 
+export function deleteItem(id: string, items: CanvasItem[]): CanvasItem[] {
+    return items.filter(item => item.id !== id)
+}
+
 export function updateAppStateFromSelectedItem(setState: (update: SetStateAction<AppState>) => void, currentState: AppState, item: CanvasItem) {
     switch (item.type) {
         case "diamond":

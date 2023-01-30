@@ -1,7 +1,7 @@
 import { useAtom, useSetAtom } from "jotai"
 import { ReactNode, useEffect, useState } from "react"
-import { AppDrawings, AppState } from "../jotai"
-import { getRandomID } from "../lib/utils"
+import { AppDrawings, AppState, SelectionAtom } from "../jotai"
+import { deleteItem, getRandomID } from "../lib/utils"
 import type { Image, Tool } from "../types"
 
 
@@ -9,7 +9,14 @@ export default function Tools() {
     const [app, setState] = useAtom(AppState)
     const tool = app.tool
     const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
 
+
+    function deleteSelectedItem() {
+        if (selectedItem) {
+            setItems(deleteItem(selectedItem.id, items))
+        }
+    }
 
     function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
         const fs = e.currentTarget.files
@@ -98,7 +105,7 @@ export default function Tools() {
                     </div>
                 </CanvasTool>
 
-                <CanvasTool onClick={() => setState({ ...app, tool: "eraser" })} tool="eraser" selectedTool={tool}>
+                <CanvasTool onClick={deleteSelectedItem} tool="eraser" selectedTool={tool}>
                     <div style={{ width: "22px", height: "22px" }}>
                         <svg width="22" height="22" viewBox="0 0 15 15" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M2 4.656a.5.5 0 01.5-.5h9.7a.5.5 0 010 1H2.5a.5.5 0 01-.5-.5z"></path>

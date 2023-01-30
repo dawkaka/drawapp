@@ -1,11 +1,11 @@
 import { useAtom } from "jotai"
 import { AppState } from "./jotai"
-import { CurrentState, Diamond, Ellipse, Line, Pencil, Rectangle } from "./types"
+import { CurrentState, CurrentStateMap, Diamond, Ellipse, Line, Pencil, Rectangle } from "./types"
 
 
 export function useInitialState() {
     const [mainState] = useAtom(AppState)
-    const initialState: CurrentState = {
+    const initialState: CurrentStateMap = {
         line: {
             id: "",
             type: "line",

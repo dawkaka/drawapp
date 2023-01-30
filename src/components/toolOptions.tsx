@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
 import { useEffect, useMemo, useState } from "react"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { moveItemPosition } from "../lib/utils"
+import { getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
 import type { LayerMoves, Stroke, StrokeWidth } from "../types"
 export function FillToolsOptions() {
     return (
@@ -26,21 +26,40 @@ export function TextOptions() {
 
 function FontSize() {
     const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    const changeFontSize = (val: string) => {
+        let v = Number(val)
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item && item.type === "text") {
+                let c = document.getElementById("canvas") as HTMLCanvasElement
+                let ctx = c.getContext('2d')!;
+                ctx.font = `bold ${v}px ${item.fontFamily}`
+                item.fontSize = v
+                item.width = ctx.measureText(item.text).width
+                item.height = item.text.split("\n").length * v
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        setMainState({ ...mainState, fontSize: v })
+    }
 
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font size</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
+                <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={changeFontSize}>
                     <span>S</span>
                 </OptionContainer>
-                <OptionContainer selected={String(mainState.fontSize)} value="25" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
+                <OptionContainer selected={String(mainState.fontSize)} value="25" onClick={changeFontSize}>
                     <span>M</span>
                 </OptionContainer>
-                <OptionContainer selected={String(mainState.fontSize)} value="30" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
+                <OptionContainer selected={String(mainState.fontSize)} value="30" onClick={changeFontSize}>
                     <span>L</span>
                 </OptionContainer>
-                <OptionContainer selected={String(mainState.fontSize)} value="48" onClick={(v: string) => setMainState({ ...mainState, fontSize: Number(v) })}>
+                <OptionContainer selected={String(mainState.fontSize)} value="48" onClick={changeFontSize}>
                     <span>XL</span>
                 </OptionContainer>
 
@@ -51,11 +70,29 @@ function FontSize() {
 
 function FontFamily() {
     const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    const changeFontFamily = (val: string) => {
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item && item.type === "text") {
+                let c = document.getElementById("canvas") as HTMLCanvasElement
+                let ctx = c.getContext('2d')!;
+                ctx.font = `bold ${item.fontSize}px ${val}`
+                item.width = ctx.measureText(item.text).width
+                item.fontFamily = val
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        setMainState({ ...mainState, fontFamily: val })
+    }
+
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font family</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={mainState.fontFamily} value="Kalam" onClick={(val: string) => setMainState({ ...mainState, fontFamily: val })}>
+                <OptionContainer selected={mainState.fontFamily} value="Kalam" onClick={changeFontFamily}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g strokeWidth="1.25">
                             <path clipRule="evenodd" d="m7.643 15.69 7.774-7.773a2.357 2.357 0 1 0-3.334-3.334L4.31 12.357a3.333 3.333 0 0 0-.977 2.357v1.953h1.953c.884 0 1.732-.352 2.357-.977Z">
@@ -64,11 +101,11 @@ function FontFamily() {
                         </g>
                     </svg>
                 </OptionContainer>
-                <OptionContainer selected={mainState.fontFamily} value="Arial" onClick={(val: string) => setMainState({ ...mainState, fontFamily: val })}>
+                <OptionContainer selected={mainState.fontFamily} value="Arial" onClick={changeFontFamily}>
                     <span>A</span>
                 </OptionContainer>
 
-                <OptionContainer selected={mainState.fontFamily} value="Sans Serif" onClick={(val: string) => setMainState({ ...mainState, fontFamily: val })}>
+                <OptionContainer selected={mainState.fontFamily} value="Sans Serif" onClick={changeFontFamily}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g clipPath="url(#a)" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M5.833 6.667 2.5 10l3.333 3.333M14.167 6.667 17.5 10l-3.333 3.333M11.667 3.333 8.333 16.667"></path>
@@ -118,11 +155,25 @@ function TextAlign() {
 
 export function Opacity() {
     const [appState, setAppState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    const opacity = (val: number) => {
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item) {
+                item.opacity = val
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        setAppState({ ...appState, opacity: val })
+    }
+
     return (
         <div className="w-full">
             <h6 className="text-sm text-[var(--accents-5)] mb-1">Opacity</h6>
             <input type="range" className="accent-[darkorange] cursor-resize w-full"
-                onChange={(e) => setAppState({ ...appState, opacity: e.target.valueAsNumber })}
+                onChange={(e) => opacity(e.target.valueAsNumber)}
                 value={appState.opacity} min={0.1} max={1} step={0.1} />
         </div>
     )
@@ -187,13 +238,26 @@ export function Layers() {
 
 function StrokeWidth() {
     const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    const width = (val: StrokeWidth) => {
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item && (item.type === "arrow" || item.type === "line" || item.type === "diamond" || item.type === "rectangle" || item.type === "ellipse")) {
+                item.strokeWidth = val
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        setMainState({ ...mainState, strokeWidth: val })
+    }
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke width</legend>
             <div className="flex gap-3">
-                <FillOption option={2} selectedOption={mainState.strokeWidth} onClick={(val: StrokeWidth) => setMainState({ ...mainState, strokeWidth: val })} />
-                <FillOption option={3} selectedOption={mainState.strokeWidth} onClick={(val: StrokeWidth) => setMainState({ ...mainState, strokeWidth: val })} />
-                <FillOption option={4} selectedOption={mainState.strokeWidth} onClick={(val: StrokeWidth) => setMainState({ ...mainState, strokeWidth: val })} />
+                <FillOption option={2} selectedOption={mainState.strokeWidth} onClick={width} />
+                <FillOption option={3} selectedOption={mainState.strokeWidth} onClick={width} />
+                <FillOption option={4} selectedOption={mainState.strokeWidth} onClick={width} />
             </div>
         </fieldset>
 
@@ -229,15 +293,28 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
 function StrokeStyle() {
     const [mainState, setSelected] = useAtom(AppState)
     const { stroke: selected } = mainState
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    const strokeStyleChange = (val: Stroke) => {
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item && (item.type === "arrow" || item.type === "line" || item.type === "diamond" || item.type === "rectangle" || item.type === "ellipse")) {
+                item.stroke = val
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        setSelected({ ...mainState, stroke: val })
+    }
 
     return (
 
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke style</legend>
             <div className="flex gap-3">
-                <StrokeStyleOption option={"solid"} selectedOption={selected} onClick={(val: Stroke) => setSelected({ ...mainState, stroke: val })} />
-                <StrokeStyleOption option={"dotted"} selectedOption={selected} onClick={(val: Stroke) => setSelected({ ...mainState, stroke: val })} />
-                <StrokeStyleOption option={"dashed"} selectedOption={selected} onClick={(val: Stroke) => setSelected({ ...mainState, stroke: val })} />
+                <StrokeStyleOption option={"solid"} selectedOption={selected} onClick={strokeStyleChange} />
+                <StrokeStyleOption option={"dotted"} selectedOption={selected} onClick={strokeStyleChange} />
+                <StrokeStyleOption option={"dashed"} selectedOption={selected} onClick={strokeStyleChange} />
 
             </div>
         </fieldset>

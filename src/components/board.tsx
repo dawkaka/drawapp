@@ -316,23 +316,9 @@ export default function Canvas() {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
         }
-
-        if (mainState.tool === "pencil") {
-            renderCurrentDrawing(ctx, current.pencil)
-        } else if (mainState.tool === "line") {
-            renderCurrentDrawing(ctx, current.line)
-        } else if (mainState.tool === "rectangle") {
-            renderCurrentDrawing(ctx, current.rectangle)
-        } else if (mainState.tool === "diamond") {
-            renderCurrentDrawing(ctx, current.diamond)
-        } else if (mainState.tool === "ellipse") {
-            renderCurrentDrawing(ctx, current.ellipse)
-        } else if (mainState.tool === "arrow") {
-            renderCurrentDrawing(ctx, current.arrow)
-        } else if (mainState.tool === "text") {
-            renderCurrentDrawing(ctx, current.text)
+        if (mainState.tool !== "select" && mainState.tool !== "eraser") {
+            renderCurrentDrawing(ctx, current[mainState.tool])
         }
-
         if (selectedItem) {
             const bounds = getBoundingBox(selectedItem)
             if (bounds) {
@@ -353,32 +339,12 @@ export default function Canvas() {
     }, [selectedItem?.id])
 
 
-    function handleMouseUp(event: any) {
+    function handleMouseUp() {
         let itemID = ""
-        if (current) {
-            if (mainState.tool === "pencil") {
-                setItems([...items, current.pencil])
-                itemID = current.pencil.id
-            } else if (mainState.tool === "line") {
-                itemID = current.line.id
-                if (current.line.id !== "") {
-                    setItems([...items, current.line])
-                }
-            } else if (mainState.tool === "rectangle") {
-                setItems([...items, current.rectangle])
-                itemID = current.rectangle.id
-            } else if (mainState.tool === "diamond") {
-                setItems([...items, current.diamond])
-                itemID = current.diamond.id
-            } else if (mainState.tool === "ellipse") {
-                itemID = current.ellipse.id
-                setItems([...items, current.ellipse])
-            } else if (mainState.tool === "arrow") {
-                itemID = current.arrow.id
-                setItems([...items, current.arrow])
-            }
-            if (mainState.tool !== "text") {
-                setCurrent(intialStates)
+        if (mainState.tool !== "select" && mainState.tool !== "eraser" && current) {
+            itemID = current[mainState.tool].id
+            if (itemID) {
+                setItems([...items, current[mainState.tool]])
             }
         }
         if (state.drew && mainState.tool !== "select") {

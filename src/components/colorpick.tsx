@@ -1,6 +1,7 @@
 import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
-import { AppState } from "../jotai"
+import { AppDrawings, AppState, SelectionAtom } from "../jotai"
+import { getSelectedItem, updateSingleItem } from "../lib/utils"
 import { Color } from "../types"
 
 
@@ -9,13 +10,34 @@ export default function ColorPanel() {
     const [selected, setSelected] = useState<"stroke" | "fill">("fill")
     const [main, setAppState] = useAtom(AppState)
     const { fillColor, strokeColor } = main
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
     useEffect(() => {
         if (selectedColor) {
             if (selected === "stroke") {
+                if (selectedItem) {
+                    const item = getSelectedItem(selectedItem.id, items)
+                    if (item && (item.type === "text" || item.type === "arrow" ||
+                        item.type === "line" || item.type === "diamond" ||
+                        item.type === "rectangle" || item.type === "ellipse")) {
+                        item.strokeStyle = selectedColor
+                        setItems(updateSingleItem(selectedItem.id, item, items))
+                    }
+                }
                 setAppState({ ...main, strokeColor: selectedColor })
             } else {
+                if (selectedItem) {
+                    const item = getSelectedItem(selectedItem.id, items)
+                    if (item && (item.type === "diamond" || item.type === "rectangle" || item.type === "ellipse")) {
+                        item.fillStyle = selectedColor
+                        setItems(updateSingleItem(selectedItem.id, item, items))
+                    }
+                }
                 setAppState({ ...main, fillColor: selectedColor })
             }
+
+
         }
     }, [selectedColor])
 

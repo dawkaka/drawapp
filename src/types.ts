@@ -129,7 +129,9 @@ type LinearSelection = {
 
 export type SelectedItem = BoxSelection | LinearSelection
 
-export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "eraser" | "pencil"
+type DrawingTools = "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "pencil"
+
+export type Tool = "select" | "eraser" | DrawingTools
 
 
 export interface CurrentState {
@@ -138,5 +140,10 @@ export interface CurrentState {
     arrow: Arrow, image: Image,
     text: Text
 }
+
+export type CurrentStateMap = {
+    [key in DrawingTools]: CurrentState[key];
+};
+
 
 export type LayerMoves = "to-back" | "step-backward" | "to-front" | "step-forward"

@@ -280,8 +280,8 @@ export default function Canvas() {
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c!.getContext("2d")!;
-        ctx.canvas.width = window.devicePixelRatio * window.innerWidth
-        ctx.canvas.height = window.devicePixelRatio * window.innerHeight
+        ctx.canvas.width = window.innerWidth
+        ctx.canvas.height = window.innerHeight
         setItems(JSON.parse(localStorage.getItem("canvasItems") || "[]"))
     }, [])
 

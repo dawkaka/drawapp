@@ -393,7 +393,8 @@ export default function Canvas() {
             {mainState.tool === "text" ? <div
                 className="absolute outline-0"
                 onBlur={(e) => {
-                    const target = e.target as HTMLInputElement
+                    const target = e.target as HTMLDivElement
+                    if (target.innerText === "") return
                     let c = document.getElementById("canvas") as HTMLCanvasElement
                     let ctx = c.getContext('2d')!;
                     ctx.save()

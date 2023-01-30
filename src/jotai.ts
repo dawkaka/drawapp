@@ -1,25 +1,15 @@
 import { atom } from "jotai";
 import { AppState as AppStateType, CanvasItem, SelectedItem } from "./types";
+import { defaultValues } from "./constants"
 
-export const AppState = atom<AppStateType>({
-    strokeColor: "black",
-    strokeWidth: 3,
-    stroke: "solid",
-    tool: "select",
-    opacity: 1,
-    fillColor: "transparent",
-    imageBlob: "",
-    selectedItemID: "",
-    fontFamily: "Kalam",
-    fontSize: 25,
-    textStyle: "fill"
-})
+export const AppState = atom<AppStateType>(defaultValues)
 
 export const AppDrawings = atom<CanvasItem[]>([])
 
 
 export const SelectionAtom = atom((get): SelectedItem | null => {
     const { selectedItemID: ID } = get(AppState)
+    if (ID === "") return null
     const item = get(AppDrawings).find(item => item.id === ID)
     if (item) {
         switch (item.type) {

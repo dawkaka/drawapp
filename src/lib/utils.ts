@@ -1,4 +1,5 @@
-import { BoundingBox, CanvasItem, LayerMoves, Point, SelectedItem } from "../types"
+import { SetStateAction } from "jotai"
+import { AppState, BoundingBox, CanvasItem, LayerMoves, Point, SelectedItem } from "../types"
 import { renderBounds } from "./render"
 
 export function getRandomID() {
@@ -386,4 +387,35 @@ export function updateSingleItem(id: string, newVAlue: CanvasItem, items: Canvas
         return [...items]
     }
     return items
+}
+
+export function updateAppStateFromSelectedItem(setState: (update: SetStateAction<AppState>) => void, currentState: AppState, item: CanvasItem) {
+    switch (item.type) {
+        case "diamond":
+        case "ellipse":
+        case "rectangle":
+            setState({
+                ...currentState,
+                strokeColor: item.strokeStyle,
+                fillColor: item.fillStyle,
+                strokeWidth: item.strokeWidth,
+                opacity: item.opacity,
+                stroke: item.stroke,
+                tool: item.type
+            })
+            break;
+        case "text":
+            setState({
+                ...currentState,
+                strokeColor: item.strokeStyle,
+                fillColor: item.fillStyle,
+                strokeWidth: item.strokeWidth,
+                opacity: item.opacity,
+                fontFamily: item.fontFamily,
+                fontSize: item.fontSize,
+                tool: item.type
+            })
+        default:
+            break;
+    }
 }

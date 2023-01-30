@@ -1,9 +1,10 @@
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
+import { defaultValues } from "../constants";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
-import { getBoundingBox, getItemEnclosingPoint, getRandomID, isWithinItem, isWithinResizeArea, moveItem, resizeSelected } from "../lib/utils";
+import { getBoundingBox, getItemEnclosingPoint, getRandomID, getSelectedItem, isWithinItem, isWithinResizeArea, moveItem, resizeSelected, updateAppStateFromSelectedItem } from "../lib/utils";
 import { CurrentState, Text } from "../types";
 
 export default function Canvas() {
@@ -249,7 +250,7 @@ export default function Canvas() {
     }
 
     function handleMouseDown(event: any) {
-        if (mainState.tool !== "select") {
+        if (!selectedItem) {
             let rect = document.getElementById("canvas")!.getBoundingClientRect();
             updateState(event, rect, state.drawInProcess)
             setState({
@@ -296,7 +297,7 @@ export default function Canvas() {
             setState({ ...state, startRectX: px, startRectY: py })
             const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items)
             if (updatedItems) {
-                setItems([...updatedItems])
+                setItems(updatedItems)
 
             }
         } else if (state.resizeDir && selectedItem) {
@@ -339,6 +340,17 @@ export default function Canvas() {
             }
         }
     }, [items, current, selectedItem])
+
+    useEffect(() => {
+        if (!selectedItem) {
+            updateMainState(defaultValues)
+        } else {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item) {
+                updateAppStateFromSelectedItem(updateMainState, mainState, item)
+            }
+        }
+    }, [selectedItem?.id])
 
 
     function handleMouseUp(event: any) {

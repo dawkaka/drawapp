@@ -419,6 +419,23 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
                 fontSize: item.fontSize,
                 tool: item.type
             })
+            break;
+        case "arrow":
+        case "line":
+            setState({
+                ...currentState,
+                strokeColor: item.strokeStyle,
+                strokeWidth: item.strokeWidth,
+                opacity: item.opacity,
+                stroke: item.stroke,
+                tool: item.type
+            })
+            break;
+        case "image":
+            setState({
+                ...currentState,
+                tool: "image",
+            })
         default:
             break;
     }

@@ -250,17 +250,26 @@ export default function Canvas() {
     }
 
     function handleMouseDown(event: any) {
+        let pageX;
+        let pageY;
+        if (event.type === 'touchstart') {
+            pageX = event.touches[0].pageX;
+            pageY = event.touches[0].pageY;
+        } else {
+            pageX = event.pageX;
+            pageY = event.pageY;
+        }
         if (!selectedItem) {
             let rect = document.getElementById("canvas")!.getBoundingClientRect();
             updateState(event, rect, state.drawInProcess)
             setState({
                 ...state,
-                drawInProcess: true, startRectX: event.pageX - rect.left,
-                startRectY: event.pageY - rect.top
+                drawInProcess: true, startRectX: pageX - rect.left,
+                startRectY: pageY - rect.top
             });
         } else if (selectedItem !== null) {
-            let px = event.pageX as number
-            let py = event.pageY as number
+            let px = pageX as number
+            let py = pageY as number
             const resizeDir = isWithinResizeArea(px, py, selectedItem)
             if (resizeDir) {
                 setState({
@@ -276,6 +285,7 @@ export default function Canvas() {
             }
         }
     }
+
 
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
@@ -308,6 +318,36 @@ export default function Canvas() {
             setItems(updatedItems)
         }
     }
+
+    function handleTouchMove(event: any) {
+        let c = document.getElementById("canvas") as HTMLCanvasElement;
+        let rect = c.getBoundingClientRect();
+        if (state.drawInProcess) {
+            updateState(event.touches[0], rect, true);
+            setState({ ...state, drew: true });
+        } else if (state.moveStart && selectedItem) {
+            let px = event.touches[0].pageX as number;
+            let py = event.touches[0].pageY as number;
+            setState({ ...state, startRectX: px, startRectY: py });
+            const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items);
+            if (updatedItems) {
+                setItems(updatedItems);
+            }
+        } else if (state.resizeDir && selectedItem) {
+            let px = event.touches[0].pageX as number;
+            let py = event.touches[0].pageY as number;
+            setState({ ...state, startRectX: px, startRectY: py });
+            const updatedItems = resizeSelected(
+                state.resizeDir,
+                px - state.startRectX,
+                py - state.startRectY,
+                selectedItem,
+                items
+            );
+            setItems(updatedItems);
+        }
+    }
+
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
@@ -439,13 +479,20 @@ export default function Canvas() {
             <canvas
                 className="appearance-none outline-0"
                 id="canvas"
+                style={{
+                    backgroundColor: "white"
+                }}
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onClick={handleClick}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseUp}
             >
             </canvas>
+
         </main>
 
     )

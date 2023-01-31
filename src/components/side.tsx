@@ -1,6 +1,7 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
 import { AppDrawings, AppState, SelectionAtom } from "../jotai"
+import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
 import Modal from "./modal"
 import { FillToolsOptions, Layers, Opacity, TextOptions } from "./toolOptions"
@@ -17,6 +18,25 @@ export default function Side() {
         localStorage.setItem("canvasItems", "[]")
         setModal(false)
     }
+    function downloadCanvasAsPNG() {
+        const canvas = document.getElementById("canvas") as HTMLCanvasElement
+        const link = document.createElement("a");
+        let c = document.getElementById("canvas") as HTMLCanvasElement
+        let ctx = c.getContext('2d')!;
+        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+        ctx.save()
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight);
+        ctx.restore()
+        if (items.length > 0) {
+            renderElements(ctx, items)
+            localStorage.setItem("canvasItems", JSON.stringify(items))
+        }
+        link.download = "canvas.jpeg";
+        link.href = canvas.toDataURL("image/jpeg");
+        link.click();
+    }
+
 
     return (
         <>
@@ -65,7 +85,9 @@ export default function Side() {
                             <path d="M10.6707 8.5081C10.6707 10.1923 9.3004 11.5625 7.61631 11.5625H6.5351C6.35593 11.5625 6.21074 11.4173 6.21074 11.2382V11.13C6.21074 10.9508 6.35591 10.8057 6.5351 10.8057H7.61631C8.88313 10.8057 9.91387 9.77492 9.91387 8.5081C9.91387 7.24128 8.88313 6.21054 7.61631 6.21054H5.62155L6.99534 7.58433C7.14289 7.73183 7.14289 7.97195 6.99534 8.11944C6.85216 8.26251 6.60298 8.2623 6.46013 8.11944L4.44045 6.09971C4.36898 6.02824 4.32959 5.93321 4.32959 5.8321C4.32959 5.73106 4.36898 5.63598 4.44045 5.56454L6.46024 3.54472C6.60309 3.40176 6.85248 3.40176 6.99535 3.54472C7.14291 3.69218 7.14291 3.93234 6.99535 4.07979L5.62156 5.45368H7.61631C9.3004 5.45368 10.6707 6.82393 10.6707 8.5081Z">
                             </path></svg>
                     </button>
-                    <button className="w-fit p-1 rounded hover:bg-[#faecd2] border">
+                    <button className="w-fit p-1 rounded hover:bg-[#faecd2] border"
+                        onClick={downloadCanvasAsPNG}
+                    >
                         <svg aria-hidden="true" width="22" height="22" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path stroke-width="1.25" d="M3.333 14.167v1.666c0 .92.747 1.667 1.667 1.667h10c.92 0 1.667-.746 1.667-1.667v-1.666M5.833 9.167 10 13.333l4.167-4.166M10 3.333v10"></path></svg>
                     </button>
                 </div>

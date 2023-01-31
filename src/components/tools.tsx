@@ -14,7 +14,9 @@ export default function Tools() {
 
     function deleteSelectedItem() {
         if (selectedItem) {
-            setItems(deleteItem(selectedItem.id, items))
+            const n = deleteItem(selectedItem.id, items)
+            setItems(n)
+            localStorage.setItem("canvasItems", JSON.stringify(n))
         }
     }
 

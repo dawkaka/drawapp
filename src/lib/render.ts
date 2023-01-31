@@ -29,6 +29,7 @@ export function renderCurrentDrawing(ctx: CanvasRenderingContext2D, item: Canvas
     }
 }
 
+
 export async function renderElements(ctx: CanvasRenderingContext2D, items: CanvasItem[]) {
     const ims = items.filter(item => item.type === "image") as Image[]
     if (ims.length > Object.keys(imageData).length) {

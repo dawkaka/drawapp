@@ -386,6 +386,7 @@ export default function Canvas() {
             if (itemID) {
                 setItems([...items, current[mainState.tool]])
             }
+            setCurrent(intialStates)
         }
         if (state.drew && mainState.tool !== "select") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })

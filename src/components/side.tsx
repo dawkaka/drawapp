@@ -4,7 +4,7 @@ import { AppDrawings, AppState, SelectionAtom } from "../jotai"
 import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
 import Modal from "./modal"
-import { FillToolsOptions, Layers, Opacity, TextOptions } from "./toolOptions"
+import { FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 
 export default function Side() {
@@ -59,6 +59,9 @@ export default function Side() {
                         }
                         {
                             tool === "text" && <TextOptions />
+                        }
+                        {
+                            tool === "image" && <ImageOptions />
                         }
                         <Opacity />
                         <Layers />

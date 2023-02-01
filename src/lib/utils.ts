@@ -1,5 +1,6 @@
 import { SetStateAction } from "jotai"
 import { AppState, BoundingBox, CanvasItem, LayerMoves, Point, SelectedItem } from "../types"
+import history from "./history"
 import { renderBounds } from "./render"
 
 export function getRandomID() {
@@ -169,11 +170,14 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
     return ""
 }
 
-export function moveItem(dX: number, dY: number, item: SelectedItem, items: CanvasItem[]) {
+export function moveItem(dx: number, dy: number, item: SelectedItem, items: CanvasItem[]) {
     const targetIndex = items.findIndex(val => val.id === item.id)
     if (targetIndex > -1) {
-        items[targetIndex].x += dX
-        items[targetIndex].y += dY
+        items[targetIndex] = {
+            ...items[targetIndex],
+            x: items[targetIndex].x + dx,
+            y: items[targetIndex].y + dy
+        }
         return [...items]
     }
     return items
@@ -205,52 +209,74 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
     const targetIndex = items.findIndex(val => val.id === item.id)
     if (targetIndex === -1) return items
     if (dir === "pbr") {
-        items[targetIndex].width += dx
-        items[targetIndex].height += dy
+        let item = { ...items[targetIndex] }
+        item.width += dx
+        item.height += dy
+        items[targetIndex] = item
         return [...items]
     }
     if (dir === "ptl") {
-        items[targetIndex].x += dx
-        items[targetIndex].y += dy
-        items[targetIndex].width += -1 * dx
-        items[targetIndex].height += -1 * dy
+        let item = { ...items[targetIndex] }
+        item.x += dx
+        item.y += dy
+        item.width += -1 * dx
+        item.height += -1 * dy
+        items[targetIndex] = item
         return [...items]
     }
     if (dir === "ptr") {
-        items[targetIndex].width += dx
-        items[targetIndex].y += dy
-        items[targetIndex].height += -1 * dy
+        let item = { ...items[targetIndex] }
+        item.width += dx
+        item.y += dy
+        item.height += -1 * dy
+        items[targetIndex] = item
         return [...items]
     }
     if (dir === "pbl") {
-        items[targetIndex].width += - 1 * dx
-        items[targetIndex].height += dy
-        items[targetIndex].x += dx
+        let item = { ...items[targetIndex] }
+        item.width += - 1 * dx
+        item.height += dy
+        item.x += dx
+        items[targetIndex] = item
         return [...items]
     }
     if (dir === "mb") {
-        items[targetIndex].height += dy
+        let item = { ...items[targetIndex] }
+        item.height += dy
+        items[targetIndex] = item
+
         return [...items]
     }
     if (dir === "mt") {
-        items[targetIndex].y += dy
-        items[targetIndex].height += - 1 * dy
+        let item = { ...items[targetIndex] }
+        item.y += dy
+        item.height += - 1 * dy
+        items[targetIndex] = item
+
         return [...items]
     }
+
     if (dir === "mr") {
-        items[targetIndex].width += dx
+        let item = { ...items[targetIndex] }
+        item.width += dx
+        items[targetIndex] = item
         return [...items]
     }
+
     if (dir === "ml") {
-        items[targetIndex].x += dx
-        items[targetIndex].width += -1 * dx
+        let item = { ...items[targetIndex] }
+        item.x += dx
+        item.width += -1 * dx
+        items[targetIndex] = item
         return [...items]
     }
+
     if (dir === "ps") {
-        let item = items[targetIndex]
+        let item = { ...items[targetIndex] }
         if (item.type === "arrow" || item.type === "line") {
-            items[targetIndex].x += dx
-            items[targetIndex].y += dy
+            item.x += dx
+            item.y += dy
+            item.points = item.points.map(point => { return { ...point } });
             if (item.points.length > 1) {
                 const { x, y } = item.points[1]
                 item.points[1].x += -dx
@@ -261,12 +287,14 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
                 }
             }
         }
+        items[targetIndex] = item
         return [...items]
     }
 
     if (dir === "pe") {
-        let item = items[targetIndex]
+        let item = { ...items[targetIndex] }
         if (item.type === "arrow" || item.type === "line") {
+            item.points = item.points.map(point => { return { ...point } });
             if (item.points.length > 1) {
                 const { x, y } = item.points[1]
                 item.points[1].x += dx
@@ -277,6 +305,7 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
                 }
             }
         }
+        items[targetIndex] = item
         return [...items]
     }
 
@@ -381,9 +410,10 @@ export function getSelectedItem(id: string, items: CanvasItem[]): CanvasItem | u
 }
 
 export function updateSingleItem(id: string, newVAlue: CanvasItem, items: CanvasItem[]): CanvasItem[] {
+    history.addHistory([...items])
     const targetIndex = items.findIndex(item => item.id === id)
     if (targetIndex >= 0) {
-        items[targetIndex] = newVAlue
+        items[targetIndex] = { ...newVAlue }
         return [...items]
     }
     return items

@@ -6,6 +6,7 @@ import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
 import { getBoundingBox, getItemEnclosingPoint, getRandomID, getSelectedItem, isWithinItem, isWithinResizeArea, moveItem, resizeSelected, updateAppStateFromSelectedItem } from "../lib/utils";
 import { CurrentState, Text } from "../types";
+import History from "../lib/history";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, startRectX: 0, startRectY: 0, moveStart: false })
@@ -13,6 +14,8 @@ export default function Canvas() {
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
+
+    console.log([...History.history])
 
     const [selectedItem] = useAtom(SelectionAtom)
 
@@ -388,15 +391,23 @@ export default function Canvas() {
             }
             setCurrent(intialStates)
         }
+
         if (state.drew && mainState.tool !== "select") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
+        setTimeout(() => {
+            if (JSON.stringify(History.getCurrentEvent) !== JSON.stringify(items)) {
+                History.addHistory(items)
+            }
+        })
+
         setState({ ...state, drawInProcess: false, moveStart: false, drew: false, resizeDir: "" })
     }
 
     function handleClick(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
+
         updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
     }
 

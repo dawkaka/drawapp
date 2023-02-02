@@ -15,7 +15,6 @@ export default function Canvas() {
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
 
-
     const [selectedItem] = useAtom(SelectionAtom)
 
     function updateState(event: any, rect: DOMRect, drawInProcess: boolean) {
@@ -107,23 +106,6 @@ export default function Canvas() {
                         }
                     })
                     break;
-                // case "image":
-                //     if (mainState.imageBlob) {
-                //         setCurrent({
-                //             ...current,
-                //             image: {
-                //                 ...current.image,
-                //                 x: event.pageX - rect.left,
-                //                 y: event.pageY - rect.top,
-                //                 strokeStyle: mainState.strokeColor,
-                //                 strokeWidth: mainState.strokeWidth,
-                //                 fillStyle: mainState.fillColor,
-                //                 data: mainState.imageBlob,
-                //                 opacity: mainState.opacity,
-                //             }
-                //         })
-                //     }
-                //     break;
                 case "text":
                     setCurrent({
                         ...current,
@@ -228,22 +210,6 @@ export default function Canvas() {
                         }
                     })
                     break;
-                // case "image":
-                //     if (mainState.imageBlob) {
-                //         setCurrent({
-                //             ...current,
-                //             image: {
-                //                 ...current.image,
-                //                 id: getRandomID(),
-                //                 x: event.pageX - rect.left,
-                //                 y: event.pageY - rect.top,
-                //                 strokeStyle: mainState.strokeColor,
-                //                 strokeWidth: mainState.strokeWidth,
-                //                 fillStyle: mainState.fillColor,
-                //                 data: mainState.imageBlob
-                //             }
-                //         })
-                //     }
                 default:
                     break;
             }
@@ -294,7 +260,11 @@ export default function Canvas() {
         let ctx = c!.getContext("2d")!;
         ctx.canvas.width = window.innerWidth
         ctx.canvas.height = window.innerHeight
-        setItems(JSON.parse(localStorage.getItem("canvasItems") || "[]"))
+        let itms = JSON.parse(localStorage.getItem("canvasItems") || "[]")
+        setItems(itms)
+        if (JSON.stringify(History.getCurrentState()) !== localStorage.getItem("canvasItems")) {
+            History.addHistory(itms)
+        }
     }, [])
 
     function handleMouseMove(event: any) {
@@ -310,7 +280,6 @@ export default function Canvas() {
             const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items)
             if (updatedItems) {
                 setItems(updatedItems)
-
             }
         } else if (state.resizeDir && selectedItem) {
             let px = event.pageX as number
@@ -387,6 +356,7 @@ export default function Canvas() {
             itemID = current[mainState.tool].id
             if (itemID) {
                 setItems([...items, current[mainState.tool]])
+                History.addHistory([...items, current[mainState.tool]])
             }
             setCurrent(intialStates)
         }
@@ -394,10 +364,8 @@ export default function Canvas() {
         if (state.drew && mainState.tool !== "select") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
-        if (state.moved || state.resizeDir !== "" || state.drew) {
-            if (JSON.stringify(History.getCurrentEvent) !== JSON.stringify(items)) {
-                History.addHistory(items)
-            }
+        if (state.moved || state.resizeDir !== "") {
+            History.addHistory(items)
         }
 
         setState({ ...state, drawInProcess: false, moveStart: false, moved: false, drew: false, resizeDir: "" })

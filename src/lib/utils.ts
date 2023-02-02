@@ -406,15 +406,18 @@ function isPointInsidePolygon(cx: number, cy: number, p1: Point, p2: Point, p3: 
 
 
 export function getSelectedItem(id: string, items: CanvasItem[]): CanvasItem | undefined {
-    return items.find(item => item.id === id)
+    const item = items.find(item => item.id === id)
+    if (item) {
+        return { ...item }
+    }
 }
 
 export function updateSingleItem(id: string, newVAlue: CanvasItem, items: CanvasItem[]): CanvasItem[] {
-    history.addHistory([...items])
     const targetIndex = items.findIndex(item => item.id === id)
     if (targetIndex >= 0) {
-        items[targetIndex] = { ...newVAlue }
-        return [...items]
+        items[targetIndex] = newVAlue
+        items = [...items]
+        history.addHistory(items)
     }
     return items
 }

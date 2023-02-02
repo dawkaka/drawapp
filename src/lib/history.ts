@@ -17,7 +17,7 @@ class History {
         this.currentPointer = this.history.length - 1;
     }
 
-    getCurrentEvent(): CanvasItem[] {
+    getCurrentState(): CanvasItem[] {
         if (this.currentPointer < 0) return []
         return [...this.history[this.currentPointer]];
     }
@@ -26,14 +26,14 @@ class History {
         if (this.currentPointer > 0) {
             this.currentPointer--;
         }
-        return this.getCurrentEvent();
+        return this.getCurrentState();
     }
 
     redo(): CanvasItem[] {
         if (this.currentPointer < this.history.length - 1) {
             this.currentPointer++;
         }
-        return this.getCurrentEvent();
+        return this.getCurrentState();
     }
 }
 

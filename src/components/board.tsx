@@ -9,13 +9,12 @@ import { CurrentState, Text } from "../types";
 import History from "../lib/history";
 
 export default function Canvas() {
-    const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, startRectX: 0, startRectY: 0, moveStart: false })
+    const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false })
     const [mainState, updateMainState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
 
-    console.log([...History.history])
 
     const [selectedItem] = useAtom(SelectionAtom)
 
@@ -307,7 +306,7 @@ export default function Canvas() {
         } else if (state.moveStart && selectedItem) {
             let px = event.pageX as number
             let py = event.pageY as number
-            setState({ ...state, startRectX: px, startRectY: py })
+            setState({ ...state, startRectX: px, startRectY: py, moved: true })
             const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items)
             if (updatedItems) {
                 setItems(updatedItems)
@@ -395,19 +394,16 @@ export default function Canvas() {
         if (state.drew && mainState.tool !== "select") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
-        setTimeout(() => {
+        if (state.moved || state.resizeDir !== "" || state.drew) {
             if (JSON.stringify(History.getCurrentEvent) !== JSON.stringify(items)) {
                 History.addHistory(items)
             }
-        })
+        }
 
-        setState({ ...state, drawInProcess: false, moveStart: false, drew: false, resizeDir: "" })
+        setState({ ...state, drawInProcess: false, moveStart: false, moved: false, drew: false, resizeDir: "" })
     }
 
     function handleClick(event: any) {
-        let c = document.getElementById("canvas") as HTMLCanvasElement
-        let ctx = c.getContext('2d')!;
-
         updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
     }
 

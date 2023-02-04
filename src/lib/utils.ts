@@ -323,7 +323,6 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
 }
 
 export function getItemEnclosingPoint(pointerX: number, pointerY: number, items: CanvasItem[]): string {
-
     for (let i = items.length - 1; i >= 0; i--) {
         const item = items[i]
         switch (item.type) {
@@ -331,10 +330,10 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
             case "arrow":
                 if (
                     isPointInsidePolygon(pointerX, pointerY,
-                        { x: item.x - 15, y: item.y },
-                        { x: item.x + 15, y: item.y },
-                        { x: item.x + item.points[1].x + 15, y: item.y + item.points[1].y },
-                        { x: item.x + item.points[1].x - 15, y: item.y + item.points[1].y }
+                        { x: item.x - 15, y: item.y - 15 },
+                        { x: item.x + 15, y: item.y + 15 },
+                        { x: item.x + item.points[1].x + 15, y: item.y + item.points[1].y + 15 },
+                        { x: item.x + item.points[1].x - 15, y: item.y + item.points[1].y - 15 }
                     )
                 ) {
                     return item.id
@@ -380,6 +379,7 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
 
 function isPointInsidePolygon(cx: number, cy: number, p1: Point, p2: Point, p3: Point, p4: Point): boolean {
     //==by chatGPT
+
     const polygon = [p1, p2, p3, p4]
     let point = { x: cx, y: cy }
     let intersections = 0;

@@ -253,7 +253,12 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     ctx.fillStyle = item.strokeStyle
     ctx.globalAlpha = item.opacity
     ctx.font = `bold ${item.fontSize}px ${item.fontFamily}`
-    ctx.fillText(item.text, item.x, item.y + item.fontSize / 2)
+    const texts = item.text.split("\n")
+    let h = 0
+    for (let text of texts) {
+        ctx.fillText(text, item.x, item.y + h + item.fontSize / 2)
+        h += item.fontSize
+    }
     ctx.restore()
 }
 

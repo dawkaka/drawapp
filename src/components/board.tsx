@@ -457,7 +457,6 @@ export default function Canvas() {
                     e.currentTarget.style.maxWidth = "100%";
                     e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
                     e.currentTarget.style.maxHeight = "100%";
-
                     ctx.restore()
                 }}
 

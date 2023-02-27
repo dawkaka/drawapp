@@ -407,7 +407,7 @@ export default function Canvas() {
     return (
         <main className="relative">
             {mainState.tool === "text" ? <textarea
-                className="absolute outline-0"
+                className="absolute outline-0 overflow-hidden"
                 placeholder="Enter text"
                 onBlur={(e) => {
                     if (e.target.value.trim() === "") return
@@ -439,10 +439,38 @@ export default function Canvas() {
                     setItems([...items, textItem])
                     setCurrent(intialStates)
                     updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
-
                 }}
+                onKeyUp={(e) => {
+                    let c = document.getElementById("canvas") as HTMLCanvasElement
+                    let ctx = c.getContext('2d')!;
+                    ctx.save()
+                    ctx.font = `bold ${current.text.fontSize}px ${current.text.fontFamily}`
+                    const textLines = e.currentTarget.value.split("\n")
+                    let max = ""
+                    for (let line of textLines) {
+                        if (line.length > max.length) {
+                            max = line
+                        }
+                    }
+                    e.currentTarget.style.width = "1px";
+                    e.currentTarget.style.width = ctx.measureText(max).width + 40 + "px"
+                    e.currentTarget.style.maxWidth = "100%";
+                    e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
+                    e.currentTarget.style.maxHeight = "100%";
+
+                    ctx.restore()
+                }}
+
+                autoComplete="off"
+                autoCorrect="off"
+                autoFocus
                 tabIndex={0}
+                rows={1}
                 style={{
+                    border: "1px solid darkorange",
+                    padding: 8,
+                    scrollbarWidth: "none",
+                    resize: "none",
                     top: current.text.y + 3 - current.text.fontSize / 2,
                     left: current.text.x,
                     fontFamily: current.text.fontFamily,

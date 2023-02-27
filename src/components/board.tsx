@@ -406,17 +406,16 @@ export default function Canvas() {
 
     return (
         <main className="relative">
-            {mainState.tool === "text" ? <div
+            {mainState.tool === "text" ? <textarea
                 className="absolute outline-0"
                 onBlur={(e) => {
-                    const target = e.target as HTMLDivElement
-                    if (target.innerText === "") return
+                    const target = e.target as HTMLTextAreaElement
                     let c = document.getElementById("canvas") as HTMLCanvasElement
                     let ctx = c.getContext('2d')!;
                     ctx.save()
                     ctx.font = `bold ${current.text.fontSize}px ${current.text.fontFamily}`
                     const itemID = getRandomID()
-                    const textLines = target.innerText.split("\n")
+                    const textLines = target.value.split("\n")
                     let max = ""
                     for (let line of textLines) {
                         if (line.length > max.length) {
@@ -426,7 +425,7 @@ export default function Canvas() {
                     const textItem: Text = {
                         ...current.text,
                         id: itemID,
-                        text: target.innerText,
+                        text: target.value,
                         width: ctx.measureText(max).width,
                         height: textLines.length * current.text.fontSize
                     }
@@ -438,6 +437,7 @@ export default function Canvas() {
                     setItems([...items, textItem])
                     setCurrent(intialStates)
                     updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
+
                 }}
                 tabIndex={0}
                 style={{
@@ -448,8 +448,7 @@ export default function Canvas() {
                     color: current.text.strokeStyle,
                     fontWeight: "bold",
                 }}
-                contentEditable
-            >Write Text</div>
+            ></textarea>
                 : null
             }
             <canvas

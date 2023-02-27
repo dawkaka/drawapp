@@ -408,7 +408,9 @@ export default function Canvas() {
         <main className="relative">
             {mainState.tool === "text" ? <textarea
                 className="absolute outline-0"
+                placeholder="Enter text"
                 onBlur={(e) => {
+                    if (e.target.value.trim() === "") return
                     const target = e.target as HTMLTextAreaElement
                     let c = document.getElementById("canvas") as HTMLCanvasElement
                     let ctx = c.getContext('2d')!;

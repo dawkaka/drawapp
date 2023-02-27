@@ -110,6 +110,7 @@ export function useInitialState() {
             strokeWidth: mainState.strokeWidth,
             strokeStyle: mainState.strokeColor,
             fillStyle: mainState.fillColor,
+            alignment: mainState.textAlign
         }
     }
     return initialState

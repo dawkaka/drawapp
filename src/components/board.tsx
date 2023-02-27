@@ -120,6 +120,7 @@ export default function Canvas() {
                             strokeWidth: mainState.strokeWidth,
                             strokeStyle: mainState.strokeColor,
                             fillStyle: mainState.fillColor,
+                            alignment: mainState.textAlign
                         }
                     })
                 default:

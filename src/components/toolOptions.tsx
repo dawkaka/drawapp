@@ -158,19 +158,34 @@ function FontFamily() {
 }
 
 function TextAlign() {
-    const [selected, setSelected] = useState("left")
+    const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    function changeAlignment(v: string) {
+        if (v !== "left" && v !== "center" && v !== "right") return
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item && item.type === "text") {
+                item.alignment = v
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        setMainState({ ...mainState, textAlign: v })
+    }
+
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Text align</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={selected} value="left" onClick={setSelected}>
+                <OptionContainer selected={mainState.textAlign} value="left" onClick={changeAlignment}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <line x1="4" y1="8" x2="20" y2="8"></line><line x1="4" y1="12" x2="12" y2="12"></line><line x1="4" y1="16" x2="16" y2="16"></line></g>
                     </svg>
                 </OptionContainer>
-                <OptionContainer selected={selected} value="center" onClick={setSelected}>
+                <OptionContainer selected={mainState.textAlign} value="center" onClick={changeAlignment}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <line x1="4" y1="8" x2="20" y2="8"></line>
@@ -180,7 +195,7 @@ function TextAlign() {
                     </svg>
                 </OptionContainer>
 
-                <OptionContainer selected={selected} value="right" onClick={setSelected}>
+                <OptionContainer selected={mainState.textAlign} value="right" onClick={changeAlignment}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <line x1="4" y1="8" x2="20" y2="8"></line><line x1="10" y1="12" x2="20" y2="12">

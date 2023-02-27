@@ -15,6 +15,7 @@ export interface AppState {
     fontFamily: string,
     fontSize: number,
     textStyle: "fill" | "stroke"
+    textAlign: "center" | "left" | "right"
 }
 
 export type Point = {
@@ -87,7 +88,8 @@ export interface Text extends CanvasItemConstants {
     fillStyle: string;
     textStyle: "fill" | "stroke",
     fontFamily: string,
-    fontSize: number
+    fontSize: number,
+    alignment: "center" | "left" | "right"
 }
 
 export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image | Text

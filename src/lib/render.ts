@@ -256,7 +256,13 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     const texts = item.text.split("\n")
     let h = 0
     for (let text of texts) {
-        ctx.fillText(text, item.x, item.y + h + item.fontSize / 2)
+        let x = item.x
+        if (item.alignment === "right") {
+            x = item.x + (item.width - ctx.measureText(text).width)
+        } else if (item.alignment === "center") {
+            x = item.x + (item.width - ctx.measureText(text).width) / 2
+        }
+        ctx.fillText(text, x, item.y + h + item.fontSize / 2)
         h += item.fontSize
     }
     ctx.restore()

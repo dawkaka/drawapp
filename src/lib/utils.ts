@@ -450,7 +450,8 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
                 opacity: item.opacity,
                 fontFamily: item.fontFamily,
                 fontSize: item.fontSize,
-                tool: item.type
+                tool: item.type,
+                textAlign: item.alignment
             })
             break;
         case "arrow":

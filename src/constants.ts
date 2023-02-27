@@ -11,5 +11,6 @@ export const defaultValues: AppState = {
     selectedItemID: "",
     fontFamily: "Kalam",
     fontSize: 25,
-    textStyle: "fill"
+    textStyle: "fill",
+    textAlign: "left"
 }

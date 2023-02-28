@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { AppState } from "./jotai"
-import { CurrentState, CurrentStateMap, Diamond, Ellipse, Line, Pencil, Rectangle } from "./types"
+import { CurrentStateMap } from "./types"
 
 
 export function useInitialState() {

@@ -4,7 +4,11 @@ import { defaultValues } from "../constants";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
-import { getBoundingBox, getItemEnclosingPoint, getRandomID, getSelectedItem, isWithinItem, isWithinResizeArea, moveItem, resizeSelected, updateAppStateFromSelectedItem } from "../lib/utils";
+import {
+    getBoundingBox, getItemEnclosingPoint, getRandomID,
+    getSelectedItem, isWithinItem, isWithinResizeArea,
+    moveItem, resizeSelected, updateAppStateFromSelectedItem
+} from "../lib/utils";
 import { CurrentState, Text } from "../types";
 import History from "../lib/history";
 
@@ -375,35 +379,6 @@ export default function Canvas() {
     function handleClick(event: any) {
         updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
     }
-
-    // function handleText(event: React.KeyboardEvent<HTMLCanvasElement>) {
-    //     if (mainState.tool === "text") {
-    //         if (event.key === "Shift"
-    //             || event.key === "Control"
-    //             || event.key === "CapsLock"
-    //             || event.key === "Alt"
-    //             || event.key === "Escape"
-    //             || event.key === "ArrowLeft"
-    //             || event.key === "ArrowRight"
-    //             || event.key === "ArrowUp"
-    //             || event.key === "ArrowDown") return;
-    //         let text = current.text.text
-    //         if (event.key === "Backspace") {
-    //             text = text.substring(0, text.length - 1)
-    //         } else if (event.key === "Enter") {
-    //             text += "\n"
-    //         } else {
-    //             text += event.key
-    //         }
-    //         setCurrent({
-    //             ...current,
-    //             text: {
-    //                 ...current.text,
-    //                 text
-    //             }
-    //         })
-    //     }
-    // }
 
     return (
         <main className="relative">

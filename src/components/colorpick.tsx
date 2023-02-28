@@ -2,7 +2,6 @@ import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
 import { AppDrawings, AppState, SelectionAtom } from "../jotai"
 import { getSelectedItem, updateSingleItem } from "../lib/utils"
-import { Color } from "../types"
 
 
 export default function ColorPanel() {

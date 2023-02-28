@@ -1,9 +1,8 @@
 import { useAtom } from "jotai"
-import { useState } from "react"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import history from "../lib/history"
 import { getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
 import type { LayerMoves, Stroke, StrokeWidth } from "../types"
+
 export function FillToolsOptions() {
     return (
         <>
@@ -251,8 +250,6 @@ function OptionContainer({ selected, value, onClick, children }: { selected: str
         </button>
     )
 }
-
-
 
 export function Layers() {
     const selected = ""

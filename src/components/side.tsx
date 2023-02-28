@@ -1,12 +1,13 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
-import { AppDrawings, AppState, SelectionAtom } from "../jotai"
+import { AppDrawings, AppState } from "../jotai"
 import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
 import Modal from "./modal"
 import { FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 import history from "../lib/history"
+
 export default function Side() {
     const [closed, setClosed] = useState(false)
     const [{ tool }] = useAtom(AppState)

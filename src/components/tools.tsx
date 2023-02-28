@@ -1,5 +1,5 @@
-import { useAtom, useSetAtom } from "jotai"
-import { ReactNode, useEffect, useState } from "react"
+import { useAtom } from "jotai"
+import { ReactNode } from "react"
 import { AppDrawings, AppState, SelectionAtom } from "../jotai"
 import { deleteItem, getRandomID } from "../lib/utils"
 import type { Image, Tool } from "../types"
@@ -10,7 +10,6 @@ export default function Tools() {
     const tool = app.tool
     const [items, setItems] = useAtom(AppDrawings)
     const [selectedItem] = useAtom(SelectionAtom)
-
 
     function deleteSelectedItem() {
         if (selectedItem) {

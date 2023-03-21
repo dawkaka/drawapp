@@ -280,7 +280,6 @@ function loadImages(images: Image[]) {
     let data: any = {
     }
     return new Promise((resolve, reject) => {
-
         for (let im of images) {
             const image = new Image();
             image.src = im.data;

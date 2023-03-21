@@ -133,7 +133,7 @@ export type SelectedItem = BoxSelection | LinearSelection
 
 type DrawingTools = "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "pencil"
 
-export type Tool = "select" | "eraser" | DrawingTools
+export type Tool = "select" | "move" | "eraser" | DrawingTools
 
 
 export interface CurrentState {

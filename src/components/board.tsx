@@ -9,7 +9,7 @@ import {
     getSelectedItem, isWithinItem, isWithinResizeArea,
     moveItem, resizeSelected, updateAppStateFromSelectedItem
 } from "../lib/utils";
-import { CurrentState, Text } from "../types";
+import { CurrentState, NonDrawingTools, Text, Tool } from "../types";
 import History from "../lib/history";
 
 export default function Canvas() {
@@ -18,6 +18,7 @@ export default function Canvas() {
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
+    const nonDrawingItems: NonDrawingTools[] = ["select", "eraser", "move"]
 
     const [selectedItem] = useAtom(SelectionAtom)
 
@@ -332,9 +333,11 @@ export default function Canvas() {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
         }
-        if (mainState.tool !== "select" && mainState.tool !== "eraser") {
+
+        if (mainState.tool !== "select" && mainState.tool !== "eraser" && mainState.tool !== "move") {
             renderCurrentDrawing(ctx, current[mainState.tool])
         }
+
         if (selectedItem) {
             const bounds = getBoundingBox(selectedItem)
             if (bounds) {
@@ -357,7 +360,7 @@ export default function Canvas() {
 
     function handleMouseUp() {
         let itemID = ""
-        if (mainState.tool !== "select" && mainState.tool !== "eraser" && current) {
+        if (mainState.tool !== "select" && mainState.tool !== "eraser" && mainState.tool !== "move" && current) {
             itemID = current[mainState.tool].id
             if (itemID) {
                 setItems([...items, current[mainState.tool]])
@@ -366,7 +369,7 @@ export default function Canvas() {
             setCurrent(intialStates)
         }
 
-        if (state.drew && mainState.tool !== "select") {
+        if (state.drew && mainState.tool !== "select" && mainState.tool !== "move") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
         if (state.moved || state.resizeDir !== "") {
@@ -380,6 +383,12 @@ export default function Canvas() {
         updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
     }
 
+    function isDrawingTool(tool: Tool): boolean {
+        if (tool !== "select" && tool !== "eraser" && tool !== "move") {
+            return true
+        }
+        return false
+    }
     return (
         <main className="relative">
             {mainState.tool === "text" ? <textarea

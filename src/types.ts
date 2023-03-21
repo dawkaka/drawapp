@@ -130,17 +130,21 @@ type LinearSelection = {
 }
 
 export type SelectedItem = BoxSelection | LinearSelection
-
 type DrawingTools = "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "pencil"
+export type NonDrawingTools = "select" | "move" | "eraser"
 
-export type Tool = "select" | "move" | "eraser" | DrawingTools
+export type Tool = NonDrawingTools | DrawingTools
 
 
 export interface CurrentState {
-    line: Line, pencil: Pencil, rectangle: Rectangle,
-    diamond: Diamond, ellipse: Ellipse,
-    arrow: Arrow, image: Image,
-    text: Text
+    line: Line,
+    pencil: Pencil,
+    rectangle: Rectangle,
+    diamond: Diamond,
+    ellipse: Ellipse,
+    arrow: Arrow,
+    image: Image,
+    text: Text,
 }
 
 export type CurrentStateMap = {

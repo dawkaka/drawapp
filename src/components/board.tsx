@@ -18,11 +18,13 @@ export default function Canvas() {
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
     const [current, setCurrent] = useState<CurrentState>(intialStates)
-    const nonDrawingItems: NonDrawingTools[] = ["select", "eraser", "move"]
+    const [cameraOffset, setCameraOffset] = useState({ x: 0, y: 0 })
+    const [panStart, setPanStart] = useState<{ x: number, y: number } | null>(null);
 
     const [selectedItem] = useAtom(SelectionAtom)
 
-    function updateState(event: any, rect: DOMRect, drawInProcess: boolean) {
+
+    function updateState(event: any, drawInProcess: boolean) {
         if (!drawInProcess) {
             switch (mainState.tool) {
                 case "line":
@@ -30,8 +32,8 @@ export default function Canvas() {
                         ...current,
                         line: {
                             ...current.line,
-                            x: event.pageX - rect.left,
-                            y: event.pageY - rect.top,
+                            x: event.pageX + cameraOffset.x,
+                            y: event.pageY + cameraOffset.y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             stroke: mainState.stroke,
@@ -44,8 +46,8 @@ export default function Canvas() {
                         ...current,
                         pencil: {
                             ...current.pencil,
-                            x: event.pageX - rect.left,
-                            y: event.pageY - rect.top,
+                            x: event.pageX + cameraOffset.x,
+                            y: event.pageY + cameraOffset.y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             opacity: mainState.opacity
@@ -57,8 +59,8 @@ export default function Canvas() {
                         ...current,
                         rectangle: {
                             ...current.rectangle,
-                            x: event.pageX - rect.left,
-                            y: event.pageY - rect.top,
+                            x: event.pageX + cameraOffset.x,
+                            y: event.pageY + cameraOffset.y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
@@ -72,8 +74,8 @@ export default function Canvas() {
                         ...current,
                         diamond: {
                             ...current.diamond,
-                            x: event.pageX - rect.left,
-                            y: event.pageY - rect.top,
+                            x: event.pageX + cameraOffset.x,
+                            y: event.pageY + cameraOffset.y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
@@ -87,8 +89,8 @@ export default function Canvas() {
                         ...current,
                         ellipse: {
                             ...current.ellipse,
-                            x: event.pageX - rect.left,
-                            y: event.pageY - rect.top,
+                            x: event.pageX + cameraOffset.x,
+                            y: event.pageY + cameraOffset.y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
@@ -102,8 +104,8 @@ export default function Canvas() {
                         ...current,
                         arrow: {
                             ...current.arrow,
-                            x: event.pageX - rect.left,
-                            y: event.pageY - rect.top,
+                            x: event.pageX + cameraOffset.x,
+                            y: event.pageY + cameraOffset.y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             stroke: mainState.stroke,
@@ -116,8 +118,8 @@ export default function Canvas() {
                         ...current,
                         text: {
                             ...current.text,
-                            x: event.pageX - rect.left,
-                            y: event.pageY - rect.top,
+                            x: event.pageX + cameraOffset.x,
+                            y: event.pageY + cameraOffset.y,
                             opacity: mainState.opacity,
                             fontFamily: mainState.fontFamily,
                             fontSize: mainState.fontSize,
@@ -141,12 +143,12 @@ export default function Canvas() {
                             id: getRandomID(),
                             points: [
                                 {
-                                    x: (event.pageX - rect.left - current.line.x) / 2,
-                                    y: (event.pageY - rect.top - current.line.y) / 2
+                                    x: (event.pageX + cameraOffset.x - current.line.x) / 2,
+                                    y: (event.pageY + cameraOffset.y - current.line.y) / 2
                                 },
                                 {
-                                    x: event.pageX - rect.left - current.line.x,
-                                    y: event.pageY - rect.top - current.line.y,
+                                    x: event.pageX + cameraOffset.x - current.line.x,
+                                    y: event.pageY + cameraOffset.y - current.line.y,
                                 }],
                         }
                     })
@@ -158,8 +160,8 @@ export default function Canvas() {
                             ...current.pencil,
                             id: getRandomID(),
                             points: [...current.pencil.points, {
-                                x: event.pageX - rect.left - current.pencil.x,
-                                y: event.pageY - rect.top - current.pencil.y,
+                                x: event.pageX + cameraOffset.x - current.pencil.x,
+                                y: event.pageY + cameraOffset.y - current.pencil.y,
                             }]
                         }
                     })
@@ -170,8 +172,8 @@ export default function Canvas() {
                         rectangle: {
                             ...current.rectangle,
                             id: getRandomID(),
-                            width: event.pageX - rect.left - current.rectangle.x,
-                            height: event.pageY - rect.top - current.rectangle.y,
+                            width: event.pageX + cameraOffset.x - current.rectangle.x,
+                            height: event.pageY + cameraOffset.y - current.rectangle.y,
                         }
                     })
                     break;
@@ -181,8 +183,8 @@ export default function Canvas() {
                         diamond: {
                             ...current.diamond,
                             id: getRandomID(),
-                            width: event.pageX - rect.left - current.diamond.x,
-                            height: event.pageY - rect.top - current.diamond.y,
+                            width: event.pageX + cameraOffset.x - current.diamond.x,
+                            height: event.pageY + cameraOffset.y - current.diamond.y,
                         }
                     })
                     break;
@@ -192,8 +194,8 @@ export default function Canvas() {
                         ellipse: {
                             ...current.ellipse,
                             id: getRandomID(),
-                            width: event.pageX - rect.left - current.ellipse.x,
-                            height: event.pageY - rect.top - current.ellipse.y,
+                            width: event.pageX + cameraOffset.x - current.ellipse.x,
+                            height: event.pageY + cameraOffset.y - current.ellipse.y,
                         }
                     })
                     break;
@@ -205,12 +207,12 @@ export default function Canvas() {
                             id: getRandomID(),
                             points: [
                                 {
-                                    x: (event.pageX - rect.left - current.arrow.x) / 2,
-                                    y: (event.pageY - rect.top - current.arrow.y) / 2
+                                    x: (event.pageX + cameraOffset.x - current.arrow.x) / 2,
+                                    y: (event.pageY + cameraOffset.y - current.arrow.y) / 2
                                 },
                                 {
-                                    x: event.pageX - rect.left - current.arrow.x,
-                                    y: event.pageY - rect.top - current.arrow.y,
+                                    x: event.pageX + cameraOffset.x - current.arrow.x,
+                                    y: event.pageY + cameraOffset.y - current.arrow.y,
                                 }
                             ],
                         }
@@ -226,6 +228,7 @@ export default function Canvas() {
     function handleMouseDown(event: any) {
         let pageX;
         let pageY;
+
         if (event.type === 'touchstart') {
             pageX = event.touches[0].pageX;
             pageY = event.touches[0].pageY;
@@ -233,25 +236,29 @@ export default function Canvas() {
             pageX = event.pageX;
             pageY = event.pageY;
         }
+        if (mainState.tool === "move") {
+            setPanStart({ x: pageX, y: pageY })
+            return
+        }
+
         if (!selectedItem) {
-            let rect = document.getElementById("canvas")!.getBoundingClientRect();
-            updateState(event, rect, state.drawInProcess)
+            updateState(event, state.drawInProcess)
             setState({
                 ...state,
-                drawInProcess: true, startRectX: pageX - rect.left,
-                startRectY: pageY - rect.top
+                drawInProcess: true, startRectX: pageX,
+                startRectY: pageY,
             });
         } else if (selectedItem !== null) {
             let px = pageX as number
             let py = pageY as number
-            const resizeDir = isWithinResizeArea(px, py, selectedItem)
+            const resizeDir = isWithinResizeArea(px + cameraOffset.x, py + cameraOffset.y, selectedItem)
             if (resizeDir) {
                 setState({
-                    ...state, startRectX: px,
-                    startRectY: py,
+                    ...state, startRectX: px + cameraOffset.x,
+                    startRectY: py + cameraOffset.y,
                     resizeDir: resizeDir
                 })
-            } else if (isWithinItem(px, py, selectedItem)) {
+            } else if (isWithinItem(px + cameraOffset.x, py + cameraOffset.y, selectedItem)) {
                 setState({
                     ...state, moveStart: true, startRectX: px,
                     startRectY: py
@@ -259,7 +266,6 @@ export default function Canvas() {
             }
         }
     }
-
 
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
@@ -273,11 +279,17 @@ export default function Canvas() {
         }
     }, [])
 
+
     function handleMouseMove(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
-        let rect = c.getBoundingClientRect();
-        if (state.drawInProcess) {
-            updateState(event, rect, true)
+        if (panStart) {
+            let px = event.pageX as number
+            let py = event.pageY as number
+            setCameraOffset({ x: cameraOffset.x + (px - panStart.x), y: cameraOffset.y + (py - panStart.y) })
+            setState({ ...state, startRectX: px, startRectY: py })
+            setPanStart({ x: px, y: py })
+        } else if (state.drawInProcess && mainState.tool !== "move") {
+            updateState(event, true)
             setState({ ...state, drew: true })
         } else if (state.moveStart && selectedItem) {
             let px = event.pageX as number
@@ -298,9 +310,8 @@ export default function Canvas() {
 
     function handleTouchMove(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement;
-        let rect = c.getBoundingClientRect();
         if (state.drawInProcess) {
-            updateState(event.touches[0], rect, true);
+            updateState(event.touches[0], true);
             setState({ ...state, drew: true });
         } else if (state.moveStart && selectedItem) {
             let px = event.touches[0].pageX as number;
@@ -328,7 +339,7 @@ export default function Canvas() {
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
-        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+        ctx.clearRect(cameraOffset.x, cameraOffset.y, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
         if (items.length > 0) {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
@@ -345,6 +356,20 @@ export default function Canvas() {
             }
         }
     }, [items, current, selectedItem])
+
+    useEffect(() => {
+        let c = document.getElementById("canvas") as HTMLCanvasElement
+        let ctx = c.getContext('2d')!;
+        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+        ctx.translate(cameraOffset.x, cameraOffset.y)
+        if (items.length > 0) {
+            renderElements(ctx, items)
+            localStorage.setItem("canvasItems", JSON.stringify(items))
+        }
+        return () => {
+            ctx.translate(-cameraOffset.x, -cameraOffset.y);
+        }
+    }, [cameraOffset])
 
     useEffect(() => {
         if (!selectedItem) {
@@ -369,14 +394,15 @@ export default function Canvas() {
             setCurrent(intialStates)
         }
 
-        if (state.drew && mainState.tool !== "select" && mainState.tool !== "move") {
+        if ((state.drew && mainState.tool !== "select") || mainState.tool !== "move") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
         if (state.moved || state.resizeDir !== "") {
             History.addHistory(items)
         }
 
-        setState({ ...state, drawInProcess: false, moveStart: false, moved: false, drew: false, resizeDir: "" })
+        setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false, drew: false, resizeDir: "" })
+        setPanStart(null)
     }
 
     function handleClick(event: any) {

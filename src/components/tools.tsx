@@ -55,8 +55,8 @@ export default function Tools() {
             <div className="flex flex-wrap gap-3">
                 <CanvasTool onClick={() => setState({ ...app, tool: "move" })} tool="move" selectedTool={tool}>
                     <div style={{ width: "22px", height: "22px" }}>
-                        <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"></style>
+                        <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" fill="currentColor"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"></style>
                                 <g> <path className="st0" d="M491.258,390.579c0,0-33.165-72.935-46.424-92.832c-13.26-19.898-29.838-26.527-53.046-23.217 c-14.037,2.004-49.916,5.222-76.08,7.458l-89.91-77.892c-11.637-10.321-29.432-16.478-39.753-4.859 c-10.304,11.638-7.631,33.099,8.492,48.784l87.882,76.047c-6.266,12.762-19.16,41.4-16.628,56.571 c3.328,19.888,43.768,58.409,43.768,58.409c6.149,8.202,14.417,14.575,23.919,18.44l63.574,16.951l33.157,22.1L512,412.537 L491.258,390.579z"></path>
                                     <path className="st0" d="M301.555,222.189v20.568l2.682,2.384c1.507-0.125,2.947-0.257,4.42-0.382l70.65-39.645l-77.752-43.61v26.552 H239.86l38.504,34.134H301.555z"></path>
                                     <path className="st0" d="M172.587,179.895c7.102-6.423,16.248-9.924,26.213-9.924c2.599,0,5.256,0.24,7.913,0.712V93.229h26.568 l-43.627-77.768l-43.627,77.768h26.56V179.895z"></path>

@@ -251,14 +251,16 @@ export default function Canvas() {
         } else if (selectedItem !== null) {
             let px = pageX as number
             let py = pageY as number
-            const resizeDir = isWithinResizeArea(px + cameraOffset.x, py + cameraOffset.y, selectedItem)
+            let x = px + (-1 * cameraOffset.x)
+            let y = py + (-1 * cameraOffset.y)
+            const resizeDir = isWithinResizeArea(x, y, selectedItem)
             if (resizeDir) {
                 setState({
                     ...state, startRectX: px + cameraOffset.x,
                     startRectY: py + cameraOffset.y,
                     resizeDir: resizeDir
                 })
-            } else if (isWithinItem(px + cameraOffset.x, py + cameraOffset.y, selectedItem)) {
+            } else if (isWithinItem(x, y, selectedItem)) {
                 setState({
                     ...state, moveStart: true, startRectX: px,
                     startRectY: py
@@ -339,7 +341,7 @@ export default function Canvas() {
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
-        ctx.clearRect(cameraOffset.x, cameraOffset.y, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
         if (items.length > 0) {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
@@ -362,6 +364,8 @@ export default function Canvas() {
         let ctx = c.getContext('2d')!;
         ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
         ctx.translate(cameraOffset.x, cameraOffset.y)
+        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+
         if (items.length > 0) {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
@@ -406,7 +410,9 @@ export default function Canvas() {
     }
 
     function handleClick(event: any) {
-        updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(event.pageX, event.pageY, items) })
+        let x = event.pageX + (-1 * cameraOffset.x)
+        let y = event.pageY + (-1 * cameraOffset.y)
+        updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(x, y, items) })
     }
 
     function isDrawingTool(tool: Tool): boolean {

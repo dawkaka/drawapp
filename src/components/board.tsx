@@ -120,8 +120,8 @@ export default function Canvas() {
                         ...current,
                         text: {
                             ...current.text,
-                            x: x,
-                            y: y,
+                            x: event.pageX,
+                            y: event.pageY,
                             opacity: mainState.opacity,
                             fontFamily: mainState.fontFamily,
                             fontSize: mainState.fontSize,
@@ -423,7 +423,7 @@ export default function Canvas() {
 
     return (
         <main className="relative">
-            {mainState.tool === "text" ? <textarea
+            {(mainState.tool === "text" && current.text.x !== 0) ? <textarea
                 className="absolute outline-0 overflow-hidden"
                 placeholder="Enter text"
                 onBlur={(e) => {
@@ -443,6 +443,8 @@ export default function Canvas() {
                     }
                     const textItem: Text = {
                         ...current.text,
+                        x: current.text.x + (-1 * cameraOffset.x),
+                        y: current.text.y + (-1 * cameraOffset.y),
                         id: itemID,
                         text: target.value,
                         width: ctx.measureText(max).width,

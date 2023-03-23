@@ -344,8 +344,7 @@ export default function Canvas() {
 
         let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x
         let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y
-        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
-
+        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth + (-1 * x), window.devicePixelRatio * window.innerHeight + (-1 * y))
         if (items.length > 0) {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
@@ -369,7 +368,7 @@ export default function Canvas() {
         ctx.translate(cameraOffset.x, cameraOffset.y)
         let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x
         let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y
-        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth + (-1 * x), window.devicePixelRatio * window.innerHeight + (-1 * y))
 
         if (items.length > 0) {
             renderElements(ctx, items)

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { defaultValues } from "../constants";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
-import { renderElements, renderCurrentDrawing, renderBounds } from "../lib/render";
+import { renderElements, renderCurrentDrawing, renderBounds, drawSelection } from "../lib/render";
 import {
     getBoundingBox, getItemEnclosingPoint, getRandomID,
     getSelectedItem, isWithinItem, isWithinResizeArea,
@@ -20,6 +20,7 @@ export default function Canvas() {
     const [current, setCurrent] = useState<CurrentState>(intialStates)
     const [cameraOffset, setCameraOffset] = useState({ x: 0, y: 0 })
     const [panStart, setPanStart] = useState<{ x: number, y: number } | null>(null);
+    const [selection, setSelection] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
 
     const [selectedItem] = useAtom(SelectionAtom)
 
@@ -243,7 +244,14 @@ export default function Canvas() {
             return
         }
 
-        if (!selectedItem) {
+        if (mainState.tool === "select") {
+            setState({
+                ...state,
+                drawInProcess: true, startRectX: pageX,
+                startRectY: pageY,
+            });
+
+        } else if (!selectedItem) {
             updateState(event, state.drawInProcess)
             setState({
                 ...state,
@@ -292,6 +300,11 @@ export default function Canvas() {
             setCameraOffset({ x: cameraOffset.x + (px - panStart.x), y: cameraOffset.y + (py - panStart.y) })
             setState({ ...state, startRectX: px, startRectY: py })
             setPanStart({ x: px, y: py })
+        } else if (mainState.tool === "select" && state.drawInProcess) {
+            const w = event.pageX - state.startRectX
+            const h = event.pageY - state.startRectY
+            setSelection({ x: state.startRectX + (-1 * cameraOffset.x), y: state.startRectY + (-1 * cameraOffset.y), w, h })
+
         } else if (state.drawInProcess && mainState.tool !== "move") {
             updateState(event, true)
             setState({ ...state, drew: true })
@@ -355,14 +368,15 @@ export default function Canvas() {
         if (mainState.tool !== "select" && mainState.tool !== "eraser" && mainState.tool !== "move") {
             renderCurrentDrawing(ctx, current[mainState.tool])
         }
-
-        if (selectedItem) {
+        if (selection) {
+            drawSelection(ctx, selection)
+        } else if (selectedItem) {
             const bounds = getBoundingBox(selectedItem)
             if (bounds) {
                 renderBounds(ctx, bounds)
             }
         }
-    }, [items, current, selectedItem])
+    }, [items, current, selectedItem, selection])
 
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement

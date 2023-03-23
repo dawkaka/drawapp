@@ -295,3 +295,18 @@ function loadImages(images: Image[]) {
         }
     });
 }
+
+
+export function drawSelection(ctx: CanvasRenderingContext2D, selection: { x: number, y: number, w: number, h: number }) {
+    const { x, y, w, h } = selection
+    ctx.save()
+    ctx.strokeStyle = "darkorange"
+    ctx.fillStyle = "darkorange"
+    ctx.beginPath()
+    ctx.rect(x, y, w, h)
+    ctx.globalAlpha = 0.05
+    ctx.fill()
+    ctx.globalAlpha = 1
+    ctx.stroke()
+    ctx.restore()
+}

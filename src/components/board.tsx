@@ -341,7 +341,11 @@ export default function Canvas() {
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
-        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+
+        let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x
+        let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y
+        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+
         if (items.length > 0) {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
@@ -362,9 +366,10 @@ export default function Canvas() {
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
-        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
         ctx.translate(cameraOffset.x, cameraOffset.y)
-        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
+        let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x
+        let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y
+        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
 
         if (items.length > 0) {
             renderElements(ctx, items)
@@ -415,12 +420,6 @@ export default function Canvas() {
         updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(x, y, items) })
     }
 
-    function isDrawingTool(tool: Tool): boolean {
-        if (tool !== "select" && tool !== "eraser" && tool !== "move") {
-            return true
-        }
-        return false
-    }
     return (
         <main className="relative">
             {mainState.tool === "text" ? <textarea

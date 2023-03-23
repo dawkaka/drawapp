@@ -25,6 +25,8 @@ export default function Canvas() {
 
 
     function updateState(event: any, drawInProcess: boolean) {
+        let x = event.pageX + (-1 * cameraOffset.x)
+        let y = event.pageY + (-1 * cameraOffset.y)
         if (!drawInProcess) {
             switch (mainState.tool) {
                 case "line":
@@ -32,8 +34,8 @@ export default function Canvas() {
                         ...current,
                         line: {
                             ...current.line,
-                            x: event.pageX + cameraOffset.x,
-                            y: event.pageY + cameraOffset.y,
+                            x,
+                            y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             stroke: mainState.stroke,
@@ -46,8 +48,8 @@ export default function Canvas() {
                         ...current,
                         pencil: {
                             ...current.pencil,
-                            x: event.pageX + cameraOffset.x,
-                            y: event.pageY + cameraOffset.y,
+                            x: x,
+                            y: y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             opacity: mainState.opacity
@@ -59,8 +61,8 @@ export default function Canvas() {
                         ...current,
                         rectangle: {
                             ...current.rectangle,
-                            x: event.pageX + cameraOffset.x,
-                            y: event.pageY + cameraOffset.y,
+                            x: x,
+                            y: y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
@@ -74,8 +76,8 @@ export default function Canvas() {
                         ...current,
                         diamond: {
                             ...current.diamond,
-                            x: event.pageX + cameraOffset.x,
-                            y: event.pageY + cameraOffset.y,
+                            x: x,
+                            y: y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
@@ -89,8 +91,8 @@ export default function Canvas() {
                         ...current,
                         ellipse: {
                             ...current.ellipse,
-                            x: event.pageX + cameraOffset.x,
-                            y: event.pageY + cameraOffset.y,
+                            x: x,
+                            y: y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             fillStyle: mainState.fillColor,
@@ -104,8 +106,8 @@ export default function Canvas() {
                         ...current,
                         arrow: {
                             ...current.arrow,
-                            x: event.pageX + cameraOffset.x,
-                            y: event.pageY + cameraOffset.y,
+                            x: x,
+                            y: y,
                             strokeStyle: mainState.strokeColor,
                             strokeWidth: mainState.strokeWidth,
                             stroke: mainState.stroke,
@@ -118,8 +120,8 @@ export default function Canvas() {
                         ...current,
                         text: {
                             ...current.text,
-                            x: event.pageX + cameraOffset.x,
-                            y: event.pageY + cameraOffset.y,
+                            x: x,
+                            y: y,
                             opacity: mainState.opacity,
                             fontFamily: mainState.fontFamily,
                             fontSize: mainState.fontSize,
@@ -143,12 +145,12 @@ export default function Canvas() {
                             id: getRandomID(),
                             points: [
                                 {
-                                    x: (event.pageX + cameraOffset.x - current.line.x) / 2,
-                                    y: (event.pageY + cameraOffset.y - current.line.y) / 2
+                                    x: (x - current.line.x) / 2,
+                                    y: (y - current.line.y) / 2
                                 },
                                 {
-                                    x: event.pageX + cameraOffset.x - current.line.x,
-                                    y: event.pageY + cameraOffset.y - current.line.y,
+                                    x: x - current.line.x,
+                                    y: y - current.line.y,
                                 }],
                         }
                     })
@@ -160,8 +162,8 @@ export default function Canvas() {
                             ...current.pencil,
                             id: getRandomID(),
                             points: [...current.pencil.points, {
-                                x: event.pageX + cameraOffset.x - current.pencil.x,
-                                y: event.pageY + cameraOffset.y - current.pencil.y,
+                                x: x - current.pencil.x,
+                                y: y - current.pencil.y,
                             }]
                         }
                     })
@@ -172,8 +174,8 @@ export default function Canvas() {
                         rectangle: {
                             ...current.rectangle,
                             id: getRandomID(),
-                            width: event.pageX + cameraOffset.x - current.rectangle.x,
-                            height: event.pageY + cameraOffset.y - current.rectangle.y,
+                            width: x - current.rectangle.x,
+                            height: y - current.rectangle.y,
                         }
                     })
                     break;
@@ -183,8 +185,8 @@ export default function Canvas() {
                         diamond: {
                             ...current.diamond,
                             id: getRandomID(),
-                            width: event.pageX + cameraOffset.x - current.diamond.x,
-                            height: event.pageY + cameraOffset.y - current.diamond.y,
+                            width: x - current.diamond.x,
+                            height: y - current.diamond.y,
                         }
                     })
                     break;
@@ -194,8 +196,8 @@ export default function Canvas() {
                         ellipse: {
                             ...current.ellipse,
                             id: getRandomID(),
-                            width: event.pageX + cameraOffset.x - current.ellipse.x,
-                            height: event.pageY + cameraOffset.y - current.ellipse.y,
+                            width: x - current.ellipse.x,
+                            height: y - current.ellipse.y,
                         }
                     })
                     break;
@@ -207,12 +209,12 @@ export default function Canvas() {
                             id: getRandomID(),
                             points: [
                                 {
-                                    x: (event.pageX + cameraOffset.x - current.arrow.x) / 2,
-                                    y: (event.pageY + cameraOffset.y - current.arrow.y) / 2
+                                    x: (x - current.arrow.x) / 2,
+                                    y: (y - current.arrow.y) / 2
                                 },
                                 {
-                                    x: event.pageX + cameraOffset.x - current.arrow.x,
-                                    y: event.pageY + cameraOffset.y - current.arrow.y,
+                                    x: x - current.arrow.x,
+                                    y: y - current.arrow.y,
                                 }
                             ],
                         }

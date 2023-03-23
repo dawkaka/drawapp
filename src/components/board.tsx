@@ -256,8 +256,8 @@ export default function Canvas() {
             const resizeDir = isWithinResizeArea(x, y, selectedItem)
             if (resizeDir) {
                 setState({
-                    ...state, startRectX: px + cameraOffset.x,
-                    startRectY: py + cameraOffset.y,
+                    ...state, startRectX: px,
+                    startRectY: py,
                     resizeDir: resizeDir
                 })
             } else if (isWithinItem(x, y, selectedItem)) {

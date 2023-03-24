@@ -8,6 +8,7 @@ export const defaultValues: AppState = {
     opacity: 1,
     fillColor: "transparent",
     imageBlob: "",
+    multipleSelections: [],
     selectedItemID: "",
     fontFamily: "Kalam",
     fontSize: 25,

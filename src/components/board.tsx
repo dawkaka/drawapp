@@ -5,7 +5,7 @@ import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds, drawSelection } from "../lib/render";
 import {
-    getBoundingBox, getItemEnclosingPoint, getRandomID,
+    getBoundingBox, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
     getSelectedItem, isWithinItem, isWithinResizeArea,
     moveItem, resizeSelected, updateAppStateFromSelectedItem
 } from "../lib/utils";
@@ -21,9 +21,9 @@ export default function Canvas() {
     const [cameraOffset, setCameraOffset] = useState({ x: 0, y: 0 })
     const [panStart, setPanStart] = useState<{ x: number, y: number } | null>(null);
     const [selection, setSelection] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
+    const [multipleSelectionBounds, setMultipleSelectionBounds] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
 
     const [selectedItem] = useAtom(SelectionAtom)
-
 
     function updateState(event: any, drawInProcess: boolean) {
         let x = event.pageX + (-1 * cameraOffset.x)
@@ -303,8 +303,14 @@ export default function Canvas() {
         } else if (mainState.tool === "select" && state.drawInProcess) {
             const w = event.pageX - state.startRectX
             const h = event.pageY - state.startRectY
-            setSelection({ x: state.startRectX + (-1 * cameraOffset.x), y: state.startRectY + (-1 * cameraOffset.y), w, h })
-
+            const x = state.startRectX + (-1 * cameraOffset.x)
+            const y = state.startRectY + (-1 * cameraOffset.y)
+            setSelection({ x, y, w, h })
+            const selectedItems = getMultipleSelection(items, x, y, w, h)
+            if (selectedItems.length > 0) {
+                setMultipleSelectionBounds(getMultipleSelectionBounds(selectedItems, items))
+            }
+            updateMainState({ ...mainState, multipleSelections: selectedItems })
         } else if (state.drawInProcess && mainState.tool !== "move") {
             updateState(event, true)
             setState({ ...state, drew: true })
@@ -370,6 +376,9 @@ export default function Canvas() {
         }
         if (selection) {
             drawSelection(ctx, selection)
+            if (multipleSelectionBounds) {
+                ctx.strokeRect(multipleSelectionBounds?.x, multipleSelectionBounds?.y, multipleSelectionBounds?.w, multipleSelectionBounds?.h)
+            }
         } else if (selectedItem) {
             const bounds = getBoundingBox(selectedItem)
             if (bounds) {

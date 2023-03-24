@@ -412,6 +412,76 @@ export function getSelectedItem(id: string, items: CanvasItem[]): CanvasItem | u
     }
 }
 
+export function getMultipleSelection(items: CanvasItem[], x: number, y: number, w: number, h: number): string[] {
+    const selectedItems: string[] = []
+    items.forEach((item) => {
+        switch (item.type) {
+            case "diamond":
+            case "rectangle":
+            case "image":
+            case "ellipse":
+            case "text":
+                const { x: xx, y: yy, height, width } = item
+                let points: Point[] = [{ x: xx, y: yy }, { x: xx + width, y: yy }, { x: xx, y: yy + height }, { x: xx + width, y: yy + height }]
+                if (points.every(point => isPointInsideRectangle(point.x, point.y, x, y, w, h))) {
+                    selectedItems.push(item.id)
+                }
+                break;
+            case "arrow":
+            case "line":
+                if (item.x)
+                    if (
+                        isPointInsideRectangle(item.x, item.y, x, y, w, h) &&
+                        isPointInsideRectangle(item.x + item.points[1].x, item.y + item.points[1].y, x, y, w, h)
+                    ) {
+                        selectedItems.push(item.id)
+                    }
+            default:
+                break;
+        }
+    })
+    return selectedItems
+}
+
+
+export function getMultipleSelectionBounds(selectedItems: string[], items: CanvasItem[]) {
+    const selection = items.filter(item => selectedItems.includes(item.id)).sort()
+    const bounds = { x: Infinity, y: Infinity, w: -Infinity, h: -Infinity }
+    selection.forEach(item => {
+        switch (item.type) {
+            case "diamond":
+            case "rectangle":
+            case "image":
+            case "ellipse":
+            case "text":
+                bounds.x = Math.min(bounds.x, Math.min(item.x, item.x + item.width))
+                bounds.y = Math.min(bounds.y, Math.min(item.y, item.y + item.height))
+                bounds.w = Math.max(bounds.w, Math.max(item.x, item.x + item.width))
+                bounds.h = Math.max(bounds.h, Math.max(item.y, item.y + item.height))
+                break;
+            case "arrow":
+            case "line":
+                bounds.x = Math.min(bounds.x, Math.min(item.x, item.x + item.points[1].x))
+                bounds.y = Math.min(bounds.y, Math.min(item.y, item.y + item.points[1].y))
+                bounds.w = Math.max(bounds.w, Math.max(item.x, item.x + item.points[1].x))
+                bounds.h = Math.max(bounds.h, Math.max(item.y, item.y + item.points[1].y))
+            default:
+                break;
+        }
+        console.log(JSON.stringify(bounds), item.type)
+    })
+    bounds.w = bounds.w - bounds.x
+    bounds.h = bounds.h - bounds.y
+    return bounds
+}
+
+function isPointInsideRectangle(px: number, py: number, x: number, y: number, w: number, h: number) {
+    if (px >= x && px <= x + w && py >= y && py <= y + h) {
+        return true
+    }
+    return false
+}
+
 export function updateSingleItem(id: string, newVAlue: CanvasItem, items: CanvasItem[]): CanvasItem[] {
     const targetIndex = items.findIndex(item => item.id === id)
     if (targetIndex >= 0) {

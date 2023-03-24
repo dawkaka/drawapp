@@ -11,6 +11,7 @@ export interface AppState {
     fillColor: string,
     imageBlob: string,
     opacity: number,
+    multipleSelections: string[],
     selectedItemID: string,
     fontFamily: string,
     fontSize: number,

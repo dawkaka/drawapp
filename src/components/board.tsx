@@ -1,19 +1,19 @@
 import { useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { defaultValues } from "../constants";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
-import { renderElements, renderCurrentDrawing, renderBounds, drawSelection } from "../lib/render";
+import { renderElements, renderCurrentDrawing, renderBounds, drawSelection, drawMultipleSelectionBounds } from "../lib/render";
 import {
     getBoundingBox, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
-    getSelectedItem, isWithinItem, isWithinResizeArea,
-    moveItem, resizeSelected, updateAppStateFromSelectedItem
+    getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinResizeArea,
+    moveItem, moveItems, resizeSelected, updateAppStateFromSelectedItem
 } from "../lib/utils";
-import { CurrentState, NonDrawingTools, Text, Tool } from "../types";
+import { CurrentState, Text } from "../types";
 import History from "../lib/history";
 
 export default function Canvas() {
-    const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false })
+    const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, multiSelected: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false })
     const [mainState, updateMainState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const intialStates = useInitialState()
@@ -22,7 +22,7 @@ export default function Canvas() {
     const [panStart, setPanStart] = useState<{ x: number, y: number } | null>(null);
     const [selection, setSelection] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
     const [multipleSelectionBounds, setMultipleSelectionBounds] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
-
+    const stateRef = useRef<{ selectedItems: string[], multiMove: boolean, multiMoved: boolean }>({ multiMove: false, multiMoved: false, selectedItems: [] })
     const [selectedItem] = useAtom(SelectionAtom)
 
     function updateState(event: any, drawInProcess: boolean) {
@@ -243,8 +243,19 @@ export default function Canvas() {
             setPanStart({ x: pageX, y: pageY })
             return
         }
-
+        let px = pageX as number
+        let py = pageY as number
+        let x = px + (-1 * cameraOffset.x)
+        let y = py + (-1 * cameraOffset.y)
         if (mainState.tool === "select") {
+            if (
+                multipleSelectionBounds &&
+                isPointInsideRectangle(x, y, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.w, multipleSelectionBounds.h)
+            ) {
+                stateRef.current.multiMove = true
+            } else {
+                stateRef.current.multiMove = false
+            }
             setState({
                 ...state,
                 drawInProcess: true, startRectX: pageX,
@@ -259,10 +270,7 @@ export default function Canvas() {
                 startRectY: pageY,
             });
         } else if (selectedItem !== null) {
-            let px = pageX as number
-            let py = pageY as number
-            let x = px + (-1 * cameraOffset.x)
-            let y = py + (-1 * cameraOffset.y)
+
             const resizeDir = isWithinResizeArea(x, y, selectedItem)
             if (resizeDir) {
                 setState({
@@ -291,7 +299,6 @@ export default function Canvas() {
         }
     }, [])
 
-
     function handleMouseMove(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         if (panStart) {
@@ -300,17 +307,27 @@ export default function Canvas() {
             setCameraOffset({ x: cameraOffset.x + (px - panStart.x), y: cameraOffset.y + (py - panStart.y) })
             setState({ ...state, startRectX: px, startRectY: py })
             setPanStart({ x: px, y: py })
+        } else if (stateRef.current.multiMove) {
+            let px = event.pageX as number
+            let py = event.pageY as number
+            setState({ ...state, startRectX: px, startRectY: py, moved: true })
+            const updatedItems = moveItems(px - state.startRectX, py - state.startRectY, mainState.multipleSelections, items)
+            setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
+            if (updatedItems) {
+                setItems(updatedItems)
+            }
         } else if (mainState.tool === "select" && state.drawInProcess) {
             const w = event.pageX - state.startRectX
             const h = event.pageY - state.startRectY
             const x = state.startRectX + (-1 * cameraOffset.x)
             const y = state.startRectY + (-1 * cameraOffset.y)
             setSelection({ x, y, w, h })
-            const selectedItems = getMultipleSelection(items, x, y, w, h)
-            if (selectedItems.length > 0) {
-                setMultipleSelectionBounds(getMultipleSelectionBounds(selectedItems, items))
+            stateRef.current.selectedItems = getMultipleSelection(items, x, y, w, h)
+            if (stateRef.current.selectedItems.length > 0) {
+                setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
+                updateMainState({ ...mainState, multipleSelections: stateRef.current.selectedItems })
             }
-            updateMainState({ ...mainState, multipleSelections: selectedItems })
+
         } else if (state.drawInProcess && mainState.tool !== "move") {
             updateState(event, true)
             setState({ ...state, drew: true })
@@ -374,18 +391,18 @@ export default function Canvas() {
         if (mainState.tool !== "select" && mainState.tool !== "eraser" && mainState.tool !== "move") {
             renderCurrentDrawing(ctx, current[mainState.tool])
         }
+        if (multipleSelectionBounds) {
+            drawMultipleSelectionBounds(ctx, multipleSelectionBounds)
+        }
         if (selection) {
             drawSelection(ctx, selection)
-            if (multipleSelectionBounds) {
-                ctx.strokeRect(multipleSelectionBounds?.x, multipleSelectionBounds?.y, multipleSelectionBounds?.w, multipleSelectionBounds?.h)
-            }
         } else if (selectedItem) {
             const bounds = getBoundingBox(selectedItem)
             if (bounds) {
                 renderBounds(ctx, bounds)
             }
         }
-    }, [items, current, selectedItem, selection])
+    }, [items, current, selectedItem, selection, multipleSelectionBounds])
 
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
@@ -426,22 +443,30 @@ export default function Canvas() {
             }
             setCurrent(intialStates)
         }
-
         if ((state.drew && mainState.tool !== "select") || mainState.tool !== "move") {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
         if (state.moved || state.resizeDir !== "") {
             History.addHistory(items)
         }
-
-        setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false, drew: false, resizeDir: "" })
+        stateRef.current.multiMove = false
+        if (multipleSelectionBounds) {
+            if (!selection && !state.moved) {
+                setMultipleSelectionBounds(null)
+            }
+            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: true, moveStart: false, moved: false, drew: false, resizeDir: "" })
+        } else {
+            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false, drew: false, resizeDir: "" })
+        }
         setPanStart(null)
     }
 
     function handleClick(event: any) {
         let x = event.pageX + (-1 * cameraOffset.x)
         let y = event.pageY + (-1 * cameraOffset.y)
-        updateMainState({ ...mainState, selectedItemID: getItemEnclosingPoint(x, y, items) })
+        let selectedItemID = getItemEnclosingPoint(x, y, items)
+        setSelection(null)
+        updateMainState({ ...mainState, multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })
     }
 
     return (

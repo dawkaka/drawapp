@@ -183,6 +183,25 @@ export function moveItem(dx: number, dy: number, item: SelectedItem, items: Canv
     return items
 }
 
+export function moveItems(dx: number, dy: number, selections: string[], items: CanvasItem[]) {
+    const selItems: number[] = []
+    items.forEach((item, ind) => {
+        if (selections.includes(item.id)) {
+            selItems.push(ind)
+        }
+    })
+
+    for (let i = 0; i < selItems.length; i++) {
+        const item = items[selItems[i]]
+        items[selItems[i]] = {
+            ...item,
+            x: item.x + dx,
+            y: item.y + dy
+        }
+    }
+    return [...items]
+}
+
 export function moveItemPosition(type: LayerMoves, item: SelectedItem, items: CanvasItem[]) {
     const targetIndex = items.findIndex(val => val.id === item.id)
     let temp = items[targetIndex]
@@ -445,7 +464,7 @@ export function getMultipleSelection(items: CanvasItem[], x: number, y: number, 
 
 
 export function getMultipleSelectionBounds(selectedItems: string[], items: CanvasItem[]) {
-    const selection = items.filter(item => selectedItems.includes(item.id)).sort()
+    const selection = items.filter(item => selectedItems.includes(item.id))
     const bounds = { x: Infinity, y: Infinity, w: -Infinity, h: -Infinity }
     selection.forEach(item => {
         switch (item.type) {
@@ -468,14 +487,15 @@ export function getMultipleSelectionBounds(selectedItems: string[], items: Canva
             default:
                 break;
         }
-        console.log(JSON.stringify(bounds), item.type)
     })
-    bounds.w = bounds.w - bounds.x
-    bounds.h = bounds.h - bounds.y
+    bounds.w = bounds.w - bounds.x + 10
+    bounds.h = bounds.h - bounds.y + 10
+    bounds.x -= 5
+    bounds.y -= 5
     return bounds
 }
 
-function isPointInsideRectangle(px: number, py: number, x: number, y: number, w: number, h: number) {
+export function isPointInsideRectangle(px: number, py: number, x: number, y: number, w: number, h: number) {
     if (px >= x && px <= x + w && py >= y && py <= y + h) {
         return true
     }

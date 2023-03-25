@@ -1,4 +1,4 @@
-import type { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Image, Line, Pencil, Rectangle, Text } from "../types";
+import type { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Image, Line, MultipleSelection, Pencil, Rectangle, Text } from "../types";
 
 let imageData: any = {}
 
@@ -310,8 +310,8 @@ export function drawSelection(ctx: CanvasRenderingContext2D, selection: { x: num
     ctx.restore()
 }
 
-export function drawMultipleSelectionBounds(ctx: CanvasRenderingContext2D, selection: { x: number, y: number, w: number, h: number }) {
-    const { x, y, w, h } = selection
+export function drawMultipleSelectionBounds(ctx: CanvasRenderingContext2D, selection: MultipleSelection) {
+    const { x, y, width: w, height: h } = selection
     ctx.save()
     ctx.strokeStyle = "darkorange"
     ctx.setLineDash([5, 5]);
@@ -319,4 +319,18 @@ export function drawMultipleSelectionBounds(ctx: CanvasRenderingContext2D, selec
     ctx.rect(x, y, w, h)
     ctx.stroke()
     ctx.restore()
+
+    for (let v of Object.values(selection.resizeAreas)) {
+        ctx.save()
+        ctx.strokeStyle = "darkorange"
+        ctx.fillStyle = "white"
+        ctx.lineWidth = 3
+        ctx.beginPath()
+        ctx.arc(v.x + 5, v.y + 5, 5, 0, 360)
+        ctx.stroke()
+        ctx.fill()
+        ctx.restore()
+
+    }
+
 }

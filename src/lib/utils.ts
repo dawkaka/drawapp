@@ -1,5 +1,5 @@
 import { SetStateAction } from "jotai"
-import { AppState, BoundingBox, CanvasItem, LayerMoves, Point, SelectedItem } from "../types"
+import { AppState, BoundingBox, CanvasItem, LayerMoves, MultipleSelection, Point, RectBounds, SelectedItem } from "../types"
 import history from "./history"
 import { renderBounds } from "./render"
 
@@ -465,7 +465,15 @@ export function getMultipleSelection(items: CanvasItem[], x: number, y: number, 
 
 export function getMultipleSelectionBounds(selectedItems: string[], items: CanvasItem[]) {
     const selection = items.filter(item => selectedItems.includes(item.id))
-    const bounds = { x: Infinity, y: Infinity, w: -Infinity, h: -Infinity }
+    const bounds: MultipleSelection = {
+        x: Infinity, y: Infinity, width: -Infinity, height: -Infinity,
+        resizeAreas: {
+            tl: { x: 0, y: 0 },
+            tr: { x: 0, y: 0 },
+            bl: { x: 0, y: 0 },
+            br: { x: 0, y: 0 }
+        }
+    }
     selection.forEach(item => {
         switch (item.type) {
             case "diamond":
@@ -475,23 +483,30 @@ export function getMultipleSelectionBounds(selectedItems: string[], items: Canva
             case "text":
                 bounds.x = Math.min(bounds.x, Math.min(item.x, item.x + item.width))
                 bounds.y = Math.min(bounds.y, Math.min(item.y, item.y + item.height))
-                bounds.w = Math.max(bounds.w, Math.max(item.x, item.x + item.width))
-                bounds.h = Math.max(bounds.h, Math.max(item.y, item.y + item.height))
+                bounds.width = Math.max(bounds.width, Math.max(item.x, item.x + item.width))
+                bounds.height = Math.max(bounds.height, Math.max(item.y, item.y + item.height))
                 break;
             case "arrow":
             case "line":
                 bounds.x = Math.min(bounds.x, Math.min(item.x, item.x + item.points[1].x))
                 bounds.y = Math.min(bounds.y, Math.min(item.y, item.y + item.points[1].y))
-                bounds.w = Math.max(bounds.w, Math.max(item.x, item.x + item.points[1].x))
-                bounds.h = Math.max(bounds.h, Math.max(item.y, item.y + item.points[1].y))
+                bounds.width = Math.max(bounds.width, Math.max(item.x, item.x + item.points[1].x))
+                bounds.height = Math.max(bounds.height, Math.max(item.y, item.y + item.points[1].y))
             default:
                 break;
         }
     })
-    bounds.w = bounds.w - bounds.x + 10
-    bounds.h = bounds.h - bounds.y + 10
+    const size = 5
+    bounds.width = bounds.width - bounds.x + 10
+    bounds.height = bounds.height - bounds.y + 10
     bounds.x -= 5
     bounds.y -= 5
+    bounds.resizeAreas = {
+        tl: { x: bounds.x - size, y: bounds.y - size },
+        tr: { x: bounds.x + bounds.width - size, y: bounds.y - size },
+        bl: { x: bounds.x - size, y: bounds.y + bounds.height - size },
+        br: { x: bounds.x + bounds.width - size, y: bounds.y + bounds.height - size }
+    }
     return bounds
 }
 

@@ -9,7 +9,7 @@ import {
     getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinResizeArea,
     moveItem, moveItems, resizeSelected, updateAppStateFromSelectedItem
 } from "../lib/utils";
-import { CurrentState, Text } from "../types";
+import { CurrentState, MultipleSelection, Text } from "../types";
 import History from "../lib/history";
 
 export default function Canvas() {
@@ -21,7 +21,7 @@ export default function Canvas() {
     const [cameraOffset, setCameraOffset] = useState({ x: 0, y: 0 })
     const [panStart, setPanStart] = useState<{ x: number, y: number } | null>(null);
     const [selection, setSelection] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
-    const [multipleSelectionBounds, setMultipleSelectionBounds] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
+    const [multipleSelectionBounds, setMultipleSelectionBounds] = useState<MultipleSelection | null>(null)
     const stateRef = useRef<{ selectedItems: string[], multiMove: boolean, multiMoved: boolean }>({ multiMove: false, multiMoved: false, selectedItems: [] })
     const [selectedItem] = useAtom(SelectionAtom)
 
@@ -250,7 +250,7 @@ export default function Canvas() {
         if (mainState.tool === "select") {
             if (
                 multipleSelectionBounds &&
-                isPointInsideRectangle(x, y, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.w, multipleSelectionBounds.h)
+                isPointInsideRectangle(x, y, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
             ) {
                 stateRef.current.multiMove = true
             } else {

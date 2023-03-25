@@ -95,7 +95,7 @@ export interface Text extends CanvasItemConstants {
 
 export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image | Text
 
-type RectBounds = { x: number, y: number, width: number, height: number }
+export type RectBounds = { x: number, y: number, width: number, height: number }
 
 export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
     type: "rectangle" | "ellipse" | "diamond",
@@ -136,7 +136,6 @@ export type NonDrawingTools = "select" | "move" | "eraser"
 
 export type Tool = NonDrawingTools | DrawingTools
 
-
 export interface CurrentState {
     line: Line,
     pencil: Pencil,
@@ -154,3 +153,6 @@ export type CurrentStateMap = {
 
 
 export type LayerMoves = "to-back" | "step-backward" | "to-front" | "step-forward"
+
+
+export type MultipleSelection = RectBounds & { resizeAreas: { tl: Point, tr: Point, bl: Point, br: Point } }

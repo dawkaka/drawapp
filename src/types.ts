@@ -154,5 +154,6 @@ export type CurrentStateMap = {
 
 export type LayerMoves = "to-back" | "step-backward" | "to-front" | "step-forward"
 
+export interface ResizePoints { tl: Point, tr: Point, bl: Point, br: Point }
 
-export type MultipleSelection = RectBounds & { resizeAreas: { tl: Point, tr: Point, bl: Point, br: Point } }
+export interface MultipleSelection extends RectBounds { resizeAreas: ResizePoints }

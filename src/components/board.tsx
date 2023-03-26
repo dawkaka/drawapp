@@ -5,9 +5,10 @@ import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds, drawSelection, drawMultipleSelectionBounds } from "../lib/render";
 import {
+    calculatePointsDistance,
     getBoundingBox, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
-    getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinResizeArea,
-    moveItem, moveItems, resizeSelected, updateAppStateFromSelectedItem
+    getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinMultiSelectionResizeArea, isWithinResizeArea,
+    moveItem, moveItems, resizeMultipleItems, resizeSelected, updateAppStateFromSelectedItem
 } from "../lib/utils";
 import { CurrentState, MultipleSelection, Text } from "../types";
 import History from "../lib/history";
@@ -248,19 +249,29 @@ export default function Canvas() {
         let x = px + (-1 * cameraOffset.x)
         let y = py + (-1 * cameraOffset.y)
         if (mainState.tool === "select") {
-            if (
-                multipleSelectionBounds &&
-                isPointInsideRectangle(x, y, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
-            ) {
-                stateRef.current.multiMove = true
+            if (multipleSelectionBounds && isWithinMultiSelectionResizeArea(x, y, multipleSelectionBounds.resizeAreas)) {
+                const resizeDir = isWithinMultiSelectionResizeArea(x, y, multipleSelectionBounds.resizeAreas)
+                console.log(resizeDir)
+                if (resizeDir) {
+                    setState({
+                        ...state,
+                        resizeDir: resizeDir,
+                        drawInProcess: true, startRectX: pageX,
+                        startRectY: pageY,
+                    });
+                }
             } else {
-                stateRef.current.multiMove = false
+                if (multipleSelectionBounds && isPointInsideRectangle(x, y, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)) {
+                    stateRef.current.multiMove = true
+                } else {
+                    stateRef.current.multiMove = false
+                }
+                setState({
+                    ...state,
+                    drawInProcess: true, startRectX: pageX,
+                    startRectY: pageY,
+                });
             }
-            setState({
-                ...state,
-                drawInProcess: true, startRectX: pageX,
-                startRectY: pageY,
-            });
 
         } else if (!selectedItem) {
             updateState(event, state.drawInProcess)
@@ -299,6 +310,7 @@ export default function Canvas() {
         }
     }, [])
 
+
     function handleMouseMove(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         if (panStart) {
@@ -316,6 +328,13 @@ export default function Canvas() {
             if (updatedItems) {
                 setItems(updatedItems)
             }
+        } else if (state.resizeDir && multipleSelectionBounds) {
+            let px = event.pageX as number
+            let py = event.pageY as number
+            setState({ ...state, startRectX: px, startRectY: py })
+            const d = calculatePointsDistance(px, state.startRectX, py, state.startRectY)
+            const updatedItems = resizeMultipleItems(state.resizeDir, d, mainState.multipleSelections, items, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
+            setItems(updatedItems)
         } else if (mainState.tool === "select" && state.drawInProcess) {
             const w = event.pageX - state.startRectX
             const h = event.pageY - state.startRectY

@@ -1,5 +1,5 @@
 import { SetStateAction } from "jotai"
-import { AppState, BoundingBox, CanvasItem, LayerMoves, MultipleSelection, Point, RectBounds, SelectedItem } from "../types"
+import { AppState, BoundingBox, CanvasItem, LayerMoves, MultipleSelection, Point, RectBounds, ResizePoints, SelectedItem } from "../types"
 import history from "./history"
 import { renderBounds } from "./render"
 
@@ -12,7 +12,6 @@ export function getRandomID() {
     }
     return id
 }
-
 
 export function getBoundingBox(item: SelectedItem): BoundingBox | null {
     switch (item.type) {
@@ -126,6 +125,15 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
     return false
 }
 
+export function isWithinMultiSelectionResizeArea(x: number, y: number, resizeAreas: ResizePoints) {
+    for (const [key, val] of Object.entries(resizeAreas)) {
+        if (isPointInsideRectangle(x, y, val.x, val.y, 10, 10)) {
+            return key
+        }
+    }
+    return undefined
+}
+
 export function isWithinResizeArea(pointerX: number, pointerY: number, item: SelectedItem) {
     const bounds = getBoundingBox(item)
     if (bounds) {
@@ -221,6 +229,57 @@ export function moveItemPosition(type: LayerMoves, item: SelectedItem, items: Ca
         return items
     }
     return [...items]
+}
+
+export function calculatePointsDistance(x2: number, x1: number, y2: number, y1: number) {
+    const xD = x2 - x1;
+    const yD = y2 - y1;
+    const distance = Math.sqrt(xD * xD + yD * yD);
+    return distance;
+}
+
+
+export function resizeMultipleItems(dir: string, d: number, selections: string[], items: CanvasItem[], selX: number, selY: number, selW: number, selH: number): CanvasItem[] {
+    const selectedItems = items.filter(item => selections.includes(item.id))
+
+    // find the bounding box of the selection
+    const bb = { x: selX, y: selY, width: selW, height: selH }
+
+    // calculate the aspect ratio of the selection
+    const selAspectRatio = bb.width / bb.height
+
+    // calculate the scaling factor based on the target width
+    const targetWidth = bb.width + d
+    const scaleFactor = targetWidth / bb.width
+
+    // calculate the new dimensions for each item
+    for (const item of selectedItems) {
+        const dx = item.x - bb.x
+        const dy = item.y - bb.y
+
+        const newWidth = item.width * scaleFactor
+        const newHeight = newWidth / selAspectRatio
+
+        const newX = bb.x + dx * scaleFactor
+        const newY = bb.y + dy * scaleFactor
+
+        // update the item with the new dimensions and position
+        items = items.map(i => {
+            if (i.id === item.id) {
+                return {
+                    ...i,
+                    x: newX,
+                    y: newY,
+                    width: newWidth,
+                    height: newHeight
+                }
+            }
+            return i
+        })
+    }
+
+    return items
+
 }
 
 

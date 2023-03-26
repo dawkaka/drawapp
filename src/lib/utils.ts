@@ -246,7 +246,7 @@ export function resizeMultipleItems(dir: string, d: number, selections: string[]
     const bb = { x: selX, y: selY, width: selW, height: selH }
 
     // calculate the aspect ratio of the selection
-    const selAspectRatio = bb.width / bb.height
+    // const selAspectRatio = bb.width / bb.height
 
     // calculate the scaling factor based on the target width
     const targetWidth = bb.width + d
@@ -256,6 +256,8 @@ export function resizeMultipleItems(dir: string, d: number, selections: string[]
     for (const item of selectedItems) {
         const dx = item.x - bb.x
         const dy = item.y - bb.y
+
+        const selAspectRatio = item.width / item.height
 
         const newWidth = item.width * scaleFactor
         const newHeight = newWidth / selAspectRatio

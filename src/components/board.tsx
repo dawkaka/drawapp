@@ -334,6 +334,8 @@ export default function Canvas() {
             setState({ ...state, startRectX: px, startRectY: py })
             const d = calculatePointsDistance(px, state.startRectX, py, state.startRectY)
             const updatedItems = resizeMultipleItems(state.resizeDir, d, mainState.multipleSelections, items, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
+            setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
+
             setItems(updatedItems)
         } else if (mainState.tool === "select" && state.drawInProcess) {
             const w = event.pageX - state.startRectX

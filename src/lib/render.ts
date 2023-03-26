@@ -214,7 +214,6 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
 
 export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox) {
     ctx.save()
-    ctx.lineWidth = 3
     ctx.strokeStyle = "darkorange"
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
@@ -224,8 +223,17 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
         case "diamond":
         case "image":
             ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
-            for (let p of Object.values(bounds.resizeAreas)) {
-                ctx.strokeRect(p.x, p.y, p.width, p.height)
+            for (let v of Object.values(bounds.resizeAreas)) {
+                ctx.save()
+                ctx.strokeStyle = "darkorange"
+                ctx.fillStyle = "white"
+                ctx.lineWidth = 3
+                ctx.beginPath()
+                ctx.arc(v.x + 5, v.y + 5, 5, 0, 360)
+                ctx.stroke()
+                ctx.fill()
+                ctx.restore()
+
             }
             break;
         case "line":

@@ -18,18 +18,18 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
         case "rectangle":
         case "ellipse":
         case "diamond":
-            let sx = item.width < 0 ? item.x + item.strokeWidth + 1 : item.x - item.strokeWidth - 1
-            let sy = item.height < 0 ? item.y + item.strokeWidth + 1 : item.y - item.strokeWidth - 1
-            let ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 : item.width + item.strokeWidth * 2 + 2
-            let ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 : item.height + item.strokeWidth * 2 + 2
-            let ptl = { x: sx - 10, y: sy - 10, width: 10, height: 10 }
-            let ptr = { x: sx + ex, y: sy - 10, width: 10, height: 10 }
-            let pbl = { x: sx - 10, y: sy + ey, width: 10, height: 10 }
-            let pbr = { x: sx + ex, y: sy + ey, width: 10, height: 10 }
-            let mt = { x: sx - 5 + ex / 2, y: sy - 10, width: 10, height: 10 }
-            let mr = { x: sx + ex, y: sy - 5 + ey / 2, width: 10, height: 10 }
-            let mb = { x: sx - 5 + ex / 2, y: sy + ey, width: 10, height: 10 }
-            let ml = { x: sx - 10, y: sy - 5 + ey / 2, width: 10, height: 10 }
+            let sx = item.width < 0 ? item.x + item.strokeWidth + 1 - 5 : item.x - item.strokeWidth - 1 - 5
+            let sy = item.height < 0 ? item.y + item.strokeWidth + 1 - 5 : item.y - item.strokeWidth - 1 - 5
+            let ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 - 10 : item.width + item.strokeWidth * 2 + 2 + 10
+            let ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 - 10 : item.height + item.strokeWidth * 2 + 2 + 10
+            let ptl = { x: sx - 5, y: sy - 5, width: 10, height: 10 }
+            let ptr = { x: sx + ex - 5, y: sy - 5, width: 10, height: 10 }
+            let pbl = { x: sx - 5, y: sy + ey - 5, width: 10, height: 10 }
+            let pbr = { x: sx + ex - 5, y: sy + ey - 5, width: 10, height: 10 }
+            let mt = { x: sx - 5 + ex / 2, y: sy - 5, width: 10, height: 10 }
+            let mr = { x: sx + ex - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
+            let mb = { x: sx - 5 + ex / 2, y: sy + ey - 5, width: 10, height: 10 }
+            let ml = { x: sx - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
 
             return {
                 type: item.type,

@@ -238,7 +238,7 @@ export function calculatePointsDistance(x2: number, x1: number, y2: number, y1: 
     return distance;
 }
 
-
+//Thank you chatGPT
 export function resizeMultipleItems(dir: string, d: number, selections: string[], items: CanvasItem[], selX: number, selY: number, selW: number, selH: number): CanvasItem[] {
     const selectedItems = items.filter(item => selections.includes(item.id))
 

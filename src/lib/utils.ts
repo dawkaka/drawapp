@@ -58,10 +58,10 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
         case "text":
             return {
                 type: item.type,
-                x: item.x - 10,
-                y: item.y - 10,
-                width: item.width + 20,
-                height: item.height + 20
+                x: item.x - 5,
+                y: item.y - 5,
+                width: item.width + 10,
+                height: item.height + 10,
             }
         case "image":
             return {
@@ -71,10 +71,10 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                 width: item.width,
                 height: item.height,
                 resizeAreas: {
-                    ptl: { x: item.x - 10, y: item.y - 10, width: 10, height: 10 },
-                    ptr: { x: item.x + item.width, y: item.y - 10, width: 10, height: 10 },
-                    pbl: { x: item.x - 10, y: item.height + item.y, width: 10, height: 10 },
-                    pbr: { x: item.x + item.width, y: item.height + item.y, width: 10, height: 10 }
+                    ptl: { x: item.x - 5, y: item.y - 5, width: 10, height: 10 },
+                    ptr: { x: item.x + item.width - 5, y: item.y - 5, width: 10, height: 10 },
+                    pbl: { x: item.x - 5, y: item.height + item.y - 5, width: 10, height: 10 },
+                    pbr: { x: item.x + item.width - 5, y: item.height + item.y - 5, width: 10, height: 10 }
                 }
             }
         default:

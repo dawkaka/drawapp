@@ -238,10 +238,33 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             break;
         case "line":
         case "arrow":
-            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
-            ctx.strokeRect(bounds.x - 5, bounds.y - 5, 10, 10)
-            ctx.strokeRect(bounds.x + bounds.width - 5, bounds.y + bounds.height - 5, 10, 10)
-            ctx.strokeRect(bounds.curveControl.x - 5, bounds.curveControl.y - 5, 10, 10)
+            ctx.save()
+            ctx.strokeStyle = "darkorange"
+            ctx.fillStyle = "white"
+
+            ctx.beginPath()
+            ctx.moveTo(bounds.x, bounds.y)
+            ctx.lineTo(bounds.x + bounds.width, bounds.y + bounds.height)
+            ctx.stroke()
+            ctx.fill()
+
+            ctx.beginPath()
+            ctx.arc(bounds.x, bounds.y, 5, 0, 360)
+            ctx.stroke()
+            ctx.fill()
+
+            ctx.beginPath()
+            ctx.arc(bounds.x + bounds.width, bounds.y + bounds.height, 5, 0, 360)
+            ctx.stroke()
+            ctx.fill()
+
+            ctx.beginPath()
+            ctx.arc(bounds.curveControl.x, bounds.curveControl.y, 5, 0, 360)
+            ctx.stroke()
+            ctx.fill()
+
+            ctx.restore()
+
             break;
         case "text":
             ctx.strokeRect(bounds.x, bounds.y - 10, bounds.width, bounds.height)

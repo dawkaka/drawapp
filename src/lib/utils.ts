@@ -282,9 +282,12 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
         const item = items[ind]
         const dx = item.x - bb.x
         const dy = item.y - bb.y
-
-        const selAspectRatio = item.width / item.height
-
+        let selAspectRatio = item.width / item.height
+        if (item.type === "line" || item.type === "arrow") {
+            item.width = Math.abs(item.points[1].x)
+            item.height = Math.abs(item.points[1].y)
+            selAspectRatio = Math.abs(item.points[1].x) / Math.abs(item.points[1].y)
+        }
         let newWidth, newHeight, newX, newY
         switch (dir) {
             case "br":
@@ -318,15 +321,30 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
                 newY = item.y
                 break;
         }
+        if (item.type === "line" || item.type === "arrow") {
+            const { points } = item
+            const { x, y } = points[1]
+            points[1].x = newWidth ? x < 0 ? -newWidth : newWidth : points[1].x
+            points[1].y = newHeight ? y < 0 ? -newHeight : newHeight : points[1].y
+            points[0].x = points[1].x / 2
+            points[0].y = points[1].y / 2
+            items[ind] = {
+                ...item,
+                x: newX ? newX : item.x,
+                y: newY ? newY : item.y,
+                points
 
-        // update the item with the new dimensions and position
-        items[ind] = {
-            ...item,
-            x: newX ? newX : item.x,
-            y: newY ? newY : item.y,
-            width: newWidth ? newWidth : item.width,
-            height: newHeight ? newHeight : item.height
+            }
+        } else {
+            items[ind] = {
+                ...item,
+                x: newX ? newX : item.x,
+                y: newY ? newY : item.y,
+                width: newWidth ? newWidth : item.width,
+                height: newHeight ? newHeight : item.height
+            }
         }
+
     }
 
     return [...items]

@@ -251,7 +251,6 @@ export default function Canvas() {
         if (mainState.tool === "select") {
             if (multipleSelectionBounds && isWithinMultiSelectionResizeArea(x, y, multipleSelectionBounds.resizeAreas)) {
                 const resizeDir = isWithinMultiSelectionResizeArea(x, y, multipleSelectionBounds.resizeAreas)
-                console.log(resizeDir)
                 if (resizeDir) {
                     setState({
                         ...state,
@@ -332,11 +331,15 @@ export default function Canvas() {
             let px = event.pageX as number
             let py = event.pageY as number
             setState({ ...state, startRectX: px, startRectY: py })
-            const d = calculatePointsDistance(px, state.startRectX, py, state.startRectY)
-            const updatedItems = resizeMultipleItems(state.resizeDir, d, mainState.multipleSelections, items, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
+            const dy = py - state.startRectY
+            const dx = px - state.startRectX
+            let updatedItems = resizeMultipleItems(state.resizeDir, dy, dx, mainState.multipleSelections, items, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
+            if (state.resizeDir !== "br") {
+                updatedItems = resizeMultipleItems(state.resizeDir, dy, dx, mainState.multipleSelections, items, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
+            }
+            setItems(updatedItems)
             setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
 
-            setItems(updatedItems)
         } else if (mainState.tool === "select" && state.drawInProcess) {
             const w = event.pageX - state.startRectX
             const h = event.pageY - state.startRectY

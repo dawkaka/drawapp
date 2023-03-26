@@ -238,51 +238,100 @@ export function calculatePointsDistance(x2: number, x1: number, y2: number, y1: 
     return distance;
 }
 
-//Thank you chatGPT
-export function resizeMultipleItems(dir: string, d: number, selections: string[], items: CanvasItem[], selX: number, selY: number, selW: number, selH: number): CanvasItem[] {
-    const selectedItems = items.filter(item => selections.includes(item.id))
+export function resizeMultipleItems(dir: string, dx: number, dy: number, selections: string[], items: CanvasItem[], selX: number, selY: number, selW: number, selH: number): CanvasItem[] {
 
-    // find the bounding box of the selection
+    const itemsPosition: number[] = []
+    items.forEach((item, ind) => {
+        if (selections.includes(item.id)) {
+            itemsPosition.push(ind)
+        }
+    })
+
     const bb = { x: selX, y: selY, width: selW, height: selH }
 
-    // calculate the aspect ratio of the selection
-    // const selAspectRatio = bb.width / bb.height
+    let d = Math.sqrt(dx * dx + dy * dy)
+    switch (dir) {
+        case "br":
+            if (dx < 0 || dy < 0) {
+                d = 0 - d
+            }
+            break;
+        case "tl":
+            if (dx > 0 || dy > 0) {
+                d = 0 - d
+            }
+            break;
+        case "tr":
+            if (dx > 0 || dy < 0) {
+                d = 0 - d
+            }
+            break;
+        case "bl":
+            if (dx < 0 || dy > 0) {
+                d = 0 - d
+            }
+            break;
+        default:
+            break;
+    }
 
-    // calculate the scaling factor based on the target width
     const targetWidth = bb.width + d
     const scaleFactor = targetWidth / bb.width
 
-    // calculate the new dimensions for each item
-    for (const item of selectedItems) {
+    for (const ind of itemsPosition) {
+        const item = items[ind]
         const dx = item.x - bb.x
         const dy = item.y - bb.y
 
         const selAspectRatio = item.width / item.height
 
-        const newWidth = item.width * scaleFactor
-        const newHeight = newWidth / selAspectRatio
-
-        const newX = bb.x + dx * scaleFactor
-        const newY = bb.y + dy * scaleFactor
+        let newWidth, newHeight, newX, newY
+        switch (dir) {
+            case "br":
+                newWidth = item.width * scaleFactor
+                newHeight = newWidth / selAspectRatio
+                newX = bb.x + dx * scaleFactor
+                newY = bb.y + dy * scaleFactor
+                break;
+            case "tl":
+                newWidth = item.width * scaleFactor
+                newHeight = newWidth / selAspectRatio
+                newX = bb.x + bb.width - (dx + item.width) * scaleFactor
+                newY = bb.y + bb.height - (dy + item.height) * scaleFactor
+                break;
+            case "tr":
+                newWidth = item.width * scaleFactor
+                newHeight = newWidth / selAspectRatio
+                newX = bb.x + dx * scaleFactor
+                newY = bb.y + bb.height - (dy + item.height) * scaleFactor
+                break;
+            case "bl":
+                newWidth = item.width * scaleFactor
+                newHeight = newWidth / selAspectRatio
+                newX = bb.x + bb.width - (dx + item.width) * scaleFactor
+                newY = bb.y + dy * scaleFactor
+                break;
+            default:
+                newWidth = item.width
+                newHeight = item.height
+                newX = item.x
+                newY = item.y
+                break;
+        }
 
         // update the item with the new dimensions and position
-        items = items.map(i => {
-            if (i.id === item.id) {
-                return {
-                    ...i,
-                    x: newX,
-                    y: newY,
-                    width: newWidth,
-                    height: newHeight
-                }
-            }
-            return i
-        })
+        items[ind] = {
+            ...item,
+            x: newX ? newX : item.x,
+            y: newY ? newY : item.y,
+            width: newWidth ? newWidth : item.width,
+            height: newHeight ? newHeight : item.height
+        }
     }
 
-    return items
-
+    return [...items]
 }
+
 
 
 export function resizeSelected(dir: string, dx: number, dy: number, item: SelectedItem, items: CanvasItem[]) {

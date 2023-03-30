@@ -707,3 +707,21 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
             break;
     }
 }
+
+
+export function simplifyPath(points: Point[], distance: number) {
+    const newPoints = [];
+    newPoints.push(points[0]);
+
+    for (let i = 1; i < points.length; i++) {
+        const dx = points[i].x - newPoints[newPoints.length - 1].x;
+        const dy = points[i].y - newPoints[newPoints.length - 1].y;
+        const len = Math.sqrt(dx * dx + dy * dy);
+
+        if (len > distance) {
+            newPoints.push(points[i]);
+        }
+    }
+
+    return newPoints;
+}

@@ -79,12 +79,26 @@ function pencilDraw(ctx: CanvasRenderingContext2D, item: Pencil) {
     ctx.lineJoin = "round"
     ctx.globalAlpha = item.opacity
     ctx.beginPath();
-    for (let i = 0; i < item.points.length; i++) {
-        let p = item.points[i]
-        ctx.lineTo(item.x + p.x, item.y + p.y);
-        ctx.moveTo(item.x + p.x, item.y + p.y);
+    ctx.moveTo(item.x, item.y);
+
+    // Loop through the points and draw a line to each one
+    for (let i = 1; i < item.points.length; i++) {
+        // Calculate the control points for this segment
+        const cp1 = {
+            x: (item.x + item.points[i - 1].x + item.x + item.points[i].x) / 2,
+            y: (item.y + item.points[i - 1].y + item.y + item.points[i].y) / 2
+        };
+        const cp2 = {
+            x: cp1.x + (Math.random() * 2 - 1) * item.strokeWidth * 0.2,
+            y: cp1.y + (Math.random() * 2 - 1) * item.strokeWidth * 0.2
+        };
+
+        // Draw a Bezier curve to the next point
+        ctx.bezierCurveTo(cp2.x, cp2.y, cp1.x, cp1.y, item.x + item.points[i].x, item.y + item.points[i].y);
     }
-    ctx.stroke()
+
+    // Stroke the path
+    ctx.stroke();
     ctx.restore()
 }
 

@@ -8,9 +8,9 @@ import {
     calculatePointsDistance,
     getBoundingBox, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
     getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinMultiSelectionResizeArea, isWithinResizeArea,
-    moveItem, moveItems, resizeMultipleItems, resizeSelected, updateAppStateFromSelectedItem
+    moveItem, moveItems, resizeMultipleItems, resizeSelected, simplifyPath, updateAppStateFromSelectedItem
 } from "../lib/utils";
-import { CurrentState, MultipleSelection, Text } from "../types";
+import { CurrentState, MultipleSelection, Point, Text } from "../types";
 import History from "../lib/history";
 
 export default function Canvas() {
@@ -158,15 +158,16 @@ export default function Canvas() {
                     })
                     break;
                 case "pencil":
+                    const points = simplifyPath([...current.pencil.points, {
+                        x: x - current.pencil.x,
+                        y: y - current.pencil.y,
+                    }], 5)
                     setCurrent({
                         ...current,
                         pencil: {
                             ...current.pencil,
                             id: getRandomID(),
-                            points: [...current.pencil.points, {
-                                x: x - current.pencil.x,
-                                y: y - current.pencil.y,
-                            }]
+                            points
                         }
                     })
                     break;

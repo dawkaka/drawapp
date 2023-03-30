@@ -250,6 +250,9 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
 
             }
             break;
+        case "pencil":
+            ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
+            break;
         case "line":
         case "arrow":
             ctx.save()

@@ -109,6 +109,10 @@ export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
         type: "image"
         resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds }
     }
+    |
+    RectBounds & {
+        type: "pencil",
+    }
 
 
 type BoxSelection = {
@@ -122,7 +126,7 @@ type BoxSelection = {
 }
 
 type LinearSelection = {
-    type: "line" | "arrow"
+    type: "line" | "arrow" | "pencil"
     id: string;
     x: number;
     y: number;
@@ -130,7 +134,9 @@ type LinearSelection = {
     strokeWidth: number
 }
 
+
 export type SelectedItem = BoxSelection | LinearSelection
+
 type DrawingTools = "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "pencil"
 export type NonDrawingTools = "select" | "move" | "eraser"
 

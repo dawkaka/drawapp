@@ -77,6 +77,8 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                     pbr: { x: item.x + item.width - 5, y: item.height + item.y - 5, width: 10, height: 10 }
                 }
             }
+        case "pencil":
+            return { type: "pencil", ...getPointsBoundingRect(item.points, item.x, item.y) }
         default:
             break;
     }
@@ -115,6 +117,10 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
                 return true
             case "arrow":
             case "line":
+                if (pointerX < sx || pointerY < sy) return false
+                if (pointerX > sx + ex || pointerY > sy + ey) return false
+                return true
+            case "pencil":
                 if (pointerX < sx || pointerY < sy) return false
                 if (pointerX > sx + ex || pointerY > sy + ey) return false
                 return true
@@ -514,7 +520,12 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
 
                     return item.id
                 }
-
+                break;
+            case "pencil":
+                const boundingRect = getPointsBoundingRect(item.points, item.x, item.y)
+                if (isPointInsideRectangle(pointerX, pointerY, boundingRect.x, boundingRect.y, boundingRect.width, boundingRect.height)) {
+                    return item.id
+                }
             default:
                 break;
         }
@@ -583,6 +594,9 @@ export function getMultipleSelection(items: CanvasItem[], x: number, y: number, 
                     ) {
                         selectedItems.push(item.id)
                     }
+                break;
+            case "pencil":
+
             default:
                 break;
         }
@@ -724,4 +738,34 @@ export function simplifyPath(points: Point[], distance: number) {
     }
 
     return newPoints;
+}
+
+
+function getPointsBoundingRect(points: Point[], x: number, y: number) {
+    let minX = Number.MAX_VALUE;
+    let minY = Number.MAX_VALUE;
+    let maxX = Number.MIN_VALUE;
+    let maxY = Number.MIN_VALUE;
+
+    for (let i = 0; i < points.length; i++) {
+        if (points[i].x < minX) {
+            minX = points[i].x;
+        }
+        if (points[i].y < minY) {
+            minY = points[i].y;
+        }
+        if (points[i].x > maxX) {
+            maxX = points[i].x;
+        }
+        if (points[i].y > maxY) {
+            maxY = points[i].y;
+        }
+    }
+
+    return {
+        x: x + minX,
+        y: y + minY,
+        width: maxX - minX,
+        height: maxY - minY
+    };
 }

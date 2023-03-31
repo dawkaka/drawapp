@@ -98,7 +98,7 @@ export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow |
 export type RectBounds = { x: number, y: number, width: number, height: number }
 
 export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
-    type: "rectangle" | "ellipse" | "diamond",
+    type: "rectangle" | "ellipse" | "diamond" | "pencil",
     resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, mt: RectBounds, mr: RectBounds, mb: RectBounds, ml: RectBounds }
 } |
     RectBounds & {
@@ -108,10 +108,6 @@ export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
     | RectBounds & {
         type: "image"
         resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds }
-    }
-    |
-    RectBounds & {
-        type: "pencil",
     }
 
 

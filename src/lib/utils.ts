@@ -18,18 +18,18 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
         case "rectangle":
         case "ellipse":
         case "diamond":
-            let sx = item.width < 0 ? item.x + item.strokeWidth + 1 - 5 : item.x - item.strokeWidth - 1 - 5
-            let sy = item.height < 0 ? item.y + item.strokeWidth + 1 - 5 : item.y - item.strokeWidth - 1 - 5
-            let ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 - 10 : item.width + item.strokeWidth * 2 + 2 + 10
-            let ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 - 10 : item.height + item.strokeWidth * 2 + 2 + 10
-            let ptl = { x: sx - 5, y: sy - 5, width: 10, height: 10 }
-            let ptr = { x: sx + ex - 5, y: sy - 5, width: 10, height: 10 }
-            let pbl = { x: sx - 5, y: sy + ey - 5, width: 10, height: 10 }
-            let pbr = { x: sx + ex - 5, y: sy + ey - 5, width: 10, height: 10 }
-            let mt = { x: sx - 5 + ex / 2, y: sy - 5, width: 10, height: 10 }
-            let mr = { x: sx + ex - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
-            let mb = { x: sx - 5 + ex / 2, y: sy + ey - 5, width: 10, height: 10 }
-            let ml = { x: sx - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
+            var sx = item.width < 0 ? item.x + item.strokeWidth + 1 - 5 : item.x - item.strokeWidth - 1 - 5
+            var sy = item.height < 0 ? item.y + item.strokeWidth + 1 - 5 : item.y - item.strokeWidth - 1 - 5
+            var ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 - 10 : item.width + item.strokeWidth * 2 + 2 + 10
+            var ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 - 10 : item.height + item.strokeWidth * 2 + 2 + 10
+            var ptl = { x: sx - 5, y: sy - 5, width: 10, height: 10 }
+            var ptr = { x: sx + ex - 5, y: sy - 5, width: 10, height: 10 }
+            var pbl = { x: sx - 5, y: sy + ey - 5, width: 10, height: 10 }
+            var pbr = { x: sx + ex - 5, y: sy + ey - 5, width: 10, height: 10 }
+            var mt = { x: sx - 5 + ex / 2, y: sy - 5, width: 10, height: 10 }
+            var mr = { x: sx + ex - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
+            var mb = { x: sx - 5 + ex / 2, y: sy + ey - 5, width: 10, height: 10 }
+            var ml = { x: sx - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
 
             return {
                 type: item.type,
@@ -78,7 +78,30 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                 }
             }
         case "pencil":
-            return { type: "pencil", ...getPointsBoundingRect(item.points, item.x, item.y) }
+            const rect = getPointsBoundingRect(item.points, item.x, item.y)
+            var sx = rect.x - 5
+            var sy = rect.y - 5
+            var ex = rect.width + 10
+            var ey = rect.height + 10
+            var ptl = { x: sx - 5, y: sy - 5, width: 10, height: 10 }
+            var ptr = { x: sx + ex - 5, y: sy - 5, width: 10, height: 10 }
+            var pbl = { x: sx - 5, y: sy + ey - 5, width: 10, height: 10 }
+            var pbr = { x: sx + ex - 5, y: sy + ey - 5, width: 10, height: 10 }
+            var mt = { x: sx - 5 + ex / 2, y: sy - 5, width: 10, height: 10 }
+            var mr = { x: sx + ex - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
+            var mb = { x: sx - 5 + ex / 2, y: sy + ey - 5, width: 10, height: 10 }
+            var ml = { x: sx - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
+            return {
+                type: "pencil",
+                x: sx,
+                y: sy,
+                width: ex,
+                height: ey,
+                resizeAreas: {
+                    ptl, ptr, pbl, pbr,
+                    mt, mr, mb, ml
+                }
+            }
         default:
             break;
     }

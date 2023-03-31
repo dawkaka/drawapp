@@ -25,6 +25,7 @@ export const SelectionAtom = atom((get): SelectedItem | null => {
             case "image":
                 return { id: item.id, type: item.type, x: item.x, y: item.y, width: item.width, height: item.height, strokeWidth: 0 }
             case "pencil":
+                return { id: item.id, type: item.type, x: item.x, y: item.y, points: item.points, strokeWidth: item.strokeWidth }
             default:
                 break;
         }

@@ -281,7 +281,6 @@ export default function Canvas() {
                 startRectY: pageY,
             });
         } else if (selectedItem !== null) {
-
             const resizeDir = isWithinResizeArea(x, y, selectedItem)
             if (resizeDir) {
                 setState({

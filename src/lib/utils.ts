@@ -717,6 +717,16 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
                 ...currentState,
                 tool: "image",
             })
+            break;
+        case "pencil":
+            setState({
+                ...currentState,
+                strokeColor: item.strokeStyle,
+                strokeWidth: item.strokeWidth,
+                opacity: item.opacity,
+                tool: item.type
+            })
+            break;
         default:
             break;
     }
@@ -741,7 +751,7 @@ export function simplifyPath(points: Point[], distance: number) {
 }
 
 
-function getPointsBoundingRect(points: Point[], x: number, y: number) {
+export function getPointsBoundingRect(points: Point[], x: number, y: number) {
     let minX = Number.MAX_VALUE;
     let minY = Number.MAX_VALUE;
     let maxX = Number.MIN_VALUE;

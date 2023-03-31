@@ -19,7 +19,7 @@ export default function ColorPanel() {
                     const item = getSelectedItem(selectedItem.id, items)
                     if (item && (item.type === "text" || item.type === "arrow" ||
                         item.type === "line" || item.type === "diamond" ||
-                        item.type === "rectangle" || item.type === "ellipse")) {
+                        item.type === "rectangle" || item.type === "ellipse" || item.type === "pencil")) {
                         item.strokeStyle = selectedColor
                         setItems(updateSingleItem(selectedItem.id, item, items))
                     }

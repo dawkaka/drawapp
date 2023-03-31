@@ -296,7 +296,7 @@ function StrokeWidth() {
     const width = (val: StrokeWidth) => {
         if (selectedItem) {
             const item = getSelectedItem(selectedItem.id, items)
-            if (item && (item.type === "arrow" || item.type === "line" || item.type === "diamond" || item.type === "rectangle" || item.type === "ellipse")) {
+            if (item && (item.type === "arrow" || item.type === "line" || item.type === "diamond" || item.type === "rectangle" || item.type === "ellipse" || item.type === "pencil")) {
                 item.strokeWidth = val
                 setItems(updateSingleItem(selectedItem.id, item, items))
             }

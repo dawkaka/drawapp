@@ -75,11 +75,10 @@ function pencilDraw(ctx: CanvasRenderingContext2D, item: Pencil) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = item.strokeStyle
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"
+
     ctx.globalAlpha = item.opacity
     ctx.beginPath();
-    ctx.moveTo(item.x, item.y);
+    ctx.moveTo(item.x + item.points[0].x, item.y + item.points[0].y);
 
     // Loop through the points and draw a line to each one
     for (let i = 1; i < item.points.length; i++) {

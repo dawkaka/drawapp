@@ -170,6 +170,7 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
             case "rectangle":
             case "ellipse":
             case "diamond":
+            case "pencil":
             case "image":
                 for (const [key, val] of Object.entries(bounds.resizeAreas)) {
                     if (pointerX > val.x && pointerY > val.y && pointerX < val.x + 10 && pointerY < val.y + 10) {
@@ -386,11 +387,18 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
     if (targetIndex === -1) return items
     if (dir === "pbr") {
         let item = { ...items[targetIndex] }
-        item.width += dx
-        item.height += dy
-        items[targetIndex] = item
+        if (item.type === "pencil") {
+            item.points = resizeHandDrawnPath(item.points, dx, dy)
+            items[targetIndex] = item
+
+        } else {
+            item.width += dx
+            item.height += dy
+            items[targetIndex] = item
+        }
         return [...items]
     }
+
     if (dir === "ptl") {
         let item = { ...items[targetIndex] }
         item.x += dx
@@ -813,4 +821,39 @@ export function getPointsBoundingRect(points: Point[], x: number, y: number) {
         width: maxX - minX,
         height: maxY - minY
     };
+}
+
+function resizeHandDrawnPath(points: Point[], dx: number, dy: number) {
+    // Compute the bounding box of the points
+    let minX = points[0].x;
+    let minY = points[0].y;
+    let maxX = points[0].x;
+    let maxY = points[0].y;
+    for (let i = 1; i < points.length; i++) {
+        const point = points[i];
+        if (point.x < minX) minX = point.x;
+        if (point.y < minY) minY = point.y;
+        if (point.x > maxX) maxX = point.x;
+        if (point.y > maxY) maxY = point.y;
+    }
+
+    // Compute the center of the bounding box
+    const centerX = (minX + maxX) / 2;
+    const centerY = (minY + maxY) / 2;
+
+    // Compute the scaling factors based on the desired width and height
+    const targetWidth = maxX - minX;
+    const targetHeight = maxY - minY;
+    const scaleX = (targetWidth + dx) / targetWidth;
+    const scaleY = (targetHeight + dy) / targetHeight;
+
+    // Scale and translate the points
+    const result = [];
+    for (let i = 0; i < points.length; i++) {
+        const point = points[i];
+        const x = (point.x - centerX) * scaleX + centerX;
+        const y = (point.y - centerY) * scaleY + centerY;
+        result.push({ x, y });
+    }
+    return result;
 }

@@ -579,8 +579,8 @@ export function getMultipleSelection(items: CanvasItem[], x: number, y: number, 
             case "image":
             case "ellipse":
             case "text":
-                const { x: xx, y: yy, height, width } = item
-                let points: Point[] = [{ x: xx, y: yy }, { x: xx + width, y: yy }, { x: xx, y: yy + height }, { x: xx + width, y: yy + height }]
+                var { x: xx, y: yy, height, width } = item
+                var points: Point[] = [{ x: xx, y: yy }, { x: xx + width, y: yy }, { x: xx, y: yy + height }, { x: xx + width, y: yy + height }]
                 if (points.every(point => isPointInsideRectangle(point.x, point.y, x, y, w, h))) {
                     selectedItems.push(item.id)
                 }
@@ -596,7 +596,13 @@ export function getMultipleSelection(items: CanvasItem[], x: number, y: number, 
                     }
                 break;
             case "pencil":
-
+                const rect = getPointsBoundingRect(item.points, item.x, item.y)
+                var { x: xx, y: yy, height, width } = rect
+                var points: Point[] = [{ x: xx, y: yy }, { x: xx + width, y: yy }, { x: xx, y: yy + height }, { x: xx + width, y: yy + height }]
+                if (points.every(point => isPointInsideRectangle(point.x, point.y, x, y, w, h))) {
+                    selectedItems.push(item.id)
+                }
+                break;
             default:
                 break;
         }
@@ -634,6 +640,12 @@ export function getMultipleSelectionBounds(selectedItems: string[], items: Canva
                 bounds.y = Math.min(bounds.y, Math.min(item.y, item.y + item.points[1].y))
                 bounds.width = Math.max(bounds.width, Math.max(item.x, item.x + item.points[1].x))
                 bounds.height = Math.max(bounds.height, Math.max(item.y, item.y + item.points[1].y))
+            case "pencil":
+                const rect = getPointsBoundingRect(item.points, item.x, item.y)
+                bounds.x = Math.min(bounds.x, Math.min(rect.x, rect.x + rect.width))
+                bounds.y = Math.min(bounds.y, Math.min(rect.y, rect.y + rect.height))
+                bounds.width = Math.max(bounds.width, Math.max(rect.x, rect.x + rect.width))
+                bounds.height = Math.max(bounds.height, Math.max(rect.y, rect.y + rect.height))
             default:
                 break;
         }

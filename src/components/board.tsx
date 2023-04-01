@@ -316,12 +316,13 @@ export default function Canvas() {
         let px = event.pageX as number
         let py = event.pageY as number
         if (panStart) {
+            setCursor(Cursor.Grabbing)
             setCameraOffset({ x: cameraOffset.x + (px - panStart.x), y: cameraOffset.y + (py - panStart.y) })
             setState({ ...state, startRectX: px, startRectY: py })
             setPanStart({ x: px, y: py })
         } else if (stateRef.current.multiMove) {
             setState({ ...state, startRectX: px, startRectY: py, moved: true })
-            setCursor(Cursor.Grabbing)
+            setCursor(Cursor.Move)
             const updatedItems = moveItems(px - state.startRectX, py - state.startRectY, mainState.multipleSelections, items)
             setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
             if (updatedItems) {
@@ -354,7 +355,7 @@ export default function Canvas() {
             updateState(event, true)
             setState({ ...state, drew: true })
         } else if (state.moveStart && selectedItem) {
-            setCursor(Cursor.Grabbing)
+            setCursor(Cursor.Move)
             setState({ ...state, startRectX: px, startRectY: py, moved: true })
             const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items)
             if (updatedItems) {
@@ -380,13 +381,13 @@ export default function Canvas() {
                             isPointInsideRectangle(px, py, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
                         )
                     ) {
-                        setCursor(Cursor.Grab)
+                        setCursor(Cursor.Move)
                     } else {
                         setCursor(Cursor.Auto)
                     }
                 }
             } else {
-                setCursor(Cursor.Auto)
+                setCursor(getCursor(mainState.tool))
             }
         }
     }
@@ -475,6 +476,9 @@ export default function Canvas() {
         }
     }, [selectedItem?.id])
 
+    useEffect(() => {
+        setCursor(getCursor(mainState.tool))
+    }, [mainState])
 
     function handleMouseUp() {
         let itemID = ""

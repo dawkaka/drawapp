@@ -406,6 +406,15 @@ export function getCursor(dir: string): Cursor {
         case "pe":
         case "ps":
             return Cursor.Move
+        case "rectangle":
+        case "line":
+        case "diamond":
+        case "ellipse":
+        case "arrow":
+        case "pencil":
+            return Cursor.Crosshair
+        case "move":
+            return Cursor.Grab
         default:
             return Cursor.Auto
     }

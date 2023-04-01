@@ -2,6 +2,7 @@ import { SetStateAction } from "jotai"
 import { AppState, BoundingBox, CanvasItem, LayerMoves, MultipleSelection, Point, RectBounds, ResizePoints, SelectedItem } from "../types"
 import history from "./history"
 import { renderBounds } from "./render"
+import { Cursor } from "../constants"
 
 export function getRandomID() {
     const alphabets = "abc8debg7hijkl0mn6GH5IJKLMNo9pq1rstuv2wxy3zABCD4EFOPQRSTUVWSYZ"
@@ -380,6 +381,35 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
     return [...items]
 }
 
+export function getCursor(dir: string): Cursor {
+    switch (dir) {
+        case "pbl":
+        case "bl":
+            return Cursor.SwResize
+        case "pbr":
+        case "br":
+            return Cursor.SeResize
+        case "ptl":
+        case "tl":
+            return Cursor.NwResize
+        case "ptr":
+        case "tr":
+            return Cursor.NeResize
+        case "ml":
+            return Cursor.EResize
+        case "mr":
+            return Cursor.WResize
+        case "mt":
+            return Cursor.NResize
+        case "mb":
+            return Cursor.SResize
+        case "pe":
+        case "ps":
+            return Cursor.Move
+        default:
+            return Cursor.Auto
+    }
+}
 
 
 export function resizeSelected(dir: string, dx: number, dy: number, item: SelectedItem, items: CanvasItem[]) {

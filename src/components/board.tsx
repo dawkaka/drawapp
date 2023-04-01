@@ -1,12 +1,12 @@
 import { useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
-import { defaultValues } from "../constants";
+import { Cursor, defaultValues } from "../constants";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds, drawSelection, drawMultipleSelectionBounds } from "../lib/render";
 import {
     calculatePointsDistance,
-    getBoundingBox, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
+    getBoundingBox, getCursor, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
     getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinMultiSelectionResizeArea, isWithinResizeArea,
     moveItem, moveItems, resizeMultipleItems, resizeSelected, simplifyPath, updateAppStateFromSelectedItem
 } from "../lib/utils";
@@ -25,6 +25,7 @@ export default function Canvas() {
     const [multipleSelectionBounds, setMultipleSelectionBounds] = useState<MultipleSelection | null>(null)
     const stateRef = useRef<{ selectedItems: string[], multiMove: boolean, multiMoved: boolean }>({ multiMove: false, multiMoved: false, selectedItems: [] })
     const [selectedItem] = useAtom(SelectionAtom)
+    const [cursor, setCursor] = useState<Cursor>(Cursor.Auto);
 
     function updateState(event: any, drawInProcess: boolean) {
         let x = event.pageX + (-1 * cameraOffset.x)
@@ -312,24 +313,21 @@ export default function Canvas() {
 
     function handleMouseMove(event: any) {
         let c = document.getElementById("canvas") as HTMLCanvasElement
+        let px = event.pageX as number
+        let py = event.pageY as number
         if (panStart) {
-            let px = event.pageX as number
-            let py = event.pageY as number
             setCameraOffset({ x: cameraOffset.x + (px - panStart.x), y: cameraOffset.y + (py - panStart.y) })
             setState({ ...state, startRectX: px, startRectY: py })
             setPanStart({ x: px, y: py })
         } else if (stateRef.current.multiMove) {
-            let px = event.pageX as number
-            let py = event.pageY as number
             setState({ ...state, startRectX: px, startRectY: py, moved: true })
+            setCursor(Cursor.Grabbing)
             const updatedItems = moveItems(px - state.startRectX, py - state.startRectY, mainState.multipleSelections, items)
             setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
             if (updatedItems) {
                 setItems(updatedItems)
             }
         } else if (state.resizeDir && multipleSelectionBounds) {
-            let px = event.pageX as number
-            let py = event.pageY as number
             setState({ ...state, startRectX: px, startRectY: py })
             const dy = py - state.startRectY
             const dx = px - state.startRectX
@@ -356,19 +354,40 @@ export default function Canvas() {
             updateState(event, true)
             setState({ ...state, drew: true })
         } else if (state.moveStart && selectedItem) {
-            let px = event.pageX as number
-            let py = event.pageY as number
+            setCursor(Cursor.Grabbing)
             setState({ ...state, startRectX: px, startRectY: py, moved: true })
             const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items)
             if (updatedItems) {
                 setItems(updatedItems)
             }
         } else if (state.resizeDir && selectedItem) {
-            let px = event.pageX as number
-            let py = event.pageY as number
             setState({ ...state, startRectX: px, startRectY: py })
             const updatedItems = resizeSelected(state.resizeDir, px - state.startRectX, py - state.startRectY, selectedItem, items)
             setItems(updatedItems)
+        } else {
+            if (selectedItem || multipleSelectionBounds) {
+                let resizeDir = selectedItem ? isWithinResizeArea(px, py, selectedItem) : multipleSelectionBounds ? isWithinMultiSelectionResizeArea(px, py, multipleSelectionBounds?.resizeAreas) : ""
+                if (resizeDir) {
+                    setCursor(getCursor(resizeDir))
+                } else {
+                    if (
+                        (
+                            selectedItem &&
+                            isWithinItem(px, py, selectedItem)
+                        ) ||
+                        (
+                            multipleSelectionBounds &&
+                            isPointInsideRectangle(px, py, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
+                        )
+                    ) {
+                        setCursor(Cursor.Grab)
+                    } else {
+                        setCursor(Cursor.Auto)
+                    }
+                }
+            } else {
+                setCursor(Cursor.Auto)
+            }
         }
     }
 
@@ -575,7 +594,8 @@ export default function Canvas() {
                 className="appearance-none outline-0"
                 id="canvas"
                 style={{
-                    backgroundColor: "white"
+                    backgroundColor: "white",
+                    cursor
                 }}
                 tabIndex={0}
                 onMouseDown={handleMouseDown}

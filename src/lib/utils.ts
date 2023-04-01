@@ -546,6 +546,7 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
 }
 
 export function getItemEnclosingPoint(pointerX: number, pointerY: number, items: CanvasItem[]): string {
+    let boundingItems: { id: string, area: number, fill: boolean }[] = []
     for (let i = items.length - 1; i >= 0; i--) {
         const item = items[i]
         switch (item.type) {
@@ -559,7 +560,7 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
                         { x: item.x + item.points[1].x - 15, y: item.y + item.points[1].y - 15 }
                     )
                 ) {
-                    return item.id
+                    boundingItems.push({ id: item.id, area: Math.abs(item.points[1].x * item.points[1].y), fill: false })
                 }
                 break;
             case "diamond":
@@ -575,7 +576,7 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
                     )
                 ) {
 
-                    return item.id
+                    boundingItems.push({ id: item.id, area: Math.abs(item.width * item.height), fill: item.type === "image" ? true : item.fillStyle !== "transparent" })
                 }
                 break;
             case "text":
@@ -588,18 +589,31 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
                     )
                 ) {
 
-                    return item.id
+                    boundingItems.push({ id: item.id, area: Math.abs(item.width * item.height), fill: true })
                 }
                 break;
             case "pencil":
                 const boundingRect = getPointsBoundingRect(item.points, item.x, item.y)
                 if (isPointInsideRectangle(pointerX, pointerY, boundingRect.x, boundingRect.y, boundingRect.width, boundingRect.height)) {
-                    return item.id
+                    boundingItems.push({ id: item.id, area: Math.abs(boundingRect.width * boundingRect.height), fill: false })
                 }
             default:
                 break;
         }
 
+    }
+    let smallest = { id: "", area: Number.MAX_VALUE }
+    boundingItems.forEach(i => {
+        if (i.area < smallest.area) {
+            smallest = { id: i.id, area: i.area }
+        }
+    })
+    for (let v of boundingItems) {
+        if (v.id === smallest.id) {
+            return v.id
+        } else if (v.fill) {
+            return v.id
+        }
     }
     return ""
 }

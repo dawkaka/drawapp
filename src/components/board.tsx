@@ -492,7 +492,7 @@ export default function Canvas() {
             }
             setCurrent(intialStates)
         }
-        if ((state.drew && mainState.tool !== "select") || mainState.tool !== "move") {
+        if ((state.drew && mainState.tool !== "select") || (mainState.tool !== "move" && state.resizeDir === "")) {
             updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
         }
         if (state.moved || state.resizeDir !== "") {
@@ -500,12 +500,12 @@ export default function Canvas() {
         }
         stateRef.current.multiMove = false
         if (multipleSelectionBounds) {
-            if (!selection && !state.moved) {
+            if (!selection && !state.moved && !state.resizeDir) {
                 setMultipleSelectionBounds(null)
             }
-            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: true, moveStart: false, moved: false, drew: false, resizeDir: "" })
+            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: true, moveStart: false, moved: false, drew: false })
         } else {
-            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false, drew: false, resizeDir: "" })
+            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false, drew: false })
         }
         setPanStart(null)
     }
@@ -513,7 +513,11 @@ export default function Canvas() {
     function handleClick(event: any) {
         let x = event.pageX + (-1 * cameraOffset.x)
         let y = event.pageY + (-1 * cameraOffset.y)
-        let selectedItemID = getItemEnclosingPoint(x, y, items)
+        let selectedItemID = selectedItem ? selectedItem.id : ""
+        if (state.resizeDir === "" || (!selectedItem && !multipleSelectionBounds)) {
+            selectedItemID = getItemEnclosingPoint(x, y, items)
+        }
+        setState({ ...state, resizeDir: "" })
         setSelection(null)
         updateMainState({ ...mainState, multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })
     }

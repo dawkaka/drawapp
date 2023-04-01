@@ -366,19 +366,21 @@ export default function Canvas() {
             const updatedItems = resizeSelected(state.resizeDir, px - state.startRectX, py - state.startRectY, selectedItem, items)
             setItems(updatedItems)
         } else {
+            const x = px + (-1 * cameraOffset.x)
+            const y = py + (-1 * cameraOffset.y)
             if (selectedItem || multipleSelectionBounds) {
-                let resizeDir = selectedItem ? isWithinResizeArea(px, py, selectedItem) : multipleSelectionBounds ? isWithinMultiSelectionResizeArea(px, py, multipleSelectionBounds?.resizeAreas) : ""
+                let resizeDir = selectedItem ? isWithinResizeArea(x, y, selectedItem) : multipleSelectionBounds ? isWithinMultiSelectionResizeArea(x, y, multipleSelectionBounds?.resizeAreas) : ""
                 if (resizeDir) {
                     setCursor(getCursor(resizeDir))
                 } else {
                     if (
                         (
                             selectedItem &&
-                            isWithinItem(px, py, selectedItem)
+                            isWithinItem(x, y, selectedItem)
                         ) ||
                         (
                             multipleSelectionBounds &&
-                            isPointInsideRectangle(px, py, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
+                            isPointInsideRectangle(x, y, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
                         )
                     ) {
                         setCursor(Cursor.Move)
@@ -478,7 +480,7 @@ export default function Canvas() {
 
     useEffect(() => {
         setCursor(getCursor(mainState.tool))
-    }, [mainState])
+    }, [mainState.tool])
 
     function handleMouseUp() {
         let itemID = ""

@@ -426,9 +426,11 @@ export default function Canvas() {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
 
-        let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x
-        let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y
-        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth + (-1 * x), window.devicePixelRatio * window.innerHeight + (-1 * y))
+        let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x;
+        let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y;
+        let width = window.devicePixelRatio * window.innerWidth + Math.abs(cameraOffset.x * 2);
+        let height = window.devicePixelRatio * window.innerHeight + Math.abs(cameraOffset.y * 2);
+        ctx.clearRect(x, y, width, height);
         if (items.length > 0) {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))
@@ -454,10 +456,11 @@ export default function Canvas() {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
         ctx.translate(cameraOffset.x, cameraOffset.y)
-        let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x
-        let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y
-        ctx.clearRect(x, y, window.devicePixelRatio * window.innerWidth + (-1 * x), window.devicePixelRatio * window.innerHeight + (-1 * y))
-
+        let x = cameraOffset.x < 0 ? cameraOffset.x : 0 - cameraOffset.x;
+        let y = cameraOffset.y < 0 ? cameraOffset.y : 0 - cameraOffset.y;
+        let width = window.devicePixelRatio * window.innerWidth + Math.abs(cameraOffset.x * 2);
+        let height = window.devicePixelRatio * window.innerHeight + Math.abs(cameraOffset.y * 2);
+        ctx.clearRect(x, y, width, height);
         if (items.length > 0) {
             renderElements(ctx, items)
             localStorage.setItem("canvasItems", JSON.stringify(items))

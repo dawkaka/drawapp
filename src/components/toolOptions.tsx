@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
+import { getRandomID, getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
 import type { LayerMoves, Stroke, StrokeWidth } from "../types"
 
 export function FillToolsOptions() {
@@ -255,10 +255,18 @@ export function Actoins() {
     const [items, setItems] = useAtom(AppDrawings)
     const [selectedItem] = useAtom(SelectionAtom)
 
-    function handleSelect(val: string) {
+    function handleCopy(val: string) {
         if (selectedItem) {
-            const updatedItemLayer = moveItemPosition(val as LayerMoves, selectedItem, items)
-            setItems(updatedItemLayer)
+            let ind = items.findIndex((v) => v.id === selectedItem.id)
+            if (ind < 0) {
+                return
+            }
+            let dup = { ...items[ind] }
+            dup.x += 5
+            dup.y += 5
+            dup.id = getRandomID()
+            let updatedItems = [...items.slice(0, ind + 1), dup, ...items.slice(ind + 1)]
+            setItems(updatedItems)
         }
     }
 
@@ -267,7 +275,7 @@ export function Actoins() {
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Action</legend>
             <div className="flex gap-3">
-                <OptionContainer selected={selected} value="to-back" onClick={handleSelect}>
+                <OptionContainer selected={selected} value="to-back" onClick={handleCopy}>
                     <svg fill="#000000" height="24px" width="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                         xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xmlSpace="preserve">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>

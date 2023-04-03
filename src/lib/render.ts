@@ -1,4 +1,5 @@
 import type { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Image, Line, MultipleSelection, Pencil, Rectangle, Text } from "../types";
+import { getPointsBoundingRect } from "./utils";
 
 let imageData: any = {}
 
@@ -68,15 +69,15 @@ export async function renderElements(ctx: CanvasRenderingContext2D, items: Canva
     });
 }
 
-
-
-
 function pencilDraw(ctx: CanvasRenderingContext2D, item: Pencil) {
+    const r = getPointsBoundingRect(item.points, item.x, item.y)
     ctx.save()
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = item.strokeStyle
-
     ctx.globalAlpha = item.opacity
+    ctx.translate(r.x + r.width / 2, r.y + r.height / 2);
+    ctx.rotate(item.angle);
+    ctx.translate(-r.x - r.width / 2, -r.y - r.height / 2);
     ctx.beginPath();
     ctx.moveTo(item.x + item.points[0].x, item.y + item.points[0].y);
 
@@ -131,7 +132,9 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.globalAlpha = item.opacity
-
+    ctx.translate(item.x + item.width / 2, item.y + item.height / 2);
+    ctx.rotate(item.angle);
+    ctx.translate(-item.x - item.width / 2, -item.y - item.height / 2);
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
@@ -147,19 +150,22 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
 
 function diamondDraw(ctx: CanvasRenderingContext2D, item: Diamond) {
     ctx.save();
-    ctx.translate(item.x, item.y);
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = item.strokeStyle
     ctx.fillStyle = item.fillStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.globalAlpha = item.opacity
+    ctx.beginPath();
+    ctx.translate(item.x + item.width / 2, item.y + item.height / 2);
+    ctx.rotate(item.angle);
+    ctx.translate(-item.x - item.width / 2, -item.y - item.height / 2);
+    ctx.translate(item.x, item.y);
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
         ctx.setLineDash([20, 15]);
     }
-    ctx.beginPath();
     ctx.moveTo(item.width / 2, 0)
     ctx.lineTo(item.width, item.height / 2);
     ctx.lineTo(item.width / 2, item.height);
@@ -176,6 +182,9 @@ function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
     ctx.strokeStyle = item.strokeStyle
     ctx.fillStyle = item.fillStyle
     ctx.globalAlpha = item.opacity
+    ctx.translate(item.x + item.width / 2, item.y + item.height / 2);
+    ctx.rotate(item.angle);
+    ctx.translate(-item.x - item.width / 2, -item.y - item.height / 2);
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
@@ -196,6 +205,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.globalAlpha = item.opacity
+    ctx.rotate(item.angle)
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
@@ -236,7 +246,12 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
         case "diamond":
         case "pencil":
         case "image":
+            ctx.save()
+            ctx.translate(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+            ctx.rotate(bounds.angle);
+            ctx.translate(-bounds.x - bounds.width / 2, -bounds.y - bounds.height / 2);
             ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
+            ctx.restore()
             for (let v of Object.values(bounds.resizeAreas)) {
                 ctx.save()
                 ctx.strokeStyle = "darkorange"
@@ -297,6 +312,7 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     ctx.lineJoin = "round"
     ctx.fillStyle = item.strokeStyle
     ctx.globalAlpha = item.opacity
+    ctx.rotate(item.angle)
     ctx.font = `bold ${item.fontSize}px ${item.fontFamily}`
     const texts = item.text.split("\n")
     let h = 0
@@ -316,6 +332,9 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
 function imageDraw(ctx: CanvasRenderingContext2D, item: Image, imageData: HTMLImageElement) {
     ctx.save();
     ctx.globalAlpha = item.opacity;
+    ctx.translate(item.x + item.width / 2, item.y + item.height / 2);
+    ctx.rotate(item.angle);
+    ctx.translate(-item.x - item.width / 2, -item.y - item.height / 2);
     ctx.scale(item.width < 0 ? -1 : 1, item.height < 0 ? -1 : 1)
     ctx.drawImage(imageData, item.width < 0 ? -item.x - item.width : item.x, item.height < 0 ? -item.y - item.height : item.y, item.width, item.height);
     ctx.restore();

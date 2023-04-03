@@ -13,6 +13,7 @@ export function useInitialState() {
             width: 0,
             height: 0,
             x: 0,
+            angle: 0,
             y: 0,
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
@@ -27,6 +28,7 @@ export function useInitialState() {
             height: 0,
             x: 0,
             y: 0,
+            angle: 0,
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             opacity: mainState.opacity,
@@ -38,6 +40,7 @@ export function useInitialState() {
             height: 0,
             x: 0,
             y: 0,
+            angle: 0,
             strokeStyle: mainState.strokeColor,
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
@@ -50,6 +53,7 @@ export function useInitialState() {
             type: "diamond",
             width: 0,
             height: 0,
+            angle: 0,
             x: 0,
             y: 0,
             strokeStyle: mainState.strokeColor,
@@ -62,6 +66,7 @@ export function useInitialState() {
         ellipse: {
             id: "",
             type: "ellipse",
+            angle: 0,
             width: 0,
             height: 0,
             x: 0,
@@ -74,6 +79,7 @@ export function useInitialState() {
         },
         arrow: {
             id: "",
+            angle: 0,
             type: "arrow",
             points: [{ x: 0, y: 0 }],
             width: 0,
@@ -88,6 +94,7 @@ export function useInitialState() {
         image: {
             id: "",
             type: "image",
+            angle: 0,
             width: 0,
             height: 0,
             x: 0,
@@ -98,6 +105,7 @@ export function useInitialState() {
         text: {
             id: "",
             opacity: mainState.opacity,
+            angle: 0,
             type: "text",
             width: 0,
             height: 0,

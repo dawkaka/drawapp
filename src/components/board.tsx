@@ -8,7 +8,7 @@ import {
     calculatePointsDistance,
     getBoundingBox, getCursor, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
     getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinMultiSelectionResizeArea, isWithinResizeArea,
-    moveItem, moveItems, resizeMultipleItems, resizeSelected, simplifyPath, updateAppStateFromSelectedItem
+    moveItem, moveItems, resizeMultipleItems, resizeSelected, rotateItem, simplifyPath, updateAppStateFromSelectedItem
 } from "../lib/utils";
 import { CurrentState, MultipleSelection, Point, Text } from "../types";
 import History from "../lib/history";
@@ -363,7 +363,12 @@ export default function Canvas() {
             }
         } else if (state.resizeDir && selectedItem) {
             setState({ ...state, startRectX: px, startRectY: py })
-            const updatedItems = resizeSelected(state.resizeDir, px - state.startRectX, py - state.startRectY, selectedItem, items)
+            let updatedItems = items
+            if (state.resizeDir === "rot") {
+                updatedItems = rotateItem(selectedItem, items, px, py)
+            } else {
+                updatedItems = resizeSelected(state.resizeDir, px - state.startRectX, py - state.startRectY, selectedItem, items)
+            }
             setItems(updatedItems)
         } else {
             const x = px + (-1 * cameraOffset.x)

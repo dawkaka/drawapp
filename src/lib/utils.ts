@@ -13,7 +13,19 @@ export function getRandomID() {
     return id
 }
 
+
+
+//x' = (x - cx) * cos(r) - (y - cy) * sin(r) + cx
+//y' = (x - cx) * sin(r) + (y - cy) * cos(r) + cy
+
+function getAngleAdjustedX(x: number, y: number, cx: number, cy: number, angle: number): Point {
+    let xx = (x - cx) * Math.cos(angle) - (y - cy) * Math.sign(angle) + cx
+    let yy = (x - cx) * Math.sign(angle) + (y - cy) * Math.cos(angle) + cy
+    return { x: xx, y: yy }
+}
+
 export function getBoundingBox(item: SelectedItem): BoundingBox | null {
+    let newP
     switch (item.type) {
         case "rectangle":
         case "ellipse":
@@ -22,14 +34,46 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
             var sy = item.height < 0 ? item.y + item.strokeWidth + 1 - 5 : item.y - item.strokeWidth - 1 - 5
             var ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 - 10 : item.width + item.strokeWidth * 2 + 2 + 10
             var ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 - 10 : item.height + item.strokeWidth * 2 + 2 + 10
-            var ptl = { x: sx - 5, y: sy - 5, width: 10, height: 10 }
-            var ptr = { x: sx + ex - 5, y: sy - 5, width: 10, height: 10 }
-            var pbl = { x: sx - 5, y: sy + ey - 5, width: 10, height: 10 }
-            var pbr = { x: sx + ex - 5, y: sy + ey - 5, width: 10, height: 10 }
-            var mt = { x: sx - 5 + ex / 2, y: sy - 5, width: 10, height: 10 }
-            var mr = { x: sx + ex - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
-            var mb = { x: sx - 5 + ex / 2, y: sy + ey - 5, width: 10, height: 10 }
-            var ml = { x: sx - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
+            var ptl = {
+                ...getAngleAdjustedX(sx - 5, sy - 5, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+            var ptr = {
+                ...getAngleAdjustedX(sx + ex - 5, sy - 5, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+            var pbl = {
+                ...getAngleAdjustedX(sx - 5, sy + ey - 5, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+            var pbr = {
+                ...getAngleAdjustedX(sx + ex - 5, sy + ey - 5, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+
+            var mt = {
+                ...getAngleAdjustedX(sx - 5 + ex / 2, sy - 5, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+
+            var rot = {
+                ...getAngleAdjustedX(sx - 5 + ex / 2, sy - 25, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+
+            var mr = {
+                ...getAngleAdjustedX(sx + ex - 5, sy - 5 + ey / 2, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+
+            var mb = {
+                ...getAngleAdjustedX(sx - 5 + ex / 2, sy - 5 + ey, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
+            var ml = {
+                ...getAngleAdjustedX(sx - 5, sy - 5 + ey / 2, item.x + item.width / 2, item.y + item.height / 2, item.angle)
+                , width: 10, height: 10
+            }
 
             return {
                 type: item.type,
@@ -37,9 +81,11 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                 y: sy,
                 width: ex,
                 height: ey,
+                angle: item.angle,
                 resizeAreas: {
                     ptl, ptr, pbl, pbr,
-                    mt, mr, mb, ml
+                    mt, mr, mb, ml,
+                    rot
                 }
             }
         case "line":
@@ -68,13 +114,15 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                 type: item.type,
                 x: item.x,
                 y: item.y,
+                angle: item.angle,
                 width: item.width,
                 height: item.height,
                 resizeAreas: {
                     ptl: { x: item.x - 5, y: item.y - 5, width: 10, height: 10 },
                     ptr: { x: item.x + item.width - 5, y: item.y - 5, width: 10, height: 10 },
                     pbl: { x: item.x - 5, y: item.height + item.y - 5, width: 10, height: 10 },
-                    pbr: { x: item.x + item.width - 5, y: item.height + item.y - 5, width: 10, height: 10 }
+                    pbr: { x: item.x + item.width - 5, y: item.height + item.y - 5, width: 10, height: 10 },
+                    rot: { x: item.x + item.width / 2 - 5, y: item.y - 25, width: 10, height: 10 }
                 }
             }
         case "pencil":
@@ -88,6 +136,7 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
             var pbl = { x: sx - 5, y: sy + ey - 5, width: 10, height: 10 }
             var pbr = { x: sx + ex - 5, y: sy + ey - 5, width: 10, height: 10 }
             var mt = { x: sx - 5 + ex / 2, y: sy - 5, width: 10, height: 10 }
+            var rot = { x: sx - 5 + ex / 2, y: sy - 25, width: 10, height: 10 }
             var mr = { x: sx + ex - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
             var mb = { x: sx - 5 + ex / 2, y: sy + ey - 5, width: 10, height: 10 }
             var ml = { x: sx - 5, y: sy - 5 + ey / 2, width: 10, height: 10 }
@@ -95,11 +144,12 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                 type: "pencil",
                 x: sx,
                 y: sy,
+                angle: item.angle,
                 width: ex,
                 height: ey,
                 resizeAreas: {
                     ptl, ptr, pbl, pbr,
-                    mt, mr, mb, ml
+                    mt, mr, mb, ml, rot
                 }
             }
         default:
@@ -405,6 +455,8 @@ export function getCursor(dir: string): Cursor {
         case "pe":
         case "ps":
             return Cursor.Move
+        case "rot":
+            return Cursor.Grab
         case "rectangle":
         case "line":
         case "diamond":
@@ -527,6 +579,7 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
                 }
             }
         }
+
         items[targetIndex] = item
         return [...items]
     }
@@ -543,6 +596,24 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
     // }
     return items
 }
+
+
+export function rotateItem(selected: SelectedItem, items: CanvasItem[], x: number, y: number) {
+    const targetIndex = items.findIndex(val => val.id === selected.id)
+    if (targetIndex === -1) return items
+
+    let item = { ...items[targetIndex] }
+    const dx = x - item.x + item.width / 2;
+    const dy = y - item.x + item.height / 2;
+    const angleRad = Math.atan2(dy, dx);
+    const angleDeg = angleRad * 180 / Math.PI;
+    const angle = angleDeg % 360;
+    item.angle = angle * 0.1
+    items[targetIndex] = item
+    return [...items]
+}
+
+
 
 export function getItemEnclosingPoint(pointerX: number, pointerY: number, items: CanvasItem[]): string {
     let boundingItems: { id: string, area: number, fill: boolean }[] = []
@@ -697,7 +768,7 @@ export function getMultipleSelection(items: CanvasItem[], x: number, y: number, 
 export function getMultipleSelectionBounds(selectedItems: string[], items: CanvasItem[]) {
     const selection = items.filter(item => selectedItems.includes(item.id))
     const bounds: MultipleSelection = {
-        x: Infinity, y: Infinity, width: -Infinity, height: -Infinity,
+        x: Number.MAX_SAFE_INTEGER, y: Number.MAX_SAFE_INTEGER, width: Number.MIN_SAFE_INTEGER, height: Number.MIN_SAFE_INTEGER,
         resizeAreas: {
             tl: { x: 0, y: 0 },
             tr: { x: 0, y: 0 },

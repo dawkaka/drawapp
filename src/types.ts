@@ -30,7 +30,8 @@ interface CanvasItemConstants {
     height: number;
     x: number;
     y: number;
-    opacity: number
+    opacity: number;
+    angle: number
 }
 
 export type StrokeWidth = 2 | 3 | 4
@@ -99,7 +100,8 @@ export type RectBounds = { x: number, y: number, width: number, height: number }
 
 export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
     type: "rectangle" | "ellipse" | "diamond" | "pencil",
-    resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, mt: RectBounds, mr: RectBounds, mb: RectBounds, ml: RectBounds }
+    angle: number,
+    resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, mt: RectBounds, mr: RectBounds, mb: RectBounds, ml: RectBounds, rot: RectBounds }
 } |
     RectBounds & {
         type: "arrow" | "line",
@@ -107,7 +109,8 @@ export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
     }
     | RectBounds & {
         type: "image"
-        resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds }
+        angle: number,
+        resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, rot: RectBounds }
     }
 
 
@@ -116,6 +119,7 @@ type BoxSelection = {
     id: string;
     x: number;
     y: number;
+    angle: number;
     width: number;
     height: number;
     strokeWidth: number;
@@ -126,6 +130,7 @@ type LinearSelection = {
     id: string;
     x: number;
     y: number;
+    angle: number;
     points: Point[];
     strokeWidth: number
 }

@@ -4,7 +4,7 @@ import { AppDrawings, AppState } from "../jotai"
 import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
 import Modal from "./modal"
-import { FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
+import { Actoins, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 import history from "../lib/history"
 
@@ -77,6 +77,7 @@ export default function Side() {
                         }
                         <Opacity />
                         <Layers />
+                        <Actoins />
                     </div>
                 </div>
 

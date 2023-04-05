@@ -5,7 +5,6 @@ import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds, drawSelection, drawMultipleSelectionBounds } from "../lib/render";
 import {
-    calculatePointsDistance,
     getBoundingBox, getCursor, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
     getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinMultiSelectionResizeArea, isWithinResizeArea,
     moveItem, moveItems, resizeMultipleItems, resizeSelected, simplifyPath, updateAppStateFromSelectedItem
@@ -415,34 +414,6 @@ export default function Canvas() {
         }
     }
 
-    function handleTouchMove(event: any) {
-        let c = document.getElementById("canvas") as HTMLCanvasElement;
-        if (state.drawInProcess) {
-            updateState(event.touches[0], true);
-            setState({ ...state, drew: true });
-        } else if (state.moveStart && selectedItem) {
-            let px = event.touches[0].pageX as number;
-            let py = event.touches[0].pageY as number;
-            setState({ ...state, startRectX: px, startRectY: py });
-            const updatedItems = moveItem(px - state.startRectX, py - state.startRectY, selectedItem, items);
-            if (updatedItems) {
-                setItems(updatedItems);
-            }
-        } else if (state.resizeDir && selectedItem) {
-            let px = event.touches[0].pageX as number;
-            let py = event.touches[0].pageY as number;
-            setState({ ...state, startRectX: px, startRectY: py });
-            const updatedItems = resizeSelected(
-                state.resizeDir,
-                px - state.startRectX,
-                py - state.startRectY,
-                selectedItem,
-                items
-            );
-            setItems(updatedItems);
-        }
-    }
-
     useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
@@ -508,6 +479,7 @@ export default function Canvas() {
 
     function handleMouseUp(event: any, touch: boolean) {
         let itemID = ""
+        if (touch && mainState.tool === "text") return
         if (mainState.tool !== "select" && mainState.tool !== "eraser" && mainState.tool !== "move" && current) {
             itemID = current[mainState.tool].id
             if (itemID) {
@@ -532,7 +504,6 @@ export default function Canvas() {
             setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false, drew: false })
         }
         setPanStart(null)
-
         if (touch) {
             let x = event.pageX + (-1 * cameraOffset.x)
             let y = event.pageY + (-1 * cameraOffset.y)
@@ -562,7 +533,6 @@ export default function Canvas() {
         <main className="relative">
             {(mainState.tool === "text" && current.text.x !== 0) ? <textarea
                 className="absolute outline-0 overflow-hidden"
-                placeholder="Enter text"
                 onBlur={(e) => {
                     if (e.target.value.trim() === "") return
                     const target = e.target as HTMLTextAreaElement
@@ -622,7 +592,6 @@ export default function Canvas() {
                 tabIndex={0}
                 rows={1}
                 style={{
-                    border: "1px solid darkorange",
                     padding: 8,
                     scrollbarWidth: "none",
                     resize: "none",

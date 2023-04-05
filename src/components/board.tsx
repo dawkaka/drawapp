@@ -267,8 +267,8 @@ export default function Canvas() {
                     setState({
                         ...state,
                         resizeDir: resizeDir,
-                        drawInProcess: true, startRectX: pageX,
-                        startRectY: pageY,
+                        drawInProcess: true, startRectX: px,
+                        startRectY: py,
                     });
                 }
             } else {
@@ -279,8 +279,8 @@ export default function Canvas() {
                 }
                 setState({
                     ...state,
-                    drawInProcess: true, startRectX: pageX,
-                    startRectY: pageY,
+                    drawInProcess: true, startRectX: px,
+                    startRectY: py,
                 });
             }
 
@@ -288,8 +288,8 @@ export default function Canvas() {
             updateState(event, state.drawInProcess)
             setState({
                 ...state,
-                drawInProcess: true, startRectX: pageX,
-                startRectY: pageY,
+                drawInProcess: true, startRectX: px,
+                startRectY: py,
             });
         } else if (selectedItem !== null) {
             const resizeDir = isWithinResizeArea(x, y, selectedItem)
@@ -479,7 +479,7 @@ export default function Canvas() {
 
     function handleMouseUp(event: any, touch: boolean) {
         let itemID = ""
-        if (touch && mainState.tool === "text") return
+        if (touch && mainState.tool === "text" && !selectedItem) return
         if (mainState.tool !== "select" && mainState.tool !== "eraser" && mainState.tool !== "move" && current) {
             itemID = current[mainState.tool].id
             if (itemID) {

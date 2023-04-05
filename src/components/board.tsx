@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import { useEffect, useRef, useState } from "react";
+import { MouseEventHandler, useEffect, useRef, useState } from "react";
 import { Cursor, defaultValues } from "../constants";
 import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
@@ -28,8 +28,19 @@ export default function Canvas() {
     const [cursor, setCursor] = useState<Cursor>(Cursor.Auto);
 
     function updateState(event: any, drawInProcess: boolean) {
-        let x = event.pageX + (-1 * cameraOffset.x)
-        let y = event.pageY + (-1 * cameraOffset.y)
+        let pageX;
+        let pageY;
+        if (event.type === 'touchmove' || event.type === 'touchstart') {
+            pageX = event.touches[0].pageX;
+            pageY = event.touches[0].pageY;
+        } else {
+            pageX = event.pageX;
+            pageY = event.pageY;
+        }
+
+        let x = pageX + (-1 * cameraOffset.x)
+        let y = pageY + (-1 * cameraOffset.y)
+
         if (!drawInProcess) {
             switch (mainState.tool) {
                 case "line":
@@ -123,8 +134,8 @@ export default function Canvas() {
                         ...current,
                         text: {
                             ...current.text,
-                            x: event.pageX,
-                            y: event.pageY,
+                            x: pageX,
+                            y: pageY,
                             opacity: mainState.opacity,
                             fontFamily: mainState.fontFamily,
                             fontSize: mainState.fontSize,
@@ -312,9 +323,19 @@ export default function Canvas() {
 
 
     function handleMouseMove(event: any) {
-        let c = document.getElementById("canvas") as HTMLCanvasElement
-        let px = event.pageX as number
-        let py = event.pageY as number
+        let pageX;
+        let pageY;
+
+        if (event.type === 'touchmove' || event.type === 'touchstart') {
+            pageX = event.touches[0].pageX;
+            pageY = event.touches[0].pageY;
+        } else {
+            pageX = event.pageX;
+            pageY = event.pageY;
+        }
+        let px = pageX as number
+        let py = pageY as number
+
         if (panStart) {
             setCursor(Cursor.Grabbing)
             setCameraOffset({ x: cameraOffset.x + (px - panStart.x), y: cameraOffset.y + (py - panStart.y) })
@@ -340,8 +361,8 @@ export default function Canvas() {
             setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
 
         } else if (mainState.tool === "select" && state.drawInProcess) {
-            const w = event.pageX - state.startRectX
-            const h = event.pageY - state.startRectY
+            const w = px - state.startRectX
+            const h = py - state.startRectY
             const x = state.startRectX + (-1 * cameraOffset.x)
             const y = state.startRectY + (-1 * cameraOffset.y)
             setSelection({ x, y, w, h })
@@ -485,7 +506,7 @@ export default function Canvas() {
         setCursor(getCursor(mainState.tool))
     }, [mainState.tool])
 
-    function handleMouseUp() {
+    function handleMouseUp(event: any, touch: boolean) {
         let itemID = ""
         if (mainState.tool !== "select" && mainState.tool !== "eraser" && mainState.tool !== "move" && current) {
             itemID = current[mainState.tool].id
@@ -511,6 +532,18 @@ export default function Canvas() {
             setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false, drew: false })
         }
         setPanStart(null)
+
+        if (touch) {
+            let x = event.pageX + (-1 * cameraOffset.x)
+            let y = event.pageY + (-1 * cameraOffset.y)
+            let selectedItemID = selectedItem ? selectedItem.id : ""
+            if (state.resizeDir === "" || (!selectedItem && !multipleSelectionBounds)) {
+                selectedItemID = getItemEnclosingPoint(x, y, items)
+            }
+            setState({ ...state, resizeDir: "" })
+            setSelection(null)
+            updateMainState({ ...mainState, multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })
+        }
     }
 
     function handleClick(event: any) {
@@ -613,11 +646,11 @@ export default function Canvas() {
                 tabIndex={0}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
+                onMouseUp={(e) => handleMouseUp(e, false)}
                 onClick={handleClick}
                 onTouchStart={handleMouseDown}
-                onTouchMove={handleTouchMove}
-                onTouchEnd={handleMouseUp}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={(e) => handleMouseUp(e, true)}
             >
             </canvas>
 

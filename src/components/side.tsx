@@ -92,7 +92,7 @@ export default function Side() {
                     </div>
                 </div>
 
-                <div className="flex shadow bg-white rounded-lg md:rounded fixed left-1/2 translate-x-[-50%] md:absolute bottom-5 px-5 py-2 gap-5 z-11">
+                <div className="flex flex-col px-2 shadow bg-white rounded-lg md:rounded fixed right-2 md:right-auto md:flex-row md:absolute bottom-5 md:px-5 py-2 gap-5 md:z-11">
                     <button className="w-fit p-1 rounded hover:bg-[#faecd2] border" onClick={() => setModal(true)}>
                         <svg width="22" height="22" viewBox="0 0 15 15" fill="red" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M2 4.656a.5.5 0 01.5-.5h9.7a.5.5 0 010 1H2.5a.5.5 0 01-.5-.5z"></path>

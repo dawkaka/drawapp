@@ -51,7 +51,12 @@ export default function Tools() {
 
 
     return (
-        <div className="bg-white rounded-lg  m-2 px-2 py-1 shadow md:m-3 md:p-3 md:rounded tools">
+        <div className="bg-white rounded-lg m-2 px-2 py-1 shadow md:m-3 md:p-3 md:rounded tools"
+            style={{
+                isolation: "isolate",
+                zIndex: -1
+            }}
+        >
             <div className="flex md:flex-wrap gap-3">
                 <CanvasTool onClick={() => setState({ ...app, tool: "move" })} tool="move" selectedTool={tool}>
                     <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" fill="currentColor"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g>

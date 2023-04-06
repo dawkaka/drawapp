@@ -41,8 +41,8 @@ export default function ColorPanel() {
     }, [selectedColor])
 
     return (
-        <div className="flex py-5 px-3 justify-between">
-            <div className="flex flex-col">
+        <div className="flex flex-col gap-4 md:gap-0 py-5 px-3 justify-between md:flex-row">
+            <div className="flex gap-4 md:gap-0 flex-col">
                 <div className="flex flex-col">
                     <h3 className="text-sm w-full">Stroke</h3>
                     <div className="flex items-center gap-1">

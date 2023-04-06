@@ -12,7 +12,6 @@ export function FillToolsOptions() {
     )
 }
 
-
 export function TextOptions() {
     return (
         <>
@@ -45,14 +44,14 @@ export function ImageOptions() {
 
     return (
         <>
-            <div className="flex items-center gap-2" onClick={() => flip("x")}>
+            <div className="flex flex-col md:flex-row md:items-center gap-2" onClick={() => flip("x")}>
                 <OptionContainer selected={""} value="18" onClick={() => { }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.97 15.25h-2.72c-5.3 0-9.5-2.15-9.5-4.5s4.2-4.5 9.5-4.5c3.03 0 5.82.7 7.62 1.86a.75.75 0 1 0 .81-1.26c-2.06-1.33-5.13-2.1-8.43-2.1-6.02 0-11 2.55-11 6s4.98 6 11 6h2.8l-2.3 2.3a.75.75 0 1 0 1.07 1.05l2.83-2.82c.68-.69.68-1.8 0-2.48l-2.83-2.83a.75.75 0 0 0-1.06 1.06l2.21 2.22z"></path></svg>
                 </OptionContainer>
                 <span className="text-neutral-500">Flip Horizontally</span>
             </div>
 
-            <div className="flex items-center gap-2" onClick={() => flip("y")}>
+            <div className="flex flex-col md:flex-row md:items-center gap-2" onClick={() => flip("y")}>
                 <OptionContainer selected={""} value="25" onClick={() => { }}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.25 8.35v2.4c0 5.3-2.15 9.5-4.5 9.5s-4.5-4.2-4.5-9.5c0-3.03.7-5.82 1.86-7.62a.75.75 0 1 0-1.26-.81c-1.33 2.06-2.1 5.13-2.1 8.43 0 6.02 2.55 11 6 11s6-4.98 6-11V8.27l2.3 2.3A.75.75 0 1 0 20.1 9.5l-2.82-2.83a1.75 1.75 0 0 0-2.48 0L11.97 9.5a.75.75 0 1 0 1.06 1.06l2.22-2.22z"></path></svg>
                 </OptionContainer>
@@ -88,7 +87,7 @@ function FontSize() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font size</legend>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
                 <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={changeFontSize}>
                     <span>S</span>
                 </OptionContainer>
@@ -130,7 +129,7 @@ function FontFamily() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Font family</legend>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
                 <OptionContainer selected={mainState.fontFamily} value="Kalam" onClick={changeFontFamily}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g strokeWidth="1.25">
@@ -176,7 +175,7 @@ function TextAlign() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Text align</legend>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
                 <OptionContainer selected={mainState.textAlign} value="left" onClick={changeAlignment}>
                     <svg aria-hidden="true" focusable="false" role="img" viewBox="0 0 24 24" fill="none" strokeWidth="2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                         <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
@@ -274,7 +273,7 @@ export function Actoins() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Action</legend>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
                 <OptionContainer selected={selected} value="to-back" onClick={handleCopy}>
                     <svg fill="#000000" height="24px" width="24px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                         xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64" enableBackground="new 0 0 64 64" xmlSpace="preserve">
@@ -316,7 +315,7 @@ export function Layers() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Layers</legend>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
                 <OptionContainer selected={selected} value="to-back" onClick={handleSelect}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m19.48 10.82 1.7.83a1 1 0 0 1 0 1.8L15 16.49V14.8l4.6-2.26-1.82-.9 1.7-.83zm-14.96 0-1.7.83a1 1 0 0 0 0 1.8L9 16.49V14.8l-4.6-2.26 1.82-.9-1.7-.83zm8.23 9.5L15 18.07a.75.75 0 0 1 1.06 1.06l-2.83 2.83c-.68.68-1.79.68-2.47 0l-2.83-2.83a.75.75 0 0 1 1.06-1.06l2.26 2.26V6.9a.75.75 0 1 1 1.5 0v13.43zM15 11.35V9.68l4.6-2.27L12.66 4c-.42-.2-.9-.2-1.32 0L4.4 7.4 9 9.68v1.67L2.82 8.3a1 1 0 0 1 0-1.8l7.86-3.86a3 3 0 0 1 2.64 0l7.86 3.87a1 1 0 0 1 0 1.79L15 11.35z"></path></svg>
                 </OptionContainer>
@@ -356,7 +355,7 @@ function StrokeWidth() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke width</legend>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
                 <FillOption option={2} selectedOption={mainState.strokeWidth} onClick={width} />
                 <FillOption option={3} selectedOption={mainState.strokeWidth} onClick={width} />
                 <FillOption option={4} selectedOption={mainState.strokeWidth} onClick={width} />
@@ -413,11 +412,10 @@ function StrokeStyle() {
 
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke style</legend>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
                 <StrokeStyleOption option={"solid"} selectedOption={selected} onClick={strokeStyleChange} />
                 <StrokeStyleOption option={"dotted"} selectedOption={selected} onClick={strokeStyleChange} />
                 <StrokeStyleOption option={"dashed"} selectedOption={selected} onClick={strokeStyleChange} />
-
             </div>
         </fieldset>
     )

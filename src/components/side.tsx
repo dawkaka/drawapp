@@ -1,5 +1,5 @@
 import { useAtom } from "jotai"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { AppDrawings, AppState } from "../jotai"
 import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
@@ -13,6 +13,16 @@ export default function Side() {
     const [{ tool }] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const [modal, setModal] = useState(false)
+    const [width, setWidth] = useState(300)
+    const sideRef = useRef(null)
+
+    useEffect(() => {
+        let w = window.innerWidth
+        if (w < 768) {
+            setWidth(w * 0.5)
+            setClosed(true)
+        }
+    }, [])
 
     function deleteAllItems() {
         setItems([])
@@ -54,15 +64,16 @@ export default function Side() {
         <>
             <aside
                 className="bg-neutral-50 fixed  flex flex-col items-center top-0 left-0 bottom-0 border-r border-neutral-200  transition-all z-10 overflow-hidden"
+                ref={sideRef}
                 style={{
-                    width: closed ? 0 : "300px"
+                    width: closed ? 0 : width + 'px'
                 }}
             >
                 {
                     modal && <Modal close={() => setModal(false)} clearFunc={deleteAllItems} />
                 }
 
-                <div className="relative w-full h-full overflow-y-auto pb-10">
+                <div className="bg-neutral-50 relative w-full h-full overflow-y-auto pb-10">
                     <ColorPanel />
                     <Tools />
                     <div className="flex flex-col gap-5 p-2 shadow bg-white mx-3 my-5 rounded p-5">
@@ -81,7 +92,7 @@ export default function Side() {
                     </div>
                 </div>
 
-                <div className="flex shadow absolute bottom-5 px-5 py-2 gap-5 z-11">
+                <div className="flex shadow bg-white rounded-lg md:rounded fixed left-1/2 translate-x-[-50%] md:absolute bottom-5 px-5 py-2 gap-5 z-11">
                     <button className="w-fit p-1 rounded hover:bg-[#faecd2] border" onClick={() => setModal(true)}>
                         <svg width="22" height="22" viewBox="0 0 15 15" fill="red" xmlns="http://www.w3.org/2000/svg">
                             <path fillRule="evenodd" clipRule="evenodd" d="M2 4.656a.5.5 0 01.5-.5h9.7a.5.5 0 010 1H2.5a.5.5 0 01-.5-.5z"></path>
@@ -118,7 +129,7 @@ export default function Side() {
                     className="h-[40px] w-[40px] flex items-center pl-2 cursor-pointer bg-[white] border border-neutral-200 fixed top-[50%] rounded-full translateY(-100%) transition-all"
                     style={{
                         clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)",
-                        left: closed ? "-20px" : "280px",
+                        left: closed ? "-20px" : `${width - 20}px`,
                         transform: closed ? "rotateY(180deg)" : ""
                     }}
                     onClick={() => setClosed(!closed)}

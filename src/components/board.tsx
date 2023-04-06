@@ -495,6 +495,7 @@ export default function Canvas() {
             History.addHistory(items)
         }
         stateRef.current.multiMove = false
+        let drew = state.drew
         if (multipleSelectionBounds) {
             if (!selection && !state.moved && !state.resizeDir) {
                 setMultipleSelectionBounds(null)
@@ -504,7 +505,8 @@ export default function Canvas() {
             setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false, drew: false })
         }
         setPanStart(null)
-        if (touch) {
+
+        if (touch && !drew) {
             let x = event.pageX + (-1 * cameraOffset.x)
             let y = event.pageY + (-1 * cameraOffset.y)
             let selectedItemID = selectedItem ? selectedItem.id : ""

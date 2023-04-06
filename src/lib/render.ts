@@ -182,7 +182,16 @@ function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
         ctx.setLineDash([20, 15]);
     }
     ctx.beginPath();
-    ctx.ellipse(item.x + item.width / 2, item.y + item.height / 2, item.width / 2, item.height / 2, 0, 0, 360)
+    let x = item.x, y = item.y, w = item.width, h = item.height;
+    if (item.width < 0) {
+        x = item.x + item.width
+        w = -item.width
+    }
+    if (item.height < 0) {
+        y = item.y + item.height
+        h = - item.height
+    }
+    ctx.ellipse(x + w / 2, y + h / 2, w / 2, h / 2, 0, 0, 360)
     ctx.fill()
     ctx.stroke();
     ctx.restore();

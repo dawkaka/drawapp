@@ -18,10 +18,10 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
         case "rectangle":
         case "ellipse":
         case "diamond":
-            var sx = item.width < 0 ? item.x + item.strokeWidth + 1 - 5 : item.x - item.strokeWidth - 1 - 5
-            var sy = item.height < 0 ? item.y + item.strokeWidth + 1 - 5 : item.y - item.strokeWidth - 1 - 5
-            var ex = item.width < 0 ? item.width - item.strokeWidth * 2 - 2 - 10 : item.width + item.strokeWidth * 2 + 2 + 10
-            var ey = item.height < 0 ? item.height - item.strokeWidth * 2 - 2 - 10 : item.height + item.strokeWidth * 2 + 2 + 10
+            var sx = item.x
+            var sy = item.y
+            var ex = item.width
+            var ey = item.height
             var ptl = { x: sx - 5, y: sy - 5, width: 10, height: 10 }
             var ptr = { x: sx + ex - 5, y: sy - 5, width: 10, height: 10 }
             var pbl = { x: sx - 5, y: sy + ey - 5, width: 10, height: 10 }
@@ -434,7 +434,6 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             item.height += dy
             items[targetIndex] = item
         }
-        return [...items]
     }
 
     if (dir === "ptl") {
@@ -444,7 +443,6 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
         item.width += -1 * dx
         item.height += -1 * dy
         items[targetIndex] = item
-        return [...items]
     }
     if (dir === "ptr") {
         let item = { ...items[targetIndex] }
@@ -452,7 +450,6 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
         item.y += dy
         item.height += -1 * dy
         items[targetIndex] = item
-        return [...items]
     }
     if (dir === "pbl") {
         let item = { ...items[targetIndex] }
@@ -460,29 +457,23 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
         item.height += dy
         item.x += dx
         items[targetIndex] = item
-        return [...items]
     }
     if (dir === "mb") {
         let item = { ...items[targetIndex] }
         item.height += dy
         items[targetIndex] = item
-
-        return [...items]
     }
     if (dir === "mt") {
         let item = { ...items[targetIndex] }
         item.y += dy
         item.height += - 1 * dy
         items[targetIndex] = item
-
-        return [...items]
     }
 
     if (dir === "mr") {
         let item = { ...items[targetIndex] }
         item.width += dx
         items[targetIndex] = item
-        return [...items]
     }
 
     if (dir === "ml") {
@@ -490,7 +481,6 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
         item.x += dx
         item.width += -1 * dx
         items[targetIndex] = item
-        return [...items]
     }
 
     if (dir === "ps") {
@@ -510,7 +500,6 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
         }
         items[targetIndex] = item
-        return [...items]
     }
 
     if (dir === "pe") {
@@ -528,7 +517,6 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
         }
         items[targetIndex] = item
-        return [...items]
     }
 
     // if (dir === "pc") {
@@ -541,7 +529,8 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
     //     }
     //     return [...items]
     // }
-    return items
+
+    return [...items]
 }
 
 export function getItemEnclosingPoint(pointerX: number, pointerY: number, items: CanvasItem[]): string {

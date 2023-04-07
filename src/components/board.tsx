@@ -325,6 +325,9 @@ export default function Canvas() {
         let pageX;
         let pageY;
 
+        event.preventDefault()
+        event.stopPropagation()
+
         if (event.type === 'touchmove' || event.type === 'touchstart') {
             pageX = event.touches[0].pageX;
             pageY = event.touches[0].pageY;

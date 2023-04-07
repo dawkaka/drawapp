@@ -21,7 +21,7 @@ To install and run the project, follow these steps:
 3. Start the development server:
    `npm run dev`
 
-4. Open your web browser and navigate to http://localhost:3000 to see the project running.
+4. Open your web browser and navigate to http://localhost:5173 to see the project running.
 
 ## Contributing
 

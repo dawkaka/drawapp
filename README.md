@@ -1,4 +1,4 @@
-# Project Name
+# Draaaw
 
 A canvas drawing app for the web!
 
@@ -13,7 +13,7 @@ A canvas drawing app for the web!
 To install and run the project, follow these steps:
 
 1. Clone the repository:
-   `git clone https://github.com/<username>/<repository-name>.git`
+   `git clone https://github.com/dawkaka/drawapp.git`
 
 2. Install the dependencies:
    `npm install`
@@ -31,7 +31,7 @@ All contributions to this project are welcomed! Here's how you can get started:
 
 2. Clone your forked repository to your local machine:
 
-`git clone https://github.com/<your-username>/<repository-name>.git`
+`git clone https://github.com/dawkaka/drawapp.git`
 
 3. Create a new branch:
 
@@ -53,4 +53,4 @@ I'll review your pull request and get back to you as soon as possible. Thanks fo
 
 ## License
 
-This project is licensed under the [LICENSE NAME] license. See the LICENSE file for details.
+This project is licensed under the MIT license. See the LICENSE file for details.

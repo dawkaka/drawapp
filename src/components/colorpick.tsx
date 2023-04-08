@@ -35,8 +35,6 @@ export default function ColorPanel() {
                 }
                 setAppState({ ...main, fillColor: selectedColor })
             }
-
-
         }
     }, [selectedColor])
 
@@ -54,7 +52,7 @@ export default function ColorPanel() {
                             }}
                             onClick={() => setSelected("stroke")}
                         ></div>
-                        <div className="text-neutral-500">{strokeColor}</div>
+                        <div className="text-neutral-500 text-sm">{strokeColor}</div>
                     </div>
                 </div>
                 <div className="flex flex-col">
@@ -68,7 +66,7 @@ export default function ColorPanel() {
                             }}
                             onClick={() => setSelected("fill")}
                         ></div>
-                        <div className="text-neutral-500">{fillColor}</div>
+                        <div className="text-neutral-500 text-sm">{fillColor}</div>
                     </div>
                 </div>
             </div>

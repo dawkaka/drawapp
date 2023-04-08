@@ -614,7 +614,7 @@ export default function Canvas() {
                 className="appearance-none outline-0"
                 id="canvas"
                 style={{
-                    backgroundColor: "white",
+                    backgroundColor: "var(--background)",
                     cursor
                 }}
                 tabIndex={0}

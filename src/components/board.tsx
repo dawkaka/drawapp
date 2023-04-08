@@ -320,6 +320,12 @@ export default function Canvas() {
         }
     }, [])
 
+    useEffect(() => {
+        window.addEventListener("resize", () => {
+            window.location.reload();
+        })
+    }, [])
+
 
     function handleMouseMove(event: any) {
         let pageX;

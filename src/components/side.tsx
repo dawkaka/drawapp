@@ -9,7 +9,7 @@ import Tools from "./tools"
 import history from "../lib/history"
 
 export default function Side() {
-    const [closed, setClosed] = useState(false)
+    const [closed, setClosed] = useState(true)
     const [{ tool }] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const [modal, setModal] = useState(false)
@@ -30,6 +30,8 @@ export default function Side() {
             const ww = Math.max(200, w * 0.35)
             setWidth(ww)
             setClosed(true)
+        } else {
+            setClosed(false)
         }
     }, [])
 

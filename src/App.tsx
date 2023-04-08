@@ -1,11 +1,11 @@
-import { useLayoutEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Provider } from "jotai"
 import './App.css'
 import Side from "./components/side"
 import Canvas from "./components/board"
 
 function App() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     const t = localStorage.getItem("theme")
     if (t) {
       const root = document.querySelector("#root")!

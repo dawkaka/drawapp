@@ -1,12 +1,12 @@
 import { AppState } from "./types"
 
 export const defaultValues: AppState = {
-    strokeColor: "black",
+    strokeColor: "#00000",
     strokeWidth: 3,
     stroke: "solid",
     tool: "select",
     opacity: 1,
-    fillColor: "transparent",
+    fillColor: "TRANSPARENT",
     imageBlob: "",
     multipleSelections: [],
     selectedItemID: "",

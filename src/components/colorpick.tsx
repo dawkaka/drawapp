@@ -2,6 +2,7 @@ import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
 import { AppDrawings, AppState, SelectionAtom } from "../jotai"
 import { getSelectedItem, updateSingleItem } from "../lib/utils"
+import { defaultValues } from "../constants"
 
 
 export default function ColorPanel() {
@@ -37,6 +38,19 @@ export default function ColorPanel() {
             }
         }
     }, [selectedColor])
+
+    useEffect(() => {
+        const t = localStorage.getItem("theme");
+        if (t) {
+            if (t === "dark") {
+                defaultValues.strokeColor = "#FFFFFF"
+                setAppState({ ...main, strokeColor: "#FFFFFF" });
+            } else {
+                defaultValues.strokeColor = "#000000"
+                setAppState({ ...main, strokeColor: "#000000" });
+            }
+        }
+    }, []);
 
     return (
         <div className="flex flex-col gap-4 md:gap-0 py-5 px-3 justify-between md:flex-row">

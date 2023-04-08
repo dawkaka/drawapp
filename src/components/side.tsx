@@ -7,16 +7,17 @@ import Modal from "./modal"
 import { Actions, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 import history from "../lib/history"
+import { defaultValues } from "../constants"
 
 export default function Side() {
     const [closed, setClosed] = useState(true)
-    const [{ tool }] = useAtom(AppState)
+    const [main, setAppState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const [modal, setModal] = useState(false)
     const [width, setWidth] = useState(300)
     const sideRef = useRef(null)
     const [theme, setTheme] = useState<"dark" | "light">("light")
-
+    const tool = main.tool
     useLayoutEffect(() => {
         const t = localStorage.getItem("theme")
         if (t) {
@@ -74,16 +75,25 @@ export default function Side() {
 
     function changeTheme() {
         let root = document.querySelector("#root")!
+
         if (theme === "light") {
             setTheme("dark")
             localStorage.setItem("theme", "dark")
             root.className = "dark"
             document.documentElement.style.colorScheme = "dark"
+            defaultValues.strokeColor = "#FFFFFF"
+            if (main.strokeColor === "#000000") {
+                setAppState({ ...main, strokeColor: "#FFFFFF" });
+            }
         } else {
             setTheme("light")
             localStorage.setItem("theme", "light")
             root.className = "light"
             document.documentElement.style.colorScheme = "light"
+            defaultValues.strokeColor = "#000000"
+            if (main.strokeColor === "#FFFFFF") {
+                setAppState({ ...main, strokeColor: "#000000" });
+            }
         }
     }
 

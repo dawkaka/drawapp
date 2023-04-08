@@ -27,7 +27,8 @@ export default function Side() {
     useEffect(() => {
         let w = window.innerWidth
         if (w < 768) {
-            setWidth(w * 0.5)
+            const ww = Math.max(200, w * 0.35)
+            setWidth(ww)
             setClosed(true)
         }
     }, [])

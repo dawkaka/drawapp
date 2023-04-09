@@ -1,7 +1,7 @@
 import { AppState } from "./types"
 
 export const defaultValues: AppState = {
-    strokeColor: "#00000",
+    strokeColor: "#000000",
     strokeWidth: 3,
     stroke: "solid",
     tool: "select",

@@ -85,6 +85,7 @@ export default function Side() {
             if (main.strokeColor === "#000000") {
                 setAppState({ ...main, strokeColor: "#FFFFFF" });
             }
+            setItems([...items])
         } else {
             setTheme("light")
             localStorage.setItem("theme", "light")
@@ -94,6 +95,7 @@ export default function Side() {
             if (main.strokeColor === "#FFFFFF") {
                 setAppState({ ...main, strokeColor: "#000000" });
             }
+            setItems([...items])
         }
     }
 

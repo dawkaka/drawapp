@@ -898,3 +898,14 @@ function resizeHandDrawnPath(points: Point[], dx: number, dy: number) {
     }
     return result;
 }
+
+export function getInverseColorForTheme(color: string): string {
+    const theme = localStorage.getItem("theme")
+    if (!theme) return color
+    if (theme === "light" && color === "#FFFFFF") {
+        return "#000000"
+    } else if (theme === "dark" && color === "#000000") {
+        return "#FFFFFF"
+    }
+    return color
+}

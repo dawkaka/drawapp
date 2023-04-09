@@ -1,4 +1,5 @@
 import type { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Image, Line, MultipleSelection, Pencil, Rectangle, Text } from "../types";
+import { getInverseColorForTheme } from "./utils";
 
 let imageData: any = {}
 
@@ -74,8 +75,7 @@ export async function renderElements(ctx: CanvasRenderingContext2D, items: Canva
 function pencilDraw(ctx: CanvasRenderingContext2D, item: Pencil) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = item.strokeStyle
-
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.globalAlpha = item.opacity
     ctx.beginPath();
     ctx.moveTo(item.x + item.points[0].x, item.y + item.points[0].y);
@@ -105,7 +105,7 @@ function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
     if (!item.points || item.points.length < 2) return
     ctx.save()
     ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = item.strokeStyle
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.globalAlpha = item.opacity
@@ -126,7 +126,7 @@ function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
 function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = item.strokeStyle
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.fillStyle = item.fillStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
@@ -149,7 +149,7 @@ function diamondDraw(ctx: CanvasRenderingContext2D, item: Diamond) {
     ctx.save();
     ctx.translate(item.x, item.y);
     ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = item.strokeStyle
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.fillStyle = item.fillStyle
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
@@ -173,7 +173,7 @@ function diamondDraw(ctx: CanvasRenderingContext2D, item: Diamond) {
 function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = item.strokeStyle
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.fillStyle = item.fillStyle
     ctx.globalAlpha = item.opacity
     if (item.stroke === "dotted") {
@@ -201,7 +201,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     if (!item.points || item.points.length < 2) return
     ctx.save()
     ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = item.strokeStyle
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.globalAlpha = item.opacity
@@ -301,7 +301,7 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
 function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = item.strokeStyle
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.fillStyle = item.strokeStyle

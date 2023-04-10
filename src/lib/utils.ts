@@ -564,7 +564,7 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
                     )
                 ) {
 
-                    boundingItems.push({ id: item.id, area: Math.abs(item.width * item.height), fill: item.type === "image" ? true : item.fillStyle !== "transparent" })
+                    boundingItems.push({ id: item.id, area: Math.abs(item.width * item.height), fill: item.type === "image" ? true : item.fillStyle !== "TRANSPARENT" })
                 }
                 break;
             case "text":

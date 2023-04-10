@@ -4,7 +4,7 @@ import { AppDrawings, AppState } from "../jotai"
 import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
 import Modal from "./modal"
-import { Actions, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
+import { Actions, BorderRadius, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 import history from "../lib/history"
 import { defaultValues } from "../constants"
@@ -118,6 +118,10 @@ export default function Side() {
                     <div className="flex flex-col gap-5 p-2 shadow bg-[var(--background)] mx-3 my-5 rounded p-5">
                         {
                             (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool === "line" || tool === "pencil") && <FillToolsOptions />
+                        }
+                        {
+                            (tool === "diamond" || tool === "rectangle") && <BorderRadius />
+
                         }
                         {
                             tool === "text" && <TextOptions />

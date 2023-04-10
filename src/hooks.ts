@@ -42,6 +42,7 @@ export function useInitialState() {
             strokeWidth: mainState.strokeWidth,
             fillStyle: mainState.fillColor,
             edgesType: "sharp",
+            borderRadius: mainState.borderRadius,
             stroke: mainState.stroke,
             opacity: mainState.opacity,
         },
@@ -57,6 +58,7 @@ export function useInitialState() {
             fillStyle: mainState.fillColor,
             edgesType: "sharp",
             stroke: mainState.stroke,
+            borderRadius: mainState.borderRadius,
             opacity: mainState.opacity,
         },
         ellipse: {

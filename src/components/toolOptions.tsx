@@ -365,6 +365,59 @@ function StrokeWidth() {
     )
 }
 
+export function BorderRadius() {
+    const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    const changeRadius = (val: number) => {
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            if (item && (item.type === "diamond" || item.type === "rectangle")) {
+                item.borderRadius = val
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        setMainState({ ...mainState, borderRadius: val })
+    }
+
+    return (
+        <fieldset className="flex flex-col gap-2">
+            <legend className="text-sm text-[var(--accents-5)] mb-1">Border radius</legend>
+            <div className="flex flex-wrap gap-3">
+                <Radius option={0} selectedOption={mainState.borderRadius} onClick={changeRadius} />
+                <Radius option={15} selectedOption={mainState.borderRadius} onClick={changeRadius} />
+                <Radius option={25} selectedOption={mainState.borderRadius} onClick={changeRadius} />
+            </div>
+        </fieldset>
+    )
+}
+
+
+export function Radius({ onClick, option, selectedOption }: { onClick: (val: number) => void, option: number, selectedOption: number }) {
+    return (
+        <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[#faecd2] text-[var(--accents-7)] hover:text-[darkorange]"
+            onClick={() => onClick(option)}
+            style={{
+                backgroundColor: selectedOption === option ? "#faecd2" : "",
+                border: `1px solid ${selectedOption === option ? "#faecd2" : "var(--accents-2)"}`
+            }}
+        >
+            <div className="flex items-center justify-center"
+                style={{ width: "15px", height: "15px" }}
+            >
+                <span className="h-full w-full"
+                    style={{
+                        border: `2px solid ${selectedOption === option ? "darkorange" : "currentColor"}`,
+                        borderTopLeftRadius: `${option * 2}%`,
+                    }}
+                >
+                </span>
+            </div>
+        </button>
+    )
+}
+
 function FillOption({ onClick, option, selectedOption }: { onClick: (val: StrokeWidth) => void, option: StrokeWidth, selectedOption: number }) {
     return (
         <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[#faecd2] text-[var(--accents-7)] hover:text-[darkorange]"

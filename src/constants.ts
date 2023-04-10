@@ -10,6 +10,7 @@ export const defaultValues: AppState = {
     imageBlob: "",
     multipleSelections: [],
     selectedItemID: "",
+    borderRadius: 15,
     fontFamily: "Kalam",
     fontSize: 25,
     textStyle: "fill",

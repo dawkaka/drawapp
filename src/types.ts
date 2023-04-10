@@ -9,6 +9,7 @@ export interface AppState {
     tool: Tool,
     stroke: Stroke,
     fillColor: string,
+    borderRadius: number,
     imageBlob: string,
     opacity: number,
     multipleSelections: string[],
@@ -65,11 +66,14 @@ export interface Arrow extends Linear {
 }
 
 export interface Rectangle extends Box {
-    type: "rectangle"
+    type: "rectangle",
+    borderRadius: number
 }
 
 export interface Diamond extends Box {
-    type: "diamond"
+    type: "diamond",
+    borderRadius: number
+
 }
 
 export interface Ellipse extends Omit<Box, "edgesType"> {

@@ -127,9 +127,7 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
-    ctx.fillStyle = item.fillStyle
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"
+    ctx.fillStyle = getInverseColorForTheme(item.fillStyle)
     ctx.globalAlpha = item.opacity
 
     if (item.stroke === "dotted") {
@@ -137,8 +135,23 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
     } else if (item.stroke === "dashed") {
         ctx.setLineDash([20, 15]);
     }
+
+    const x = item.width > 0 ? item.x : item.x + item.width,
+        y = item.height > 0 ? item.y : item.y + item.height,
+        h = Math.abs(item.height),
+        w = Math.abs(item.width)
+    const r = w < h ? (w / 100) * item.borderRadius : (h / 100) * item.borderRadius
+
     ctx.beginPath()
-    ctx.rect(item.x, item.y, item.width, item.height)
+    ctx.moveTo(x, y + r)
+    ctx.quadraticCurveTo(x, y, x + r, y)
+    ctx.lineTo(x + w - r, y)
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+    ctx.lineTo(x + w, y + r + (h - r * 2))
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+    ctx.lineTo(x + r, y + h)
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+    ctx.closePath()
     ctx.fill()
     ctx.stroke()
     ctx.restore()
@@ -147,34 +160,50 @@ function rectangleDraw(ctx: CanvasRenderingContext2D, item: Rectangle) {
 
 function diamondDraw(ctx: CanvasRenderingContext2D, item: Diamond) {
     ctx.save();
-    ctx.translate(item.x, item.y);
-    ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
-    ctx.fillStyle = item.fillStyle
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"
-    ctx.globalAlpha = item.opacity
+    ctx.lineWidth = item.strokeWidth;
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle);
+    ctx.fillStyle = getInverseColorForTheme(item.fillStyle)
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.globalAlpha = item.opacity;
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
         ctx.setLineDash([20, 15]);
     }
     ctx.beginPath();
-    ctx.moveTo(item.width / 2, 0)
-    ctx.lineTo(item.width, item.height / 2);
-    ctx.lineTo(item.width / 2, item.height);
-    ctx.lineTo(0, item.height / 2)
+    const x = item.width > 0 ? item.x : item.x + item.width,
+        y = item.height > 0 ? item.y : item.y + item.height,
+        h = Math.abs(item.height),
+        w = Math.abs(item.width)
+
+    const verticalAngle = Math.atan(h / w);
+    const horizontalAngle = Math.atan(w / h);
+    const diagonal = Math.sqrt(w * w + h * h);
+    const rVertical = (diagonal / 2 / 100) * item.borderRadius * Math.cos(verticalAngle);
+    const rHorizontal = (diagonal / 2 / 100) * item.borderRadius * Math.cos(horizontalAngle);
+    ctx.translate(x, y);
+    ctx.moveTo(w / 2 - rVertical, rHorizontal);
+    ctx.quadraticCurveTo(w / 2, 0, w / 2 + rVertical, rHorizontal);
+    ctx.lineTo(w - rVertical, h / 2 - rHorizontal)
+    ctx.quadraticCurveTo(w, h / 2, w - rVertical, h / 2 + rHorizontal);
+    ctx.lineTo(w / 2 + rVertical, h - rHorizontal)
+    ctx.quadraticCurveTo(w / 2, h, w / 2 - rVertical, h - rHorizontal);
+    ctx.lineTo(rVertical, h / 2 + rHorizontal)
+    ctx.quadraticCurveTo(0, h / 2, rVertical, h / 2 - rHorizontal);
     ctx.closePath();
-    ctx.fill()
+    ctx.fill();
     ctx.stroke();
     ctx.restore();
 }
+
 
 function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
-    ctx.fillStyle = item.fillStyle
+    ctx.fillStyle = getInverseColorForTheme(item.fillStyle)
+
     ctx.globalAlpha = item.opacity
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);

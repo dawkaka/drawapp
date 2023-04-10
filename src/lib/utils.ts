@@ -769,7 +769,8 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
                 strokeWidth: item.strokeWidth,
                 opacity: item.opacity,
                 stroke: item.stroke,
-                tool: item.type
+                tool: item.type,
+                borderRadius: item.type === "ellipse" ? currentState.borderRadius : item.borderRadius
             })
             break;
         case "text":

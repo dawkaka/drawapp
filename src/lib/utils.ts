@@ -519,16 +519,16 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
         items[targetIndex] = item
     }
 
-    // if (dir === "pc") {
-    //     let item = items[targetIndex]
-    //     if (item.type === "arrow" || item.type === "line") {
-    //         if (item.points.length > 1) {
-    //             item.points[0].x += dx
-    //             item.points[0].y += dy
-    //         }
-    //     }
-    //     return [...items]
-    // }
+    if (dir === "pc") {
+        let item = items[targetIndex]
+        if (item.type === "arrow" || item.type === "line") {
+            if (item.points.length > 1) {
+                item.points[0].x += dx
+                item.points[0].y += dy
+            }
+        }
+        return [...items]
+    }
 
     return [...items]
 }

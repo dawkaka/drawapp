@@ -1,4 +1,4 @@
-import type { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Image, Line, MultipleSelection, Pencil, Rectangle, Text } from "../types";
+import type { Arrow, BoundingBox, CanvasItem, Diamond, Ellipse, Image, Line, MultipleSelection, Pencil, Point, Rectangle, Text } from "../types";
 import { getInverseColorForTheme } from "./utils";
 
 let imageData: any = {}
@@ -98,28 +98,6 @@ function pencilDraw(ctx: CanvasRenderingContext2D, item: Pencil) {
 
     // Stroke the path
     ctx.stroke();
-    ctx.restore()
-}
-
-function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
-    if (!item.points || item.points.length < 2) return
-    ctx.save()
-    ctx.lineWidth = item.strokeWidth
-    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
-    ctx.lineCap = "round"
-    ctx.lineJoin = "round"
-    ctx.globalAlpha = item.opacity
-    if (item.stroke === "dotted") {
-        ctx.setLineDash([2, 5]);
-    } else if (item.stroke === "dashed") {
-        ctx.setLineDash([20, 15]);
-    }
-    ctx.beginPath();
-    const points = item.points
-    ctx.translate(item.x, item.y)
-    ctx.moveTo(0, 0)
-    ctx.quadraticCurveTo(points[0].x, points[0].y, points[1].x, points[1].y)
-    ctx.stroke()
     ctx.restore()
 }
 
@@ -226,6 +204,59 @@ function ellipseDraw(ctx: CanvasRenderingContext2D, item: Ellipse) {
     ctx.restore();
 }
 
+// function calculatePeak(p1: Point, p2: Point, p3: Point): Point {
+//     // Calculate the control point for the quadratic Bézier curve
+//     const cx = p2.x;
+//     const cy = p2.y;
+
+//     // Calculate the coefficients of the quadratic equation for the curve
+//     const a = p3.x * (cy - p1.y) + p1.x * (p3.y - cy) + cx * (p1.y - p3.y);
+//     const b = p1.x * p1.x + cy * cy - 2 * cy * p1.y + p1.y * p1.y + cx * cx - 2 * cx * p1.x + p3.x * p3.x + p3.y * p3.y - 2 * p3.y * cy;
+//     const c = p1.y * cx - p3.x * cy + p3.y * p1.x - p1.y * p3.x - cx * p3.y + cy * p1.x;
+
+//     // Calculate the x-coordinate of the peak point
+//     const px = (-1 * b) / (2 * a);
+
+//     // Calculate the y-coordinate of the peak point
+//     const py = a * px * px + b * px + c;
+
+//     return { x: px, y: py };
+// }
+
+function calculateQuadraticControlPoint(start: Point, peak: Point, end: Point): Point {
+    return {
+        x: (2 * peak.x) - 0.5 * (start.x + end.x),
+        y: (2 * peak.y) - 0.5 * (start.y + end.y),
+    };
+}
+
+
+function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
+    if (!item.points || item.points.length < 2) return
+    ctx.save()
+    ctx.lineWidth = item.strokeWidth
+    ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
+    ctx.lineCap = "round"
+    ctx.lineJoin = "round"
+    ctx.globalAlpha = item.opacity
+    if (item.stroke === "dotted") {
+        ctx.setLineDash([2, 5]);
+    } else if (item.stroke === "dashed") {
+        ctx.setLineDash([20, 15]);
+    }
+    ctx.beginPath();
+    const points = item.points
+    ctx.translate(item.x, item.y)
+    ctx.moveTo(0, 0)
+    const startPoint = { x: 0, y: 0 }
+    const controlPoint = calculateQuadraticControlPoint(startPoint, points[0], points[1])
+    const endPoint = points[1]
+    ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
+
+    ctx.stroke()
+    ctx.restore()
+}
+
 function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     if (!item.points || item.points.length < 2) return
     ctx.save()
@@ -243,25 +274,30 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     const points = item.points
     ctx.translate(item.x, item.y)
     ctx.moveTo(0, 0)
-    ctx.quadraticCurveTo(points[0].x, points[0].y, points[1].x, points[1].y)
+    const startPoint = { x: 0, y: 0 }
+    const controlPoint = calculateQuadraticControlPoint(startPoint, points[0], points[1])
+    const endPoint = points[1]
+    ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
+
     ctx.save();
     if (item.stroke === "dotted") {
         ctx.setLineDash([2, 5]);
     } else if (item.stroke === "dashed") {
         ctx.setLineDash([20, 15]);
     }
-    ctx.translate(points[1].x, points[1].y);
-    let angle = Math.atan2(points[1].y, points[1].x)
+    const angle = Math.atan2(endPoint.y - controlPoint.y, endPoint.x - controlPoint.x);
+    ctx.translate(endPoint.x, endPoint.y);
     ctx.rotate(angle);
+    const arrowSize = Math.min(15, 0.3 * (Math.max(Math.abs(endPoint.y - points[0].y), Math.abs(endPoint.x - points[0].x))))
     ctx.moveTo(0, 0);
-    const five = 0.3 * (Math.max(Math.abs(points[1].y), Math.abs(points[1].x)))
-    ctx.lineTo(Math.max(-five, -25), Math.max(-1 * (five * 0.4), -10));
+    ctx.lineTo(-arrowSize, arrowSize / 2);
     ctx.moveTo(0, 0);
-    ctx.lineTo(Math.max(-five, -25), Math.min(five * 0.4, 10));
+    ctx.lineTo(-arrowSize, -arrowSize / 2);
     ctx.stroke();
     ctx.restore();
     ctx.restore();
 }
+
 
 export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox) {
     ctx.save()

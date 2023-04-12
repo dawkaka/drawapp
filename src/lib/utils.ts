@@ -643,6 +643,11 @@ export function getSelectedItem(id: string, items: CanvasItem[]): CanvasItem | u
 }
 
 export function getMultipleSelection(items: CanvasItem[], x: number, y: number, w: number, h: number): string[] {
+    x = w < 0 ? x + w : x
+    y = h < 0 ? y + h : y
+    w = Math.abs(w)
+    h = Math.abs(h)
+
     const selectedItems: string[] = []
     items.forEach((item) => {
         switch (item.type) {

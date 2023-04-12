@@ -576,7 +576,7 @@ export default function Canvas() {
                     setCurrent(intialStates)
                     updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
                 }}
-                onKeyUp={(e) => {
+                onChange={(e) => {
                     let c = document.getElementById("canvas") as HTMLCanvasElement
                     let ctx = c.getContext('2d')!;
                     ctx.save()
@@ -589,9 +589,9 @@ export default function Canvas() {
                         }
                     }
                     e.currentTarget.style.width = "1px";
-                    e.currentTarget.style.width = ctx.measureText(max).width + 40 + "px"
+                    e.currentTarget.style.width = ctx.measureText(max).width + current.text.fontSize - (current.text.fontSize / 2) + "px"
                     e.currentTarget.style.maxWidth = "100%";
-                    e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
+                    e.currentTarget.style.height = 8 + current.text.fontSize * textLines.length + "px";
                     e.currentTarget.style.maxHeight = "100%";
                     ctx.restore()
                 }}
@@ -602,8 +602,11 @@ export default function Canvas() {
                 tabIndex={0}
                 rows={1}
                 style={{
-                    padding: 8,
+                    overflow: "hidden",
+                    border: "1px solid darkorange",
+                    backgroundColor: "transparent",
                     scrollbarWidth: "none",
+                    width: current.text.fontSize,
                     resize: "none",
                     top: current.text.y + 3 - current.text.fontSize / 2,
                     left: current.text.x,
@@ -620,7 +623,7 @@ export default function Canvas() {
                 id="canvas"
                 style={{
                     backgroundColor: "var(--background)",
-                    cursor
+                    cursor,
                 }}
                 tabIndex={0}
                 onMouseDown={handleMouseDown}

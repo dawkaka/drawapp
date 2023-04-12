@@ -56,12 +56,19 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
             }
             break;
         case "text":
+            var x = item.x - 5, y = item.y - 5, w = item.width + 10, h = item.height + 10
             return {
                 type: item.type,
-                x: item.x - 5,
-                y: item.y - 5,
-                width: item.width + 10,
-                height: item.height + 10,
+                x,
+                y,
+                width: w,
+                height: h,
+                resizeAreas: {
+                    ptl: { x: x - 5, y: y - 5, width: 10, height: 10 },
+                    ptr: { x: x + w - 5, y: y - 5, width: 10, height: 10 },
+                    pbl: { x: x - 5, y: h + y - 5, width: 10, height: 10 },
+                    pbr: { x: x + w - 5, y: h + y - 5, width: 10, height: 10 }
+                }
             }
         case "image":
             return {
@@ -172,6 +179,7 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
             case "diamond":
             case "pencil":
             case "image":
+            case "text":
                 for (const [key, val] of Object.entries(bounds.resizeAreas)) {
                     if (pointerX > val.x && pointerY > val.y && pointerX < val.x + 10 && pointerY < val.y + 10) {
                         return key
@@ -419,8 +427,25 @@ export function getCursor(dir: string): Cursor {
     }
 }
 
+export function measureText(text: string, fontSize: number, fontFamily: string) {
+    let c = document.getElementById("canvas") as HTMLCanvasElement
+    let ctx = c.getContext('2d')!;
+    ctx.save()
+    ctx.font = `bold ${fontSize}px ${fontFamily}`
+    const textLines = text.split("\n")
+    let max = ""
+    for (let line of textLines) {
+        if (line.length > max.length) {
+            max = line
+        }
+    }
+    let w = ctx.measureText(max).width
+    let h = ctx.measureText("M").width
+    ctx.restore()
+    return { w, h } as const
+}
 
-export function resizeSelected(dir: string, dx: number, dy: number, item: SelectedItem, items: CanvasItem[]) {
+export function resizeSelected(dir: string, dx: number, dy: number, item: SelectedItem, items: CanvasItem[]): CanvasItem[] {
     const targetIndex = items.findIndex(val => val.id === item.id)
     if (targetIndex === -1) return items
     if (dir === "pbr") {
@@ -429,6 +454,20 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             item.points = resizeHandDrawnPath(item.points, dx, dy)
             items[targetIndex] = item
 
+        } else if (item.type === "text") {
+            let d = 1
+            if ((dx < 0 && dy < 0) || (dx < 0 && Math.abs(dx) >= Math.abs(dy)) || (dy < 0 && Math.abs(dy) >= Math.abs(dx))) {
+                d = -1
+            }
+            if (d < 0 && item.fontSize <= 5) {
+                return items
+            }
+            const diagonal = Math.sqrt(dx * dx + dy * dy)
+            item.fontSize += d * diagonal
+            const w = measureText(item.text, item.fontSize, item.fontFamily)
+            item.width = w.w
+            item.height = item.text.split("\n").length * w.h
+            items[targetIndex] = item
         } else {
             item.width += dx
             item.height += dy
@@ -438,25 +477,86 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
 
     if (dir === "ptl") {
         let item = { ...items[targetIndex] }
-        item.x += dx
-        item.y += dy
-        item.width += -1 * dx
-        item.height += -1 * dy
-        items[targetIndex] = item
+        if (item.type === "text") {
+            let d = 1
+            if ((dx > 0 && dy > 0) || (dx > 0 && Math.abs(dx) >= Math.abs(dy)) || (dy > 0 && Math.abs(dy) >= Math.abs(dx))) {
+                d = -1
+            }
+            if (d < 0 && item.fontSize <= 5) {
+                return items
+            }
+            const diagonal = Math.sqrt(dx * dx + dy * dy)
+            item.fontSize += d * diagonal
+            const w = measureText(item.text, item.fontSize, item.fontFamily)
+            let pw = item.width, ph = item.height
+            item.width = w.w
+            item.height = item.text.split("\n").length * w.h
+            let dw = pw - item.width, dh = ph - item.height
+            item.x += dw
+            item.y += dh
+            items[targetIndex] = item
+
+        } else {
+            item.x += dx
+            item.y += dy
+            item.width += -1 * dx
+            item.height += -1 * dy
+            items[targetIndex] = item
+        }
     }
     if (dir === "ptr") {
         let item = { ...items[targetIndex] }
-        item.width += dx
-        item.y += dy
-        item.height += -1 * dy
-        items[targetIndex] = item
+        if (item.type === "text") {
+            let d = -1
+            if ((dy < 0 && dx > 0) || (dx > Math.abs(dy) && dx > 0) || (dx < Math.abs(dy) && dy < 0)) {
+                d = 1
+            }
+            if (d < 0 && item.fontSize <= 5) {
+                return items
+            }
+            const diagonal = Math.sqrt(dx * dx + dy * dy)
+            item.fontSize += d * diagonal
+            const w = measureText(item.text, item.fontSize, item.fontFamily)
+            let ph = item.height
+            item.width = w.w
+            item.height = item.text.split("\n").length * w.h
+            let dh = ph - item.height
+            item.y += dh
+            items[targetIndex] = item
+
+        } else {
+            item.width += dx
+            item.y += dy
+            item.height += -1 * dy
+            items[targetIndex] = item
+        }
     }
     if (dir === "pbl") {
         let item = { ...items[targetIndex] }
-        item.width += - 1 * dx
-        item.height += dy
-        item.x += dx
-        items[targetIndex] = item
+        if (item.type === "text") {
+            let d = -1
+            if ((dx < 0 && dy > 0) || (dx > Math.abs(dy) && dx < 0) || (dx < Math.abs(dy) && dy > 0)) {
+                d = 1
+            }
+            if (d < 0 && item.fontSize <= 5) {
+                return items
+            }
+            const diagonal = Math.sqrt(dx * dx + dy * dy)
+            item.fontSize += d * diagonal
+            const w = measureText(item.text, item.fontSize, item.fontFamily)
+            let pw = item.width
+            item.width = w.w
+            item.height = item.text.split("\n").length * w.h
+            let dw = pw - item.width
+            item.x += dw
+            items[targetIndex] = item
+
+        } else {
+            item.width += - 1 * dx
+            item.height += dy
+            item.x += dx
+            items[targetIndex] = item
+        }
     }
     if (dir === "mb") {
         let item = { ...items[targetIndex] }

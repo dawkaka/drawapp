@@ -7,6 +7,7 @@ import { renderElements, renderCurrentDrawing, renderBounds, drawSelection, draw
 import {
     getBoundingBox, getCursor, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
     getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinMultiSelectionResizeArea, isWithinResizeArea,
+    measureText,
     moveItem, moveItems, resizeMultipleItems, resizeSelected, simplifyPath, updateAppStateFromSelectedItem
 } from "../lib/utils";
 import { CurrentState, MultipleSelection, Point, Text } from "../types";
@@ -546,28 +547,19 @@ export default function Canvas() {
                 onBlur={(e) => {
                     if (e.target.value.trim() === "") return
                     const target = e.target as HTMLTextAreaElement
-                    let c = document.getElementById("canvas") as HTMLCanvasElement
-                    let ctx = c.getContext('2d')!;
-                    ctx.save()
-                    ctx.font = `bold ${current.text.fontSize}px ${current.text.fontFamily}`
                     const itemID = getRandomID()
                     const textLines = target.value.split("\n")
-                    let max = ""
-                    for (let line of textLines) {
-                        if (line.length > max.length) {
-                            max = line
-                        }
-                    }
+                    const metr = measureText(e.target.value, current.text.fontSize, current.text.fontFamily)
+
                     const textItem: Text = {
                         ...current.text,
                         x: current.text.x + (-1 * cameraOffset.x),
                         y: current.text.y + (-1 * cameraOffset.y),
                         id: itemID,
                         text: target.value,
-                        width: ctx.measureText(max).width,
-                        height: textLines.length * current.text.fontSize
+                        width: metr.w,
+                        height: textLines.length * metr.h
                     }
-                    ctx.restore()
                     setCurrent(prevState => ({
                         ...prevState,
                         text: textItem
@@ -577,23 +569,13 @@ export default function Canvas() {
                     updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
                 }}
                 onChange={(e) => {
-                    let c = document.getElementById("canvas") as HTMLCanvasElement
-                    let ctx = c.getContext('2d')!;
-                    ctx.save()
-                    ctx.font = `bold ${current.text.fontSize}px ${current.text.fontFamily}`
                     const textLines = e.currentTarget.value.split("\n")
-                    let max = ""
-                    for (let line of textLines) {
-                        if (line.length > max.length) {
-                            max = line
-                        }
-                    }
+                    const metr = measureText(e.target.value, current.text.fontSize, current.text.fontFamily)
                     e.currentTarget.style.width = "1px";
-                    e.currentTarget.style.width = ctx.measureText(max).width + current.text.fontSize - (current.text.fontSize / 2) + "px"
+                    e.currentTarget.style.width = metr.w + current.text.fontSize - (current.text.fontSize / 2) + "px"
                     e.currentTarget.style.maxWidth = "100%";
-                    e.currentTarget.style.height = 8 + current.text.fontSize * textLines.length + "px";
+                    e.currentTarget.style.height = 8 + (current.text.fontSize * textLines.length) + "px";
                     e.currentTarget.style.maxHeight = "100%";
-                    ctx.restore()
                 }}
 
                 autoComplete="off"
@@ -635,7 +617,6 @@ export default function Canvas() {
                 onTouchEnd={(e) => handleMouseUp(e, true)}
             >
             </canvas>
-
         </main>
 
     )

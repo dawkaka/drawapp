@@ -101,7 +101,7 @@ export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow |
 
 export type RectBounds = { x: number, y: number, width: number, height: number }
 
-export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
+export type BoundingBox = RectBounds & {
     type: "rectangle" | "ellipse" | "diamond" | "pencil",
     resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, mt: RectBounds, mr: RectBounds, mb: RectBounds, ml: RectBounds }
 } |
@@ -110,13 +110,13 @@ export type BoundingBox = RectBounds & { type: "text" } | RectBounds & {
         curveControl: Point
     }
     | RectBounds & {
-        type: "image"
+        type: "image" | "text"
         resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds }
     }
 
 
 type BoxSelection = {
-    type: "rectangle" | "ellipse" | "diamond" | "text" | "image";
+    type: "rectangle" | "ellipse" | "diamond" | "image";
     id: string;
     x: number;
     y: number;
@@ -134,8 +134,18 @@ type LinearSelection = {
     strokeWidth: number
 }
 
+type TextSelection = {
+    type: "text";
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    fontSize: number
+}
 
-export type SelectedItem = BoxSelection | LinearSelection
+
+export type SelectedItem = BoxSelection | LinearSelection | TextSelection
 
 type DrawingTools = "rectangle" | "ellipse" | "diamond" | "image" | "arrow" | "line" | "text" | "pencil"
 export type NonDrawingTools = "select" | "move" | "eraser"

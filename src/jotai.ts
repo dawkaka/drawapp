@@ -16,14 +16,15 @@ export const SelectionAtom = atom((get): SelectedItem | null => {
             case "rectangle":
             case "ellipse":
             case "diamond":
-            case "text":
                 return { id: item.id, type: item.type, x: item.x, y: item.y, width: item.width, height: item.height, strokeWidth: item.strokeWidth }
             case "line":
             case "arrow":
             case "pencil":
                 return { id: item.id, type: item.type, x: item.x, y: item.y, points: item.points, strokeWidth: item.strokeWidth }
             case "image":
-                return { id: item.id, type: item.type, x: item.x, y: item.y, width: item.width, height: item.height, strokeWidth: 0 }
+                return { id: item.id, type: "image", x: item.x, y: item.y, width: item.width, height: item.height, strokeWidth: 0 }
+            case "text":
+                return { id: item.id, type: "text", x: item.x, y: item.y, width: item.width, height: item.height, fontSize: item.fontSize }
             default:
                 break;
         }

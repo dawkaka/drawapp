@@ -310,6 +310,7 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
         case "diamond":
         case "pencil":
         case "image":
+        case "text":
             ctx.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height)
             for (let v of Object.values(bounds.resizeAreas)) {
                 ctx.save()
@@ -321,7 +322,6 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
                 ctx.stroke()
                 ctx.fill()
                 ctx.restore()
-
             }
             break;
         case "line":
@@ -354,9 +354,6 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             ctx.restore()
 
             break;
-        case "text":
-            ctx.strokeRect(bounds.x, bounds.y - 10, bounds.width, bounds.height)
-            break
         default:
             break;
     }

@@ -362,10 +362,22 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
         if (item.type === "line" || item.type === "arrow") {
             const { points } = item
             const { x, y } = points[1]
-            points[1].x = newWidth ? x < 0 ? -newWidth : newWidth : points[1].x
-            points[1].y = newHeight ? y < 0 ? -newHeight : newHeight : points[1].y
-            points[0].x = points[1].x / 2
-            points[0].y = points[1].y / 2
+            const newW = newWidth ? x < 0 ? -newWidth : newWidth : points[1].x
+            const newH = newHeight ? y < 0 ? -newHeight : newHeight : points[1].y
+            points[1].x = newW
+            points[1].y = newH
+            if (points[0].x === x / 2 && points[0].y === y / 2) {
+                points[0].x = points[1].x / 2
+                points[0].y = points[1].y / 2
+            } else {
+                //c1 = e1
+                //x = e2
+                const cx = (points[0].x * newW) / x
+                const cy = (points[0].y * newH) / y
+                points[0].x = cx
+                points[0].y = cy
+            }
+
             items[ind] = {
                 ...item,
                 x: newX ? newX : item.x,

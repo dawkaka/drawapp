@@ -383,6 +383,20 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
                 points
 
             }
+        } else if (item.type === "text") {
+            const fontSize = (Math.abs(newWidth) * item.fontSize) / item.width
+            const metr = measureText(item.text, fontSize, item.fontFamily)
+            const width = metr.w
+            const lines = item.text.split("\n").length
+            const height = lines * metr.h * 0.6 + ((lines - 1) * fontSize / 2)
+            items[ind] = {
+                ...item,
+                x: newX ? newX : item.x,
+                y: newY ? newY : item.y,
+                fontSize: fontSize,
+                width,
+                height,
+            }
         } else {
             items[ind] = {
                 ...item,

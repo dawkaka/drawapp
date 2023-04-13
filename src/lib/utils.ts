@@ -670,10 +670,10 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
             case "arrow":
                 if (
                     isPointInsidePolygon(pointerX, pointerY,
-                        { x: item.x - 15, y: item.y - 15 },
-                        { x: item.x + 15, y: item.y + 15 },
-                        { x: item.x + item.points[1].x + 15, y: item.y + item.points[1].y + 15 },
-                        { x: item.x + item.points[1].x - 15, y: item.y + item.points[1].y - 15 }
+                        { x: item.x, y: item.y },
+                        { x: item.x + + item.points[1].x, y: item.y },
+                        { x: item.x + item.points[1].x, y: item.y + item.points[1].y },
+                        { x: item.x, y: item.y + item.points[1].y }
                     )
                 ) {
                     boundingItems.push({ id: item.id, area: Math.abs(item.points[1].x * item.points[1].y), fill: false })
@@ -685,10 +685,10 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
             case "image":
                 if (
                     isPointInsidePolygon(pointerX, pointerY,
-                        { x: item.x - 15, y: item.y },
-                        { x: item.x + item.width + 15, y: item.y },
-                        { x: item.x + item.width + 15, y: item.y + item.height },
-                        { x: item.x - 15, y: item.y + item.height }
+                        { x: item.x, y: item.y },
+                        { x: item.x + item.width, y: item.y },
+                        { x: item.x + item.width, y: item.y + item.height },
+                        { x: item.x, y: item.y + item.height }
                     )
                 ) {
 

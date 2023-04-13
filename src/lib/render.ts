@@ -252,7 +252,6 @@ function lineDraw(ctx: CanvasRenderingContext2D, item: Line) {
     const controlPoint = calculateQuadraticControlPoint(startPoint, points[0], points[1])
     const endPoint = points[1]
     ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
-
     ctx.stroke()
     ctx.restore()
 }
@@ -330,19 +329,23 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             ctx.strokeStyle = "darkorange"
             ctx.fillStyle = "white"
 
+            ctx.translate(bounds.x, bounds.y)
             ctx.beginPath()
-            ctx.moveTo(bounds.x, bounds.y)
-            ctx.lineTo(bounds.x + bounds.width, bounds.y + bounds.height)
+            ctx.moveTo(0, 0)
+            const startPoint = { x: 0, y: 0 }
+            const controlPoint = calculateQuadraticControlPoint(startPoint, bounds.curveControl, { x: bounds.width, y: bounds.height })
+            const endPoint = { x: bounds.width, y: bounds.height }
+            ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
+
+            ctx.stroke()
+
+            ctx.beginPath()
+            ctx.arc(0, 0, 5, 0, 360)
             ctx.stroke()
             ctx.fill()
 
             ctx.beginPath()
-            ctx.arc(bounds.x, bounds.y, 5, 0, 360)
-            ctx.stroke()
-            ctx.fill()
-
-            ctx.beginPath()
-            ctx.arc(bounds.x + bounds.width, bounds.y + bounds.height, 5, 0, 360)
+            ctx.arc(bounds.width, bounds.height, 5, 0, 360)
             ctx.stroke()
             ctx.fill()
 

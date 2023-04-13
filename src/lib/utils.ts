@@ -51,7 +51,7 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                     y: item.y,
                     width: item.points[1].x,
                     height: item.points[1].y,
-                    curveControl: { x: item.x + item.points[0].x, y: item.y + item.points[0].y }
+                    curveControl: { x: item.points[0].x, y: item.points[0].y }
                 }
             }
             break;
@@ -370,8 +370,6 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
                 points[0].x = points[1].x / 2
                 points[0].y = points[1].y / 2
             } else {
-                //c1 = e1
-                //x = e2
                 const cx = (points[0].x * newW) / x
                 const cy = (points[0].y * newH) / y
                 points[0].x = cx

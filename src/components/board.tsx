@@ -26,6 +26,7 @@ export default function Canvas() {
     const stateRef = useRef<{ selectedItems: string[], multiMove: boolean, multiMoved: boolean }>({ multiMove: false, multiMoved: false, selectedItems: [] })
     const [selectedItem] = useAtom(SelectionAtom)
     const [cursor, setCursor] = useState<Cursor>(Cursor.Auto);
+    const [text, setText] = useState("")
 
     function updateState(event: any, drawInProcess: boolean) {
         let pageX;
@@ -498,7 +499,7 @@ export default function Canvas() {
             setCurrent(intialStates)
         }
         if ((state.drew && mainState.tool !== "select") || (mainState.tool !== "move" && state.resizeDir === "")) {
-            updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
+            updateMainState({ ...mainState, tool: itemID ? "select" : mainState.tool, selectedItemID: itemID ? itemID : mainState.selectedItemID })
         }
         if (state.moved || state.resizeDir !== "") {
             History.addHistory(items)
@@ -540,6 +541,36 @@ export default function Canvas() {
         updateMainState({ ...mainState, multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })
     }
 
+
+    function doubleClick(event: any) {
+        let x = event.pageX
+        let y = event.pageY
+        let px = event.pageX + (-1 * cameraOffset.x)
+        let py = event.pageY + (-1 * cameraOffset.y)
+        updateMainState({ ...mainState, tool: "text" })
+        setState({
+            ...state,
+            drawInProcess: true, startRectX: px,
+            startRectY: py,
+        });
+        setCurrent({
+            ...current,
+            text: {
+                ...current.text,
+                x,
+                y,
+                opacity: mainState.opacity,
+                fontFamily: mainState.fontFamily,
+                fontSize: 30,
+                textStyle: mainState.textStyle,
+                strokeWidth: mainState.strokeWidth,
+                strokeStyle: mainState.strokeColor,
+                fillStyle: mainState.fillColor,
+                alignment: mainState.textAlign
+            }
+        })
+    }
+
     return (
         <main className="relative">
             {(mainState.tool === "text" && current.text.x !== 0) ? <textarea
@@ -556,10 +587,11 @@ export default function Canvas() {
                         x: current.text.x + (-1 * cameraOffset.x),
                         y: current.text.y + (-1 * cameraOffset.y),
                         id: itemID,
-                        text: target.value,
+                        text: text,
                         width: metr.w,
                         height: textLines.length * metr.h
                     }
+                    setText("")
                     setCurrent(prevState => ({
                         ...prevState,
                         text: textItem
@@ -568,6 +600,7 @@ export default function Canvas() {
                     setCurrent(intialStates)
                     updateMainState({ ...mainState, tool: "select", selectedItemID: itemID })
                 }}
+                value={text}
                 onChange={(e) => {
                     const textLines = e.currentTarget.value.split("\n")
                     const metr = measureText(e.target.value, current.text.fontSize, current.text.fontFamily)
@@ -576,6 +609,7 @@ export default function Canvas() {
                     e.currentTarget.style.maxWidth = "100%";
                     e.currentTarget.style.height = 8 + (current.text.fontSize * textLines.length) + "px";
                     e.currentTarget.style.maxHeight = "100%";
+                    setText(e.target.value)
                 }}
 
                 autoComplete="off"
@@ -608,6 +642,7 @@ export default function Canvas() {
                     cursor,
                 }}
                 tabIndex={0}
+                onDoubleClick={doubleClick}
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={(e) => handleMouseUp(e, false)}

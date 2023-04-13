@@ -440,7 +440,7 @@ export function measureText(text: string, fontSize: number, fontFamily: string) 
         }
     }
     let w = ctx.measureText(max).width
-    let h = ctx.measureText("M").width
+    let h = ctx.measureText("m").width
     ctx.restore()
     return { w, h } as const
 }

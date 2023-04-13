@@ -366,7 +366,7 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
-    ctx.fillStyle = item.strokeStyle
+    ctx.fillStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.globalAlpha = item.opacity
     ctx.font = `bold ${item.fontSize}px ${item.fontFamily}`
     const texts = item.text.split("\n")

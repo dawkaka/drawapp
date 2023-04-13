@@ -589,7 +589,7 @@ export default function Canvas() {
                         id: itemID,
                         text: text,
                         width: metr.w,
-                        height: textLines.length * metr.h
+                        height: textLines.length * metr.h * 0.6 + ((textLines.length - 1) * current.text.fontSize / 2)
                     }
                     setText("")
                     setCurrent(prevState => ({

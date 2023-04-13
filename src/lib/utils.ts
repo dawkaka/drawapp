@@ -474,9 +474,10 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const w = measureText(item.text, item.fontSize, item.fontFamily)
-            item.width = w.w
-            item.height = item.text.split("\n").length * w.h
+            const metr = measureText(item.text, item.fontSize, item.fontFamily)
+            item.width = metr.w
+            const lines = item.text.split("\n").length
+            item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize / 2)
             items[targetIndex] = item
         } else {
             item.width += dx
@@ -497,10 +498,11 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const w = measureText(item.text, item.fontSize, item.fontFamily)
+            const metr = measureText(item.text, item.fontSize, item.fontFamily)
             let pw = item.width, ph = item.height
-            item.width = w.w
-            item.height = item.text.split("\n").length * w.h
+            item.width = metr.w
+            const lines = item.text.split("\n").length
+            item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize / 2)
             let dw = pw - item.width, dh = ph - item.height
             item.x += dw
             item.y += dh
@@ -526,10 +528,11 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const w = measureText(item.text, item.fontSize, item.fontFamily)
+            const metr = measureText(item.text, item.fontSize, item.fontFamily)
             let ph = item.height
-            item.width = w.w
-            item.height = item.text.split("\n").length * w.h
+            item.width = metr.w
+            const lines = item.text.split("\n").length
+            item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize / 2)
             let dh = ph - item.height
             item.y += dh
             items[targetIndex] = item
@@ -553,10 +556,11 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const w = measureText(item.text, item.fontSize, item.fontFamily)
+            const metr = measureText(item.text, item.fontSize, item.fontFamily)
             let pw = item.width
-            item.width = w.w
-            item.height = item.text.split("\n").length * w.h
+            item.width = metr.w
+            const lines = item.text.split("\n").length
+            item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize / 2)
             let dw = pw - item.width
             item.x += dw
             items[targetIndex] = item

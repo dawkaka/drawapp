@@ -201,10 +201,10 @@ export function isWithinResizeArea(pointerX: number, pointerY: number, item: Sel
                 }
 
                 if (
-                    pointerX > bounds.curveControl.x - 5 &&
-                    pointerX < bounds.curveControl.x + 10 &&
-                    pointerY > bounds.curveControl.y - 5 &&
-                    pointerY < bounds.curveControl.y + 10
+                    pointerX > bounds.x + bounds.curveControl.x - 5 &&
+                    pointerX < bounds.x + bounds.curveControl.x + 10 &&
+                    pointerY > bounds.y + bounds.curveControl.y - 5 &&
+                    pointerY < bounds.y + bounds.curveControl.y + 10
                 ) {
                     return "pc"
                 }

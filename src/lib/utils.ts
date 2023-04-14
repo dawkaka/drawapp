@@ -147,9 +147,11 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
                 return true
             case "arrow":
             case "line":
-                if (pointerX < sx || pointerY < sy) return false
-                if (pointerX > sx + ex || pointerY > sy + ey) return false
-                return true
+                const p = [...item.points]
+                p.unshift({ x: 0, y: 0 })
+                var boundingRect = getPointsBoundingRect(p, item.x, item.y)
+                return isPointInsideRectangle(pointerX, pointerY, boundingRect.x, boundingRect.y, boundingRect.width, boundingRect.height)
+
             case "pencil":
                 if (pointerX < sx || pointerY < sy) return false
                 if (pointerX > sx + ex || pointerY > sy + ey) return false
@@ -668,14 +670,10 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
         switch (item.type) {
             case "line":
             case "arrow":
-                if (
-                    isPointInsidePolygon(pointerX, pointerY,
-                        { x: item.x, y: item.y },
-                        { x: item.x + + item.points[1].x, y: item.y },
-                        { x: item.x + item.points[1].x, y: item.y + item.points[1].y },
-                        { x: item.x, y: item.y + item.points[1].y }
-                    )
-                ) {
+                const p = [...item.points]
+                p.unshift({ x: 0, y: 0 })
+                var boundingRect = getPointsBoundingRect(p, item.x, item.y)
+                if (isPointInsideRectangle(pointerX, pointerY, boundingRect.x, boundingRect.y, boundingRect.width, boundingRect.height)) {
                     boundingItems.push({ id: item.id, area: Math.abs(item.points[1].x * item.points[1].y), fill: false })
                 }
                 break;
@@ -709,7 +707,7 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
                 }
                 break;
             case "pencil":
-                const boundingRect = getPointsBoundingRect(item.points, item.x, item.y)
+                var boundingRect = getPointsBoundingRect(item.points, item.x, item.y)
                 if (isPointInsideRectangle(pointerX, pointerY, boundingRect.x, boundingRect.y, boundingRect.width, boundingRect.height)) {
                     boundingItems.push({ id: item.id, area: Math.abs(boundingRect.width * boundingRect.height), fill: false })
                 }

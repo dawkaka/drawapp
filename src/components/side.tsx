@@ -80,9 +80,13 @@ export default function Side() {
         if (modifiedItems.length > 0) {
             renderElements(ctx, modifiedItems)
         }
+        document.body.appendChild(c)
+        document.body.appendChild(link)
         link.download = `draaaw-${new Date().toISOString()}.png`
-        link.href = c.toDataURL("image/png");
+        link.href = c.toDataURL("image/png", 0.8);
         link.click();
+        document.body.removeChild(link)
+        document.body.removeChild(c)
     }
 
 

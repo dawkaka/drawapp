@@ -72,7 +72,6 @@ export default function Side() {
 
         c.width = bounds.width + padding2x
         c.height = bounds.height + padding2x
-        document.body.appendChild(c)
         ctx.save()
         ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
         ctx.fillRect(0, 0, c.width, c.height)
@@ -80,12 +79,16 @@ export default function Side() {
         if (modifiedItems.length > 0) {
             renderElements(ctx, modifiedItems)
         }
-        document.body.appendChild(link)
-        link.download = `draaaw-${new Date().toISOString()}.png`
-        link.href = c.toDataURL("image/png", 0.8);
-        link.click();
-        document.body.removeChild(link)
-        document.body.removeChild(c)
+
+        c.toBlob((blob) => {
+            if (blob) {
+                const link = document.createElement("a");
+                link.download = `draaaw-${new Date().toISOString()}.png`
+                link.href = URL.createObjectURL(blob);
+                link.click();
+            }
+
+        }, "image/png");
     }
 
 

@@ -234,7 +234,7 @@ export function Opacity() {
 
 function OptionContainer({ selected, value, onClick, children }: { selected: string, value: string, onClick: (val: string) => void, children: React.ReactNode }) {
     return (
-        <button className={`w-fit p-2 rounded hover:bg-[#faecd2] hover:text-[darkorange] ${selected === value ? "text-[darkorange]" : "text-[var(--accents-7)]"}`}
+        <button className={`w-fit p-1 rounded hover:bg-[#faecd2] hover:text-[darkorange] ${selected === value ? "text-[darkorange]" : "text-[var(--accents-7)]"}`}
             onClick={() => onClick(value)}
             style={{
                 backgroundColor: selected === value ? "#faecd2" : "",
@@ -242,7 +242,7 @@ function OptionContainer({ selected, value, onClick, children }: { selected: str
                 fill: selected === value ? "darkorange" : "none",
             }}
         >
-            <div className="h-[22px] w-[22px]">
+            <div className="flex items-center justify-center h-[22px] w-[22px]">
                 {children}
             </div>
         </button>

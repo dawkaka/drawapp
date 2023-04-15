@@ -54,12 +54,12 @@ export default function ColorPanel() {
 
     return (
         <div className="flex flex-col gap-4 md:gap-0 py-5 px-3 justify-between md:flex-row">
-            <div className="flex gap-4 md:gap-0 flex-col">
+            <div className="flex flex-col">
                 <div className="flex flex-col">
                     <h3 className="text-sm w-full">Stroke</h3>
                     <div className="flex items-center gap-1">
                         <div
-                            className="rounded h-[30px] w-[30px]"
+                            className="rounded h-[25px] w-[25px]"
                             style={{
                                 border: selected === "stroke" ? "2px solid darkorange" : "",
                                 backgroundColor: strokeColor
@@ -73,7 +73,7 @@ export default function ColorPanel() {
                     <h3 className="text-sm w-full">Fill</h3>
                     <div className="flex items-center gap-1">
                         <div
-                            className="rounded h-[30px] w-[30px] bg-[yellow]"
+                            className="rounded h-[25px] w-[25px]"
                             style={{
                                 border: selected === "fill" ? "2px solid darkorange" : "",
                                 backgroundColor: fillColor
@@ -97,14 +97,14 @@ export function ColoPicker({ onChange }: { onChange: (color: string) => void }) 
                 defaultColors.map((color) => (
                     <div
                         key={color}
-                        className="w-[30px] h-[30px] shrink-0 rounded"
+                        className="w-[25px] h-[25px] shrink-0 rounded"
                         style={{ backgroundColor: color }}
                         onClick={() => onChange(color)}
                     >
                     </div>
                 ))
             }
-            <div className="h-[30px] w-[30px] relative bg-gradient-to-br rounded overflow-hidden">
+            <div className="h-[25px] w-[25px] relative bg-gradient-to-br rounded overflow-hidden">
                 <input type="color" className="opacity-0" onChange={(e) => onChange(e.target.value)} />
             </div>
         </div>

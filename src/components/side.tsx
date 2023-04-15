@@ -46,11 +46,15 @@ export default function Side() {
     }
 
     function adjustItemsXY(items: CanvasItem[], x: number, y: number): CanvasItem[] {
-        items.forEach(item => {
-            item.x += x
-            item.y += y
+        const mod = items.map(item => {
+            return {
+                ...item,
+                x: item.x + x,
+                y: item.y + y
+            }
+
         })
-        return items
+        return mod
     }
 
     function downloadCanvas() {
@@ -62,7 +66,7 @@ export default function Side() {
         const padding2x = padding * 2
         const x = - 1 * bounds.x + padding
         const y = -1 * bounds.y + padding
-        let modifiedItems = adjustItemsXY([...items], x, y)
+        let modifiedItems = adjustItemsXY(items, x, y)
 
         bounds = getMultipleSelectionBounds(modifiedItems.map(i => i.id), modifiedItems);
 

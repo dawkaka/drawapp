@@ -69,9 +69,10 @@ export default function Side() {
         c.width = bounds.width + padding2x
         c.height = bounds.height + padding2x
 
+        ctx.save()
         ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
         ctx.fillRect(0, 0, c.width, c.height)
-
+        ctx.restore()
         if (modifiedItems.length > 0) {
             renderElements(ctx, modifiedItems)
         }

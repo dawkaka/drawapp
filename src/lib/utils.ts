@@ -391,14 +391,23 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
             const width = metr.w
             const lines = item.text.split("\n").length
             const height = lines * metr.h * 0.6 + ((lines - 1) * fontSize / 2)
-            items[ind] = {
-                ...item,
-                x: newX ? newX : item.x,
-                y: newY ? newY : item.y,
-                fontSize: fontSize,
-                width,
-                height,
+            if (fontSize > 5) {
+                items[ind] = {
+                    ...item,
+                    x: newX ? newX : item.x,
+                    y: newY ? newY : item.y,
+                    fontSize: fontSize,
+                    width,
+                    height,
+                }
             }
+
+        } else if (item.type === "pencil") {
+            let dx = newWidth - item.width
+            let dy = newHeight - item.height
+
+
+
         } else {
             items[ind] = {
                 ...item,
@@ -1034,7 +1043,7 @@ function resizeHandDrawnPath(points: Point[], dx: number, dy: number) {
 export function getInverseColorForTheme(color: string): string {
     const theme = localStorage.getItem("theme")
     if (!theme) return color
-    if (theme === "light" && color === "#FFFFFF") {
+    if (theme === "light" && color.toUpperCase() === "#FFFFFF") {
         return "#000000"
     } else if (theme === "dark" && color === "#000000") {
         return "#FFFFFF"

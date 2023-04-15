@@ -3,14 +3,17 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { AppDrawings, AppState } from "../jotai"
 import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
-import Modal from "./modal"
+import { ClearModal, DownloadModal } from "./modal"
 import { Actions, BorderRadius, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 import history from "../lib/history"
 import { defaultValues } from "../constants"
+import { getInverseColorForTheme, getMultipleSelectionBounds } from "../lib/utils"
+import { CanvasItem } from "../types"
 
 export default function Side() {
     const [closed, setClosed] = useState(true)
+    const [opened, setOpened] = useState(false)
     const [main, setAppState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const [modal, setModal] = useState(false)
@@ -41,30 +44,47 @@ export default function Side() {
         localStorage.setItem("canvasItems", "[]")
         setModal(false)
     }
-    function downloadCanvasAsPNG() {
-        const canvas = document.getElementById("canvas") as HTMLCanvasElement
+
+    function adjustItemsXY(items: CanvasItem[], x: number, y: number): CanvasItem[] {
+        items.forEach(item => {
+            item.x += x
+            item.y += y
+        })
+        return items
+    }
+
+    function downloadCanvas() {
         const link = document.createElement("a");
-        let c = document.getElementById("canvas") as HTMLCanvasElement
+        let c = document.createElement('canvas') as HTMLCanvasElement;
         let ctx = c.getContext('2d')!;
-        ctx.clearRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight)
-        ctx.save()
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, window.devicePixelRatio * window.innerWidth, window.devicePixelRatio * window.innerHeight);
-        ctx.restore()
-        if (items.length > 0) {
-            renderElements(ctx, items)
-            localStorage.setItem("canvasItems", JSON.stringify(items))
+        let bounds = getMultipleSelectionBounds(items.map(i => i.id), items);
+        const padding = 10
+        const padding2x = padding * 2
+        const x = - 1 * bounds.x + padding
+        const y = -1 * bounds.y + padding
+        let modifiedItems = adjustItemsXY([...items], x, y)
+
+        bounds = getMultipleSelectionBounds(modifiedItems.map(i => i.id), modifiedItems);
+
+        c.width = bounds.width + padding2x
+        c.height = bounds.height + padding2x
+
+        ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
+        ctx.fillRect(0, 0, c.width, c.height)
+
+        if (modifiedItems.length > 0) {
+            renderElements(ctx, modifiedItems)
         }
-        link.download = "canvas.jpeg";
-        link.href = canvas.toDataURL("image/jpeg");
+        link.download = `draaaw-${new Date().toISOString()}.png`
+        link.href = c.toDataURL("image/png");
         link.click();
     }
+
 
     function undo() {
         let itm = history.undo()
         setItems(itm)
         localStorage.setItem("canvasItems", JSON.stringify(itm))
-
     }
 
     function redo() {
@@ -75,7 +95,6 @@ export default function Side() {
 
     function changeTheme() {
         let root = document.querySelector("#root")!
-
         if (theme === "light") {
             setTheme("dark")
             localStorage.setItem("theme", "dark")
@@ -109,8 +128,11 @@ export default function Side() {
                 }}
             >
                 {
-                    modal && <Modal close={() => setModal(false)} clearFunc={deleteAllItems} />
+                    modal && <ClearModal close={() => setModal(false)} clearFunc={deleteAllItems} />
                 }
+                {/* {
+                    opened && <DownloadModal items={items} close={() => setOpened(false)} />
+                } */}
 
                 <div className="bg-[var(--accents-1)] relative w-full h-full overflow-y-auto pb-10">
                     <ColorPanel />
@@ -189,7 +211,7 @@ export default function Side() {
                             </path></svg>
                     </button>
                     <button className="w-fit p-1 rounded hover:bg-[#faecd2] hover:text-[darkorange] border border-[var(--accents-2)]"
-                        onClick={downloadCanvasAsPNG}
+                        onClick={downloadCanvas}
                     >
                         <svg aria-hidden="true" width="22" height="22" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"><path strokeWidth="1.25" d="M3.333 14.167v1.666c0 .92.747 1.667 1.667 1.667h10c.92 0 1.667-.746 1.667-1.667v-1.666M5.833 9.167 10 13.333l4.167-4.166M10 3.333v10"></path></svg>
                     </button>

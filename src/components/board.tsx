@@ -608,7 +608,6 @@ export default function Canvas() {
 
                 autoComplete="off"
                 autoCorrect="off"
-                autoFocus
                 tabIndex={0}
                 rows={1}
                 style={{

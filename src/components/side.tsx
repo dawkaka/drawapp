@@ -72,7 +72,7 @@ export default function Side() {
 
         c.width = bounds.width + padding2x
         c.height = bounds.height + padding2x
-
+        document.body.appendChild(c)
         ctx.save()
         ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
         ctx.fillRect(0, 0, c.width, c.height)
@@ -80,7 +80,6 @@ export default function Side() {
         if (modifiedItems.length > 0) {
             renderElements(ctx, modifiedItems)
         }
-        document.body.appendChild(c)
         document.body.appendChild(link)
         link.download = `draaaw-${new Date().toISOString()}.png`
         link.href = c.toDataURL("image/png", 0.8);

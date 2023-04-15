@@ -54,9 +54,9 @@ export default function ColorPanel() {
 
     return (
         <div className="flex flex-col gap-4 md:gap-0 py-5 px-3 justify-between md:flex-row">
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-2">
                 <div className="flex flex-col">
-                    <h3 className="text-sm w-full">Stroke</h3>
+                    <h3 className="text-sm w-full text-[var(--foreground)]">Stroke</h3>
                     <div className="flex items-center gap-1">
                         <div
                             className="rounded h-[25px] w-[25px]"
@@ -70,7 +70,7 @@ export default function ColorPanel() {
                     </div>
                 </div>
                 <div className="flex flex-col">
-                    <h3 className="text-sm w-full">Fill</h3>
+                    <h3 className="text-sm w-full text-[var(--foreground)]">Fill</h3>
                     <div className="flex items-center gap-1">
                         <div
                             className="rounded h-[25px] w-[25px]"
@@ -85,7 +85,7 @@ export default function ColorPanel() {
                 </div>
             </div>
             <ColoPicker onChange={(color: string) => setSelectedColor(color)} />
-        </div>
+        </div >
     )
 }
 
@@ -97,7 +97,7 @@ export function ColoPicker({ onChange }: { onChange: (color: string) => void }) 
                 defaultColors.map((color) => (
                     <div
                         key={color}
-                        className="w-[25px] h-[25px] shrink-0 rounded"
+                        className="w-[25px] h-[25px] shrink-0 rounded border"
                         style={{ backgroundColor: color }}
                         onClick={() => onChange(color)}
                     >
@@ -114,7 +114,7 @@ export function ColoPicker({ onChange }: { onChange: (color: string) => void }) 
 
 const defaultColors = [
     "#000000",
-    "#808080",
+    "#FFFFFF",
     "#a9a9a9",
     "#FF0000",
     "#FF1493",

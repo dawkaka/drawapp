@@ -16,6 +16,10 @@ export default function Tools() {
             const n = deleteItem(selectedItem.id, items)
             setItems(n)
             localStorage.setItem("canvasItems", JSON.stringify(n))
+        } else if (app.multipleSelections.length > 0) {
+            let newItems = items.filter(i => !app.multipleSelections.includes(i.id))
+            setItems(newItems)
+            localStorage.setItem("canvasItems", JSON.stringify(newItems))
         }
     }
 

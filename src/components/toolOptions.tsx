@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { getRandomID, getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
-import type { LayerMoves, Stroke, StrokeWidth } from "../types"
+import { getMultipleSelectionBounds, getRandomID, getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
+import type { CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
 
 export function FillToolsOptions() {
     return (
@@ -252,6 +252,8 @@ export function Actions() {
     let selected = ""
     const [items, setItems] = useAtom(AppDrawings)
     const [selectedItem] = useAtom(SelectionAtom)
+    const [appState, setAppState] = useAtom(AppState)
+
 
     function handleCopy(val: string) {
         if (selectedItem) {
@@ -265,9 +267,23 @@ export function Actions() {
             dup.id = getRandomID()
             let updatedItems = [...items.slice(0, ind + 1), dup, ...items.slice(ind + 1)]
             setItems(updatedItems)
+        } else if (appState.multipleSelections.length > 0) {
+            let copArray: CanvasItem[] = []
+            items.forEach(item => {
+                if (appState.multipleSelections.includes(item.id)) {
+                    copArray.push({ ...item })
+                }
+            })
+            let bounds = getMultipleSelectionBounds(appState.multipleSelections, items)
+            let ofsset = Math.min(bounds.height, bounds.width)
+            copArray.forEach(item => {
+                item.id = getRandomID()
+                item.x += ofsset
+                item.y += ofsset
+            })
+            setItems([...items, ...copArray])
         }
     }
-
 
     return (
         <fieldset className="flex flex-col gap-2">

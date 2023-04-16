@@ -403,15 +403,13 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
                 ...item,
                 x: newX ? newX : item.x,
                 y: newY ? newY : item.y,
-                fontSize: fontSize,
-                width,
-                height,
+                fontSize: fontSize > 2 ? fontSize : item.fontSize,
+                width: fontSize > 2 ? width : item.width,
+                height: fontSize > 2 ? height : item.height
             }
         } else if (item.type === "pencil") {
             let dx = newWidth - item.width
             let dy = newHeight - item.height
-
-
 
         } else {
             items[ind] = {

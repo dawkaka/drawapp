@@ -360,9 +360,11 @@ export default function Canvas() {
             if (state.resizeDir !== "br") {
                 updatedItems = resizeMultipleItems(state.resizeDir, dy, dx, mainState.multipleSelections, items, multipleSelectionBounds.x, multipleSelectionBounds.y, multipleSelectionBounds.width, multipleSelectionBounds.height)
             }
-            setItems(updatedItems)
-            setMultipleSelectionBounds(getMultipleSelectionBounds(stateRef.current.selectedItems, items))
-
+            const bounds = getMultipleSelectionBounds(stateRef.current.selectedItems, items)
+            if (bounds.width >= 20 && bounds.height >= 20) {
+                setItems(updatedItems)
+                setMultipleSelectionBounds(bounds)
+            }
         } else if (mainState.tool === "select" && state.drawInProcess) {
             const w = px - state.startRectX
             const h = py - state.startRectY
@@ -622,7 +624,6 @@ export default function Canvas() {
                     fontFamily: current.text.fontFamily,
                     fontSize: current.text.fontSize,
                     color: current.text.strokeStyle,
-                    fontWeight: "bold",
                 }}
             ></textarea>
                 : null

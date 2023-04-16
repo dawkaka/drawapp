@@ -265,6 +265,14 @@ export function Actions() {
             dup.x += 5
             dup.y += 5
             dup.id = getRandomID()
+            if (dup.type === "arrow" || dup.type === "line") {
+                dup.points = dup.points.map(p => {
+                    return {
+                        ...p
+                    }
+                })
+            }
+
             let updatedItems = [...items.slice(0, ind + 1), dup, ...items.slice(ind + 1)]
             setItems(updatedItems)
         } else if (appState.multipleSelections.length > 0) {
@@ -280,6 +288,14 @@ export function Actions() {
                 item.id = getRandomID()
                 item.x += ofsset
                 item.y += ofsset
+                if (item.type === "arrow" || item.type === "line") {
+                    item.points = item.points.map(p => {
+                        return {
+                            ...p
+                        }
+                    })
+                }
+
             })
             setItems([...items, ...copArray])
         }

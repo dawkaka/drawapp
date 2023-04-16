@@ -8,7 +8,7 @@ import { Actions, BorderRadius, FillToolsOptions, ImageOptions, Layers, Opacity,
 import Tools from "./tools"
 import history from "../lib/history"
 import { defaultValues } from "../constants"
-import { getInverseColorForTheme, getMultipleSelectionBounds } from "../lib/utils"
+import { getInverseColorForTheme, getMultipleSelection, getMultipleSelectionBounds } from "../lib/utils"
 import { CanvasItem } from "../types"
 
 export default function Side() {
@@ -61,14 +61,26 @@ export default function Side() {
         const link = document.createElement("a");
         let c = document.createElement('canvas') as HTMLCanvasElement;
         let ctx = c.getContext('2d')!;
-        let bounds = getMultipleSelectionBounds(items.map(i => i.id), items);
+        let bounds
+        if (main.multipleSelections.length > 0) {
+            bounds = getMultipleSelectionBounds(main.multipleSelections, items);
+        } else {
+            bounds = getMultipleSelectionBounds(items.map(i => i.id), items);
+        }
+
         const padding = 10
         const padding2x = padding * 2
         const x = - 1 * bounds.x + padding
         const y = -1 * bounds.y + padding
-        let modifiedItems = adjustItemsXY(items, x, y)
+        let modifiedItems
+        if (main.multipleSelections.length > 0) {
+            let v = items.filter(i => main.multipleSelections.includes(i.id))
+            modifiedItems = adjustItemsXY(v, x, y)
+        } else {
+            modifiedItems = adjustItemsXY(items, x, y)
+        }
 
-        bounds = getMultipleSelectionBounds(modifiedItems.map(i => i.id), modifiedItems);
+        bounds = getMultipleSelectionBounds(main.multipleSelections.length > 0 ? main.multipleSelections : modifiedItems.map(i => i.id), modifiedItems);
 
         c.width = bounds.width + padding2x
         c.height = bounds.height + padding2x

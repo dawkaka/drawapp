@@ -150,6 +150,14 @@ export function isWithinItem(pointerX: number, pointerY: number, item: SelectedI
                 const p = [...item.points]
                 p.unshift({ x: 0, y: 0 })
                 var boundingRect = getPointsBoundingRect(p, item.x, item.y)
+                if (boundingRect.width < 10) {
+                    boundingRect.x -= 5
+                    boundingRect.width = 10
+                }
+                if (boundingRect.height < 10) {
+                    boundingRect.y -= 5
+                    boundingRect.height += 10
+                }
                 return isPointInsideRectangle(pointerX, pointerY, boundingRect.x, boundingRect.y, boundingRect.width, boundingRect.height)
 
             case "pencil":
@@ -391,17 +399,14 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
             const width = metr.w
             const lines = item.text.split("\n").length
             const height = lines * metr.h * 0.6 + ((lines - 1) * fontSize / 2)
-            if (fontSize > 5) {
-                items[ind] = {
-                    ...item,
-                    x: newX ? newX : item.x,
-                    y: newY ? newY : item.y,
-                    fontSize: fontSize,
-                    width,
-                    height,
-                }
+            items[ind] = {
+                ...item,
+                x: newX ? newX : item.x,
+                y: newY ? newY : item.y,
+                fontSize: fontSize,
+                width,
+                height,
             }
-
         } else if (item.type === "pencil") {
             let dx = newWidth - item.width
             let dy = newHeight - item.height
@@ -682,6 +687,14 @@ export function getItemEnclosingPoint(pointerX: number, pointerY: number, items:
                 const p = [...item.points]
                 p.unshift({ x: 0, y: 0 })
                 var boundingRect = getPointsBoundingRect(p, item.x, item.y)
+                if (boundingRect.width < 10) {
+                    boundingRect.x -= 5
+                    boundingRect.width = 10
+                }
+                if (boundingRect.height < 10) {
+                    boundingRect.y -= 5
+                    boundingRect.height += 10
+                }
                 if (isPointInsideRectangle(pointerX, pointerY, boundingRect.x, boundingRect.y, boundingRect.width, boundingRect.height)) {
                     boundingItems.push({ id: item.id, area: Math.abs(item.points[1].x * item.points[1].y), fill: false })
                 }

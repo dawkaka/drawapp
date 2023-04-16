@@ -466,7 +466,7 @@ export function measureText(text: string, fontSize: number, fontFamily: string) 
     let c = document.getElementById("canvas") as HTMLCanvasElement
     let ctx = c.getContext('2d')!;
     ctx.save()
-    ctx.font = `bold ${fontSize}px ${fontFamily}`
+    ctx.font = `${fontSize}px ${fontFamily}`
     const textLines = text.split("\n")
     let max = ""
     for (let line of textLines) {

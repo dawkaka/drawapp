@@ -74,7 +74,7 @@ function FontSize() {
             if (item && item.type === "text") {
                 let c = document.getElementById("canvas") as HTMLCanvasElement
                 let ctx = c.getContext('2d')!;
-                ctx.font = `bold ${v}px ${item.fontFamily}`
+                ctx.font = `${v}px ${item.fontFamily}`
                 item.fontSize = v
                 item.width = ctx.measureText(item.text).width
                 item.height = item.text.split("\n").length * v
@@ -117,7 +117,7 @@ function FontFamily() {
             if (item && item.type === "text") {
                 let c = document.getElementById("canvas") as HTMLCanvasElement
                 let ctx = c.getContext('2d')!;
-                ctx.font = `bold ${item.fontSize}px ${val}`
+                ctx.font = `${item.fontSize}px ${val}`
                 item.width = ctx.measureText(item.text).width
                 item.fontFamily = val
                 setItems(updateSingleItem(selectedItem.id, item, items))

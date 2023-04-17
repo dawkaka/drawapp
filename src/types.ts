@@ -110,8 +110,14 @@ export type BoundingBox = RectBounds & {
     resizeAreas: { ptl: RectBounds, ptr: RectBounds, pbl: RectBounds, pbr: RectBounds, mt: RectBounds, mr: RectBounds, mb: RectBounds, ml: RectBounds }
 } |
     RectBounds & {
-        type: "arrow" | "line",
+        type: "line",
         curveControl: Point
+    }
+    |
+    RectBounds & {
+        type: "arrow" | "line",
+        curveControl: Point,
+        structure: "curve" | "sharp"
     }
     | RectBounds & {
         type: "image" | "text"

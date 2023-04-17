@@ -380,7 +380,6 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             }
             break;
         case "line":
-        case "arrow":
             ctx.save()
             ctx.strokeStyle = "darkorange"
             ctx.fillStyle = "white"
@@ -388,9 +387,9 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             ctx.translate(bounds.x, bounds.y)
             ctx.beginPath()
             ctx.moveTo(0, 0)
-            const startPoint = { x: 0, y: 0 }
-            const controlPoint = calculateQuadraticControlPoint(startPoint, bounds.curveControl, { x: bounds.width, y: bounds.height })
-            const endPoint = { x: bounds.width, y: bounds.height }
+            var startPoint = { x: 0, y: 0 }
+            var controlPoint = calculateQuadraticControlPoint(startPoint, bounds.curveControl, { x: bounds.width, y: bounds.height })
+            var endPoint = { x: bounds.width, y: bounds.height }
             ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
 
             ctx.stroke()
@@ -409,6 +408,46 @@ export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox)
             ctx.arc(bounds.curveControl.x, bounds.curveControl.y, 5, 0, 360)
             ctx.stroke()
             ctx.fill()
+
+            ctx.restore()
+
+            break;
+        case "arrow":
+            ctx.save()
+            ctx.strokeStyle = "darkorange"
+            ctx.fillStyle = "white"
+            ctx.translate(bounds.x, bounds.y)
+            ctx.beginPath()
+            ctx.moveTo(0, 0)
+            var startPoint = { x: 0, y: 0 }
+            var controlPoint = calculateQuadraticControlPoint(startPoint, bounds.curveControl, { x: bounds.width, y: bounds.height })
+            var endPoint = { x: bounds.width, y: bounds.height }
+            if (bounds.structure === "curve") {
+                ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
+            } else {
+                let center = { x: endPoint.x, y: 0 }
+                ctx.lineTo(center.x, center.y)
+                ctx.lineTo(endPoint.x, endPoint.y)
+            }
+
+            ctx.stroke()
+
+            ctx.beginPath()
+            ctx.arc(0, 0, 5, 0, 360)
+            ctx.stroke()
+            ctx.fill()
+
+            ctx.beginPath()
+            ctx.arc(bounds.width, bounds.height, 5, 0, 360)
+            ctx.stroke()
+            ctx.fill()
+
+            if (bounds.structure === "curve") {
+                ctx.beginPath()
+                ctx.arc(bounds.curveControl.x, bounds.curveControl.y, 5, 0, 360)
+                ctx.stroke()
+                ctx.fill()
+            }
 
             ctx.restore()
 

@@ -43,7 +43,6 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                 }
             }
         case "line":
-        case "arrow":
             if (item.points.length > 1) {
                 return {
                     type: item.type,
@@ -51,7 +50,26 @@ export function getBoundingBox(item: SelectedItem): BoundingBox | null {
                     y: item.y,
                     width: item.points[1].x,
                     height: item.points[1].y,
-                    curveControl: { x: item.points[0].x, y: item.points[0].y }
+                    curveControl: { x: item.points[0].x, y: item.points[0].y },
+                }
+            }
+            break;
+        case "arrow":
+            let v = localStorage.getItem("canvasItems")
+            if (!v) return null
+            let items = JSON.parse(v) as CanvasItem[]
+            const arrow = getSelectedItem(item.id, items)
+            if (!arrow || arrow.type !== "arrow") return null
+
+            if (item.points.length > 1) {
+                return {
+                    type: item.type,
+                    x: item.x,
+                    y: item.y,
+                    width: item.points[1].x,
+                    height: item.points[1].y,
+                    curveControl: { x: item.points[0].x, y: item.points[0].y },
+                    structure: arrow.structure
                 }
             }
             break;
@@ -663,6 +681,7 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
 
     if (dir === "pc") {
         let item = items[targetIndex]
+        if (item.type === "arrow" && item.structure === "sharp") return items
         if (item.type === "arrow" || item.type === "line") {
             if (item.points.length > 1) {
                 item.points[0].x += dx

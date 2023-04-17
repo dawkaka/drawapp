@@ -4,7 +4,7 @@ import { AppDrawings, AppState } from "../jotai"
 import { renderElements } from "../lib/render"
 import ColorPanel from "./colorpick"
 import { ClearModal, DownloadModal } from "./modal"
-import { Actions, BorderRadius, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
+import { Actions, ArrowOnlyOptions, BorderRadius, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
 import history from "../lib/history"
 import { defaultValues } from "../constants"
@@ -167,6 +167,9 @@ export default function Side() {
                         {
                             (tool === "diamond" || tool === "rectangle") && <BorderRadius />
 
+                        }
+                        {
+                            tool === "arrow" && <ArrowOnlyOptions />
                         }
                         {
                             tool === "text" && <TextOptions />

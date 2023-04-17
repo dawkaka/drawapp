@@ -22,6 +22,86 @@ export function TextOptions() {
     )
 }
 
+
+
+export function ArrowOnlyOptions() {
+
+    const [mainState, setMainState] = useAtom(AppState)
+
+    const handleArrowType = (type: string) => {
+
+    }
+
+
+    const handleArrowStructure = (structure: string) => {
+
+    }
+
+
+    return (
+        <>
+            <fieldset className="flex flex-col gap-2">
+                <legend className="text-sm text-[var(--accents-5)] mb-1">Arrow type</legend>
+                <div className="flex flex-wrap gap-3">
+                    <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={handleArrowType}>
+                        <svg fill="currentColor" viewBox="0 0 24 24" id="right-arrow" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" className="icon flat-line"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+                                <line id="primary" x1="3" y1="12" x2="21" y2="12" style={{ fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.8719999999999999 }}>
+                                </line>
+                                <polyline id="primary-2" data-name="primary" points="18 15 21 12 18 9" style={{ fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.8719999999999999 }}></polyline>
+                            </g>
+                        </svg>
+
+                    </OptionContainer>
+                    <OptionContainer selected={String(mainState.fontSize)} value="25" onClick={handleArrowType}>
+                        <svg fill="currentColor" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
+                            viewBox="0 0 492.001 492.001"
+                            xmlSpace="preserve">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g>
+                                <path d="M487.971,235.993l-85.468-85.464c-5.22-5.228-14.396-5.228-19.616,0l-7.452,7.448c-5.4,5.408-5.4,14.548,0.004,19.956 l48.456,48.792H67.911l48.696-49.02c5.408-5.412,5.408-14.384,0-19.796l-7.444-7.524c-5.232-5.232-14.404-5.272-19.624-0.044 L4.035,235.813c-2.672,2.676-4.1,6.24-4.032,9.916c-0.072,3.82,1.36,7.396,4.032,10.068l85.464,85.464 c5.228,5.232,14.396,5.228,19.62,0l7.444-7.448c5.416-5.416,5.416-13.784,0-19.192l-49.856-49.436h358.792l-50.096,49.668 c-2.612,2.604-4.052,5.884-4.052,9.592s1.436,7.088,4.052,9.7l7.444,7.396c2.616,2.612,6.1,4.02,9.812,4.02 c3.716,0,7.196-1.448,9.812-4.06l85.5-85.508c2.664-2.668,4.096-6.248,4.028-9.924 C492.075,242.245,490.639,238.665,487.971,235.993z">
+                                </path>
+                            </g>
+                            </g>
+                            </g>
+                        </svg>
+                    </OptionContainer>
+
+                </div>
+            </fieldset>
+            <fieldset className="flex flex-col gap-2">
+                <legend className="text-sm text-[var(--accents-5)] mb-1">Arrow structure</legend>
+                <div className="flex flex-wrap gap-3">
+                    <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={handleArrowStructure}>
+                        <svg fill="currentColor" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 302.816 302.816" xmlSpace="preserve"
+                            stroke="currentColor" stroke-width="0.00302816"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+                                <path id="XMLID_2_" d="M241.053,78.136c0.01-0.224,0.031-0.448,0.03-0.672c0-0.345-0.024-0.686-0.049-1.027 c-0.01-0.141-0.01-0.283-0.023-0.424c-0.032-0.322-0.086-0.638-0.138-0.955c-0.027-0.166-0.045-0.332-0.077-0.496 c-0.054-0.271-0.127-0.535-0.196-0.801c-0.053-0.21-0.1-0.422-0.162-0.631c-0.064-0.21-0.145-0.414-0.217-0.621 c-0.091-0.257-0.176-0.516-0.281-0.769c-0.064-0.157-0.144-0.306-0.213-0.46c-0.133-0.29-0.262-0.581-0.413-0.864 c-0.07-0.131-0.153-0.254-0.227-0.384c-0.166-0.29-0.33-0.581-0.518-0.862c-0.144-0.216-0.307-0.418-0.461-0.626 c-0.134-0.18-0.256-0.365-0.399-0.54c-0.317-0.39-0.655-0.762-1.012-1.119c-0.002-0.002-0.004-0.005-0.006-0.007L174.208,4.393 c-5.857-5.858-15.355-5.858-21.213,0c-5.858,5.857-5.858,15.355,0,21.213l35.13,35.13c-59.791,5.858-111.389,50.117-123.7,112.007 c-4.736,23.817-3.136,48.02,4.125,70.432c0.112,0.348,0.215,0.7,0.331,1.047c6.663,20.032,17.873,38.595,33.157,54.118 c0.614,0.624,1.276,1.167,1.964,1.66c2.601,1.866,5.658,2.816,8.726,2.816c0.475,0,0.95-0.022,1.423-0.067 c3.313-0.314,6.545-1.727,9.101-4.244c5.903-5.813,5.977-15.31,0.164-21.213c-3.604-3.66-6.909-7.542-9.926-11.598 c-18.44-24.791-25.755-56.355-19.64-87.097c9.72-48.866,50.676-83.772,97.979-88.071l-38.835,38.836 c-5.858,5.858-5.858,15.355,0,21.213c2.929,2.929,6.768,4.394,10.607,4.394c3.839,0,7.678-1.464,10.606-4.394l62.41-62.411 c0.022-0.022,0.045-0.046,0.067-0.068l0.007-0.006c0.013-0.013,0.023-0.027,0.036-0.04c0.338-0.339,0.659-0.694,0.963-1.065 c0.088-0.106,0.162-0.219,0.246-0.327c0.217-0.279,0.432-0.559,0.629-0.854c0.115-0.172,0.213-0.351,0.32-0.527 c0.146-0.24,0.296-0.476,0.429-0.725c0.125-0.234,0.232-0.475,0.343-0.713c0.095-0.202,0.195-0.399,0.281-0.606 c0.128-0.308,0.233-0.622,0.34-0.936c0.051-0.15,0.11-0.295,0.156-0.448c0.128-0.421,0.231-0.847,0.321-1.275 c0.012-0.055,0.03-0.107,0.041-0.163c0.001-0.004,0.001-0.009,0.002-0.013c0.097-0.492,0.171-0.987,0.218-1.484 C241.041,78.652,241.041,78.394,241.053,78.136z">
+                                </path>
+                            </g>
+                        </svg>
+                    </OptionContainer>
+                    <OptionContainer selected={String(mainState.fontSize)} value="25" onClick={handleArrowStructure}>
+                        <svg viewBox="0 -2 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill="currentColor">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <title>arrow_up [#369]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                    <g id="Dribbble-Light-Preview" transform="translate(-180.000000, -6559.000000)" fill="currentColor">
+                                        <g id="icons" transform="translate(56.000000, 160.000000)">
+                                            <path d="M142,6417.146 L142,6402.828 L138.684,6406.071 L137.234,6404.657 C139.355,6402.535 140.728,6401.144 142.872,6399 C144.938,6401.066 146.515,6402.652 148.52,6404.657 L147.174,6406.071 L144,6402.828 L144,6419.146 L124,6419.146 L124,6399.146 L126,6399.146 L126,6417.146 L142,6417.146 Z" id="arrow_up-[#369]">
+                                            </path>
+                                        </g>
+                                    </g>
+                                </g>
+                            </g>
+                        </svg>
+                    </OptionContainer>
+                </div>
+            </fieldset>
+        </>
+    )
+}
+
 export function ImageOptions() {
     const [items, setItems] = useAtom(AppDrawings)
     const [selectedItem] = useAtom(SelectionAtom)

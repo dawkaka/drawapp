@@ -17,7 +17,9 @@ export interface AppState {
     fontFamily: string,
     fontSize: number,
     textStyle: "fill" | "stroke"
-    textAlign: "center" | "left" | "right"
+    textAlign: "center" | "left" | "right",
+    arrowStructure: "curve" | "sharp",
+    arrowType: "end_arrow" | "both_arrow" | "end_triangle" | "both_triangle"
 }
 
 export type Point = {
@@ -62,7 +64,9 @@ export interface Line extends Linear {
 }
 
 export interface Arrow extends Linear {
-    type: "arrow"
+    type: "arrow",
+    structure: "curve" | "sharp",
+    arrowType: "end_arrow" | "both_arrow" | "end_triangle" | "both_triangle"
 }
 
 export interface Rectangle extends Box {

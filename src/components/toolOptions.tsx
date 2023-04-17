@@ -25,16 +25,37 @@ export function TextOptions() {
 
 
 export function ArrowOnlyOptions() {
-
     const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
 
     const handleArrowType = (type: string) => {
+        if (["end_arrow", "both_arrow", "end_triangle", "both_triangle"].includes(type)) {
+            if (selectedItem) {
+                const item = getSelectedItem(selectedItem.id, items)
+                if (item && item.type === "arrow") {
+                    item.arrowType = type as any
+                    setItems(updateSingleItem(selectedItem.id, item, items))
+                }
 
+            }
+            setMainState({ ...mainState, arrowType: type as any })
+        }
     }
 
-
     const handleArrowStructure = (structure: string) => {
+        if (structure === "curve" || structure === "sharp") {
+            if (selectedItem) {
+                const item = getSelectedItem(selectedItem.id, items)
+                if (item && item.type === "arrow") {
+                    item.structure = structure as any
+                    setItems(updateSingleItem(selectedItem.id, item, items))
+                }
 
+            }
+            setMainState({ ...mainState, arrowStructure: structure })
+        }
     }
 
 
@@ -43,18 +64,25 @@ export function ArrowOnlyOptions() {
             <fieldset className="flex flex-col gap-2">
                 <legend className="text-sm text-[var(--accents-5)] mb-1">Arrow type</legend>
                 <div className="flex flex-wrap gap-3">
-                    <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={handleArrowType}>
-                        <svg fill="currentColor" viewBox="0 0 24 24" id="right-arrow" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" className="icon flat-line"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <OptionContainer selected={String(mainState.arrowType)} value="end_arrow" onClick={handleArrowType}>
+                        <svg fill="currentColor" viewBox="0 0 24 24" id="right-arrow" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" className="icon flat-line">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
-                                <line id="primary" x1="3" y1="12" x2="21" y2="12" style={{ fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.8719999999999999 }}>
+                                <line id="primary" x1="3" y1="12" x2="21" y2="12" style={{
+                                    fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin:
+                                        "round", strokeWidth: 1.8719999999999999
+                                }}>
                                 </line>
-                                <polyline id="primary-2" data-name="primary" points="18 15 21 12 18 9" style={{ fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 1.8719999999999999 }}></polyline>
+                                <polyline id="primary-2" data-name="primary" points="18 15 21 12 18 9" style={{
+                                    fill: "none", stroke: "currentColor", strokeLinecap: "round",
+                                    strokeLinejoin: "round", strokeWidth: 1.8719999999999999
+                                }}></polyline>
                             </g>
                         </svg>
 
                     </OptionContainer>
-                    <OptionContainer selected={String(mainState.fontSize)} value="25" onClick={handleArrowType}>
-                        <svg fill="currentColor" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
+                    <OptionContainer selected={String(mainState.arrowType)} value="both_arrow" onClick={handleArrowType}>
+                        <svg fill="currentColor" height="18px" width="18px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
                             viewBox="0 0 492.001 492.001"
                             xmlSpace="preserve">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -72,7 +100,7 @@ export function ArrowOnlyOptions() {
             <fieldset className="flex flex-col gap-2">
                 <legend className="text-sm text-[var(--accents-5)] mb-1">Arrow structure</legend>
                 <div className="flex flex-wrap gap-3">
-                    <OptionContainer selected={String(mainState.fontSize)} value="18" onClick={handleArrowStructure}>
+                    <OptionContainer selected={String(mainState.arrowStructure)} value="curve" onClick={handleArrowStructure}>
                         <svg fill="currentColor" height="200px" width="200px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 302.816 302.816" xmlSpace="preserve"
                             stroke="currentColor" stroke-width="0.00302816"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
@@ -81,7 +109,7 @@ export function ArrowOnlyOptions() {
                             </g>
                         </svg>
                     </OptionContainer>
-                    <OptionContainer selected={String(mainState.fontSize)} value="25" onClick={handleArrowStructure}>
+                    <OptionContainer selected={String(mainState.arrowStructure)} value="sharp" onClick={handleArrowStructure}>
                         <svg viewBox="0 -2 25 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill="currentColor">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                             <g id="SVGRepo_iconCarrier">
@@ -320,6 +348,7 @@ function OptionContainer({ selected, value, onClick, children }: { selected: str
                 backgroundColor: selected === value ? "#faecd2" : "",
                 border: `1px solid ${selected === value ? "#faecd2" : "var(--accents-2)"}`,
                 fill: selected === value ? "darkorange" : "none",
+                overflow: "hidden",
             }}
         >
             <div className="flex items-center justify-center h-[22px] w-[22px]">

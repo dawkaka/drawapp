@@ -86,6 +86,8 @@ export function useInitialState() {
             strokeWidth: mainState.strokeWidth,
             stroke: mainState.stroke,
             opacity: mainState.opacity,
+            arrowType: mainState.arrowType,
+            structure: mainState.arrowStructure
         },
         image: {
             id: "",

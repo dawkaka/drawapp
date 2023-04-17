@@ -127,6 +127,8 @@ export default function Canvas() {
                             strokeWidth: mainState.strokeWidth,
                             stroke: mainState.stroke,
                             opacity: mainState.opacity,
+                            arrowType: mainState.arrowType,
+                            structure: mainState.arrowStructure
                         }
                     })
                     break;
@@ -572,7 +574,11 @@ export default function Canvas() {
             {(mainState.tool === "text" && current.text.x !== 0) ? <textarea
                 className="absolute outline-0 overflow-hidden"
                 onBlur={(e) => {
-                    if (e.target.value.trim() === "") return
+                    if (e.target.value.trim() === "") {
+                        setCurrent(intialStates)
+                        updateMainState({ ...mainState, tool: "select", selectedItemID: "" })
+                        return
+                    }
                     const target = e.target as HTMLTextAreaElement
                     const itemID = getRandomID()
                     const textLines = target.value.split("\n")
@@ -610,6 +616,7 @@ export default function Canvas() {
 
                 autoComplete="off"
                 autoCorrect="off"
+                autoFocus={current.text.x >= 0 && current.text.y >= 0}
                 tabIndex={0}
                 rows={1}
                 style={{

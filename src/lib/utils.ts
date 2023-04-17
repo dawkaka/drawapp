@@ -938,6 +938,17 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
             })
             break;
         case "arrow":
+            setState({
+                ...currentState,
+                strokeColor: item.strokeStyle,
+                strokeWidth: item.strokeWidth,
+                opacity: item.opacity,
+                stroke: item.stroke,
+                tool: item.type,
+                arrowStructure: item.structure,
+                arrowType: item.arrowType
+            })
+            break;
         case "line":
             setState({
                 ...currentState,

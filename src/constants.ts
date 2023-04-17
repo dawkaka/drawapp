@@ -14,7 +14,9 @@ export const defaultValues: AppState = {
     fontFamily: "Kalam",
     fontSize: 25,
     textStyle: "fill",
-    textAlign: "left"
+    textAlign: "left",
+    arrowStructure: "curve",
+    arrowType: "end_arrow"
 }
 
 export enum Cursor {

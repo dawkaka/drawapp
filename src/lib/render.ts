@@ -276,30 +276,80 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     const startPoint = { x: 0, y: 0 }
     const controlPoint = calculateQuadraticControlPoint(startPoint, points[0], points[1])
     const endPoint = points[1]
-    ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
 
-    ctx.save();
-    const angle = Math.atan2(endPoint.y - controlPoint.y, endPoint.x - controlPoint.x);
-    const angle2 = Math.atan2(controlPoint.y, controlPoint.x);
-    ctx.translate(endPoint.x, endPoint.y);
-    ctx.rotate(angle);
-    const arrowSize = Math.min(15, 0.3 * (Math.max(Math.abs(endPoint.y - points[0].y), Math.abs(endPoint.x - points[0].x))))
-    ctx.moveTo(0, 0);
-    ctx.lineTo(-arrowSize, arrowSize / 2);
-    ctx.moveTo(0, 0);
-    ctx.lineTo(-arrowSize, -arrowSize / 2);
-    ctx.stroke();
-    ctx.restore();
-    if (item.arrowType === "both_arrow") {
-        ctx.save()
-        ctx.rotate(angle2);
-        ctx.moveTo(0, 0);
-        ctx.lineTo(arrowSize, arrowSize / 2);
-        ctx.moveTo(0, 0);
-        ctx.lineTo(arrowSize, -arrowSize / 2);
-        ctx.stroke();
-        ctx.restore()
+    if (item.structure === "curve") {
+        ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
+        const angle = Math.atan2(endPoint.y - controlPoint.y, endPoint.x - controlPoint.x);
+        const angle2 = Math.atan2(controlPoint.y, controlPoint.x);
+        const arrowSize = Math.min(15, 0.3 * (Math.max(Math.abs(endPoint.y - points[0].y), Math.abs(endPoint.x - points[0].x))))
+
+        if (item.arrowType === "both_arrow" || item.arrowType === "end_arrow") {
+            ctx.save();
+            ctx.translate(endPoint.x, endPoint.y);
+            ctx.rotate(angle);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-arrowSize, arrowSize / 2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-arrowSize, -arrowSize / 2);
+            ctx.stroke();
+            ctx.restore();
+
+        }
+        if (item.arrowType === "both_arrow") {
+            ctx.save()
+            ctx.rotate(angle2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, arrowSize / 2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, -arrowSize / 2);
+            ctx.stroke();
+            ctx.restore()
+        }
+    } else {
+        let center = { x: endPoint.x, y: 0 }
+
+        ctx.lineTo(center.x, center.y)
+        ctx.lineTo(endPoint.x, endPoint.y)
+        ctx.stroke()
+
+        const arrowSize = Math.min(15, 0.5 * Math.min(Math.abs(endPoint.y), Math.abs(center.x)))
+
+        if (item.arrowType === "both_arrow" || item.arrowType === "end_arrow") {
+            ctx.save();
+            ctx.translate(endPoint.x, endPoint.y);
+            if (endPoint.y > 0) {
+                const angl = 90 * Math.PI / 180
+                ctx.rotate(angl)
+            } else {
+                const angl = -90 * Math.PI / 180
+                ctx.rotate(angl)
+            }
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-arrowSize, arrowSize / 2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(-arrowSize, -arrowSize / 2);
+            ctx.stroke();
+            ctx.restore();
+
+        }
+        if (item.arrowType === "both_arrow") {
+            ctx.save()
+            if (endPoint.x > 0) {
+                ctx.rotate(0)
+            } else {
+                const angl = -180 * Math.PI / 180
+                ctx.rotate(angl)
+            }
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, arrowSize / 2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, -arrowSize / 2);
+            ctx.stroke();
+            ctx.restore()
+        }
+
     }
+
     ctx.restore();
 }
 

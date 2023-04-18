@@ -205,7 +205,7 @@ function ArrowHeadPicker({ type, value }: { type: "head" | "tail", value: ArrowH
                 <OptionContainer selected={""} value="arrow" onClick={handleArrowType}>
                     <HeadArrowSVG />
                 </OptionContainer>
-                <OptionContainer selected={""} value="rectangle" onClick={handleArrowType}>
+                <OptionContainer selected={""} value="triangle" onClick={handleArrowType}>
                     <HeadArrowSVG />
                 </OptionContainer>
                 <OptionContainer selected={""} value="circle" onClick={handleArrowType}>

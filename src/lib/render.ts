@@ -261,6 +261,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     ctx.save()
     ctx.lineWidth = item.strokeWidth
     ctx.strokeStyle = getInverseColorForTheme(item.strokeStyle)
+    ctx.fillStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.lineCap = "round"
     ctx.lineJoin = "round"
     ctx.globalAlpha = item.opacity
@@ -269,6 +270,7 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     } else if (item.stroke === "dashed") {
         ctx.setLineDash([20, 15]);
     }
+
     ctx.beginPath();
     const points = item.points
     ctx.translate(item.x, item.y)
@@ -289,20 +291,37 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
         ctx.restore();
     }
 
+    function triangle(x: number, y: number, size: number, angle: number) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(size, -1 * size / 2);
+        ctx.lineTo(size, size / 2);
+        ctx.closePath()
+        ctx.stroke();
+        ctx.restore();
+    }
+
     if (item.structure === "curve") {
         ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
         const angle = Math.atan2(endPoint.y - controlPoint.y, endPoint.x - controlPoint.x);
         const angle2 = Math.atan2(controlPoint.y, controlPoint.x);
         const arrowSize = Math.min(15, 0.3 * (Math.max(Math.abs(endPoint.y - points[0].y), Math.abs(endPoint.x - points[0].x))))
+
         if (item.head !== "none") {
             if (item.head === "arrow") {
                 arrow(0, 0, arrowSize, angle2)
+            } else if (item.head === "triangle") {
+                triangle(0, 0, arrowSize, angle2)
             }
         }
 
         if (item.tail !== "none") {
             if (item.tail === "arrow") {
                 arrow(endPoint.x, endPoint.y, 0 - arrowSize, angle)
+            } else if (item.tail === "triangle") {
+                triangle(endPoint.x, endPoint.y, 0 - arrowSize, angle)
             }
         }
 
@@ -315,22 +334,26 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
 
         const arrowSize = Math.min(15, 0.5 * Math.min(Math.abs(endPoint.y), Math.abs(center.x)))
         if (item.head !== "none") {
+            let angle = -180 * Math.PI / 180
+            if (endPoint.x > 0) {
+                angle = 0
+            }
             if (item.head === "arrow") {
-                let angle = -180 * Math.PI / 180
-                if (endPoint.x > 0) {
-                    angle = 0
-                }
                 arrow(0, 0, arrowSize, angle)
+            } else if (item.head === "triangle") {
+                triangle(0, 0, arrowSize, angle)
             }
         }
 
         if (item.tail !== "none") {
+            let angle = -90 * Math.PI / 180
+            if (endPoint.y > 0) {
+                angle = 90 * Math.PI / 180
+            }
             if (item.tail === "arrow") {
-                let angle = -90 * Math.PI / 180
-                if (endPoint.y > 0) {
-                    angle = 90 * Math.PI / 180
-                }
                 arrow(endPoint.x, endPoint.y, -arrowSize, angle)
+            } else if (item.head === "triangle") {
+                triangle(endPoint.x, endPoint.y, -arrowSize, angle)
             }
         }
     }

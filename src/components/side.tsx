@@ -149,6 +149,16 @@ export default function Side() {
                 style={{
                     width: closed ? 0 : width + 'px'
                 }}
+                onClick={() => {
+                    const h = document.querySelector("#arrow-head") as HTMLDivElement
+                    const t = document.querySelector("#arrow-tail") as HTMLDivElement
+                    if (h) {
+                        h.style.display = "none"
+                    }
+                    if (t) {
+                        t.style.display = "none"
+                    }
+                }}
             >
                 {
                     modal && <ClearModal close={() => setModal(false)} clearFunc={deleteAllItems} />

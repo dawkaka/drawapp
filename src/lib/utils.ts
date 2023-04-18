@@ -965,7 +965,8 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
                 stroke: item.stroke,
                 tool: item.type,
                 arrowStructure: item.structure,
-                arrowType: item.arrowType
+                arrowHead: item.head,
+                arrowTail: item.tail
             })
             break;
         case "line":

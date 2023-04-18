@@ -19,7 +19,8 @@ export interface AppState {
     textStyle: "fill" | "stroke"
     textAlign: "center" | "left" | "right",
     arrowStructure: "curve" | "sharp",
-    arrowType: "end_arrow" | "both_arrow" | "end_triangle" | "both_triangle"
+    arrowHead: ArrowHead,
+    arrowTail: ArrowHead
 }
 
 export type Point = {
@@ -63,10 +64,13 @@ export interface Line extends Linear {
     type: "line"
 }
 
+export type ArrowHead = "arrow" | "triangle" | "line" | "circle" | "none"
+
 export interface Arrow extends Linear {
     type: "arrow",
     structure: "curve" | "sharp",
-    arrowType: "end_arrow" | "both_arrow" | "end_triangle" | "both_triangle"
+    head: ArrowHead,
+    tail: ArrowHead
 }
 
 export interface Rectangle extends Box {

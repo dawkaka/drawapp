@@ -283,7 +283,18 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
         const angle2 = Math.atan2(controlPoint.y, controlPoint.x);
         const arrowSize = Math.min(15, 0.3 * (Math.max(Math.abs(endPoint.y - points[0].y), Math.abs(endPoint.x - points[0].x))))
 
-        if (item.arrowType === "both_arrow" || item.arrowType === "end_arrow") {
+        if (item.head !== "none") {
+            ctx.save()
+            ctx.rotate(angle2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, arrowSize / 2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, -arrowSize / 2);
+            ctx.stroke();
+            ctx.restore()
+        }
+
+        if (item.tail !== "none") {
             ctx.save();
             ctx.translate(endPoint.x, endPoint.y);
             ctx.rotate(angle);
@@ -295,16 +306,6 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
             ctx.restore();
 
         }
-        if (item.arrowType === "both_arrow") {
-            ctx.save()
-            ctx.rotate(angle2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, arrowSize / 2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, -arrowSize / 2);
-            ctx.stroke();
-            ctx.restore()
-        }
     } else {
         let center = { x: endPoint.x, y: 0 }
 
@@ -314,7 +315,23 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
 
         const arrowSize = Math.min(15, 0.5 * Math.min(Math.abs(endPoint.y), Math.abs(center.x)))
 
-        if (item.arrowType === "both_arrow" || item.arrowType === "end_arrow") {
+        if (item.head !== "none") {
+            ctx.save()
+            if (endPoint.x > 0) {
+                ctx.rotate(0)
+            } else {
+                const angl = -180 * Math.PI / 180
+                ctx.rotate(angl)
+            }
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, arrowSize / 2);
+            ctx.moveTo(0, 0);
+            ctx.lineTo(arrowSize, -arrowSize / 2);
+            ctx.stroke();
+            ctx.restore()
+        }
+
+        if (item.tail !== "none") {
             ctx.save();
             ctx.translate(endPoint.x, endPoint.y);
             if (endPoint.y > 0) {
@@ -332,22 +349,6 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
             ctx.restore();
 
         }
-        if (item.arrowType === "both_arrow") {
-            ctx.save()
-            if (endPoint.x > 0) {
-                ctx.rotate(0)
-            } else {
-                const angl = -180 * Math.PI / 180
-                ctx.rotate(angl)
-            }
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, arrowSize / 2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, -arrowSize / 2);
-            ctx.stroke();
-            ctx.restore()
-        }
-
     }
 
     ctx.restore();

@@ -127,7 +127,8 @@ export default function Canvas() {
                             strokeWidth: mainState.strokeWidth,
                             stroke: mainState.stroke,
                             opacity: mainState.opacity,
-                            arrowType: mainState.arrowType,
+                            head: mainState.arrowHead,
+                            tail: mainState.arrowTail,
                             structure: mainState.arrowStructure
                         }
                     })

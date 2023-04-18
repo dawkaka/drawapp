@@ -1,7 +1,9 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
 import { getMultipleSelectionBounds, getRandomID, getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
-import type { CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
+import type { Arrow, ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
+import { useState } from "react"
+import { HeadArrowSVG, LineSVG } from "./svgs"
 
 export function FillToolsOptions() {
     return (
@@ -30,19 +32,19 @@ export function ArrowOnlyOptions() {
     const [selectedItem] = useAtom(SelectionAtom)
 
 
-    const handleArrowType = (type: string) => {
-        if (["end_arrow", "both_arrow", "end_triangle", "both_triangle"].includes(type)) {
-            if (selectedItem) {
-                const item = getSelectedItem(selectedItem.id, items)
-                if (item && item.type === "arrow") {
-                    item.arrowType = type as any
-                    setItems(updateSingleItem(selectedItem.id, item, items))
-                }
+    // const handleArrowType = (type: string) => {
+    //     if (["end_arrow", "both_arrow", "end_triangle", "both_triangle"].includes(type)) {
+    //         if (selectedItem) {
+    //             const item = getSelectedItem(selectedItem.id, items)
+    //             if (item && item.type === "arrow") {
+    //                 item.arrowType = type as any
+    //                 setItems(updateSingleItem(selectedItem.id, item, items))
+    //             }
 
-            }
-            setMainState({ ...mainState, arrowType: type as any })
-        }
-    }
+    //         }
+    //         setMainState({ ...mainState, arrowType: type as any })
+    //     }
+    // }
 
     const handleArrowStructure = (structure: string) => {
         if (structure === "curve" || structure === "sharp") {
@@ -64,7 +66,10 @@ export function ArrowOnlyOptions() {
             <fieldset className="flex flex-col gap-2">
                 <legend className="text-sm text-[var(--accents-5)] mb-1">Arrow type</legend>
                 <div className="flex flex-wrap gap-3">
-                    <OptionContainer selected={String(mainState.arrowType)} value="end_arrow" onClick={handleArrowType}>
+                    <ArrowHeadPicker value={mainState.arrowHead} type="head" />
+                    <ArrowHeadPicker value={mainState.arrowTail} type="tail" />
+
+                    {/* <OptionContainer selected={String(mainState.arrowType)} value="end_arrow" onClick={handleArrowType}>
                         <svg fill="currentColor" viewBox="0 0 24 24" id="right-arrow" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" className="icon flat-line">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
@@ -93,7 +98,7 @@ export function ArrowOnlyOptions() {
                             </g>
                             </g>
                         </svg>
-                    </OptionContainer>
+                    </OptionContainer> */}
 
                 </div>
             </fieldset>
@@ -127,6 +132,92 @@ export function ArrowOnlyOptions() {
                 </div>
             </fieldset>
         </>
+    )
+}
+
+
+function ArrowHeadPicker({ type, value }: { type: "head" | "tail", value: ArrowHead }) {
+    const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    function handleArrowType(t: string) {
+        if (type === "head") {
+            if (selectedItem) {
+                const item = getSelectedItem(selectedItem.id, items)
+                if (item && item.type === "arrow") {
+                    item.head = t as any
+                    setItems(updateSingleItem(selectedItem.id, item, items))
+                }
+
+            }
+            setMainState({ ...mainState, arrowHead: t as any })
+        } else {
+            if (selectedItem) {
+                const item = getSelectedItem(selectedItem.id, items)
+                if (item && item.type === "arrow") {
+                    item.tail = t as any
+                    setItems(updateSingleItem(selectedItem.id, item, items))
+                }
+
+            }
+            setMainState({ ...mainState, arrowTail: t as any })
+        }
+    }
+
+    function showOpts(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        e.stopPropagation()
+        const other = document.querySelector(`#arrow-${type === "tail" ? "head" : "tail"}`) as HTMLDivElement
+        if (other) {
+            other.style.display = "none"
+        }
+        const opts = document.querySelector(`#arrow-${type}`) as HTMLDivElement
+        if (opts) {
+            opts.style.display = "grid"
+        }
+
+    }
+    return (
+        <div className="relative" onClick={(e) => e.stopPropagation()}>
+            <button className={`w-fit p-1 rounded hover:bg-[#faecd2] hover:text-[darkorange] text-[var(--accents-7)]`}
+                onClick={showOpts}
+                style={{
+                    border: `1px solid var(--accents-2)`,
+                    overflow: "hidden",
+                    transform: type === "head" ? "rotateY(180deg)" : ""
+
+                }}
+            >
+                <div className="flex items-center justify-center h-[22px] w-[22px]">
+                    <HeadArrowSVG />
+                </div>
+            </button>
+
+            <div className="absolute hidden grid-cols-3 top-[50%] right-[-120px] z-10 shadow bg-[var(--background)]  p-2 rounded gap-3"
+                style={{
+                    transform: type === "head" ? "rotateY(180deg) scale(0.8)" : "scale(0.8)"
+                }}
+                id={`arrow-${type}`}
+            >
+                <OptionContainer selected={""} value="none" onClick={handleArrowType}>
+                    <LineSVG />
+                </OptionContainer>
+                <OptionContainer selected={""} value="arrow" onClick={handleArrowType}>
+                    <HeadArrowSVG />
+                </OptionContainer>
+                <OptionContainer selected={""} value="rectangle" onClick={handleArrowType}>
+                    <HeadArrowSVG />
+                </OptionContainer>
+                <OptionContainer selected={""} value="circle" onClick={handleArrowType}>
+                    <HeadArrowSVG />
+                </OptionContainer>
+                <OptionContainer selected={""} value="line" onClick={handleArrowType}>
+                    <HeadArrowSVG />
+                </OptionContainer>
+
+            </div>
+        </div>
+
     )
 }
 

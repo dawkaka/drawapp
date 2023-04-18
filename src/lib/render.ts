@@ -277,35 +277,35 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     const controlPoint = calculateQuadraticControlPoint(startPoint, points[0], points[1])
     const endPoint = points[1]
 
+    function arrow(x: number, y: number, size: number, angle: number) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(size, -1 * size / 2);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(size, size / 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
     if (item.structure === "curve") {
         ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
         const angle = Math.atan2(endPoint.y - controlPoint.y, endPoint.x - controlPoint.x);
         const angle2 = Math.atan2(controlPoint.y, controlPoint.x);
         const arrowSize = Math.min(15, 0.3 * (Math.max(Math.abs(endPoint.y - points[0].y), Math.abs(endPoint.x - points[0].x))))
-
         if (item.head !== "none") {
-            ctx.save()
-            ctx.rotate(angle2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, arrowSize / 2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, -arrowSize / 2);
-            ctx.stroke();
-            ctx.restore()
+            if (item.head === "arrow") {
+                arrow(0, 0, arrowSize, angle2)
+            }
         }
 
         if (item.tail !== "none") {
-            ctx.save();
-            ctx.translate(endPoint.x, endPoint.y);
-            ctx.rotate(angle);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(-arrowSize, arrowSize / 2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(-arrowSize, -arrowSize / 2);
-            ctx.stroke();
-            ctx.restore();
-
+            if (item.tail === "arrow") {
+                arrow(endPoint.x, endPoint.y, 0 - arrowSize, angle)
+            }
         }
+
     } else {
         let center = { x: endPoint.x, y: 0 }
 
@@ -314,45 +314,30 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
         ctx.stroke()
 
         const arrowSize = Math.min(15, 0.5 * Math.min(Math.abs(endPoint.y), Math.abs(center.x)))
-
         if (item.head !== "none") {
-            ctx.save()
-            if (endPoint.x > 0) {
-                ctx.rotate(0)
-            } else {
-                const angl = -180 * Math.PI / 180
-                ctx.rotate(angl)
+            if (item.head === "arrow") {
+                let angle = -180 * Math.PI / 180
+                if (endPoint.x > 0) {
+                    angle = 0
+                }
+                arrow(0, 0, arrowSize, angle)
             }
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, arrowSize / 2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(arrowSize, -arrowSize / 2);
-            ctx.stroke();
-            ctx.restore()
         }
 
         if (item.tail !== "none") {
-            ctx.save();
-            ctx.translate(endPoint.x, endPoint.y);
-            if (endPoint.y > 0) {
-                const angl = 90 * Math.PI / 180
-                ctx.rotate(angl)
-            } else {
-                const angl = -90 * Math.PI / 180
-                ctx.rotate(angl)
+            if (item.tail === "arrow") {
+                let angle = -90 * Math.PI / 180
+                if (endPoint.y > 0) {
+                    angle = 90 * Math.PI / 180
+                }
+                arrow(endPoint.x, endPoint.y, -arrowSize, angle)
             }
-            ctx.moveTo(0, 0);
-            ctx.lineTo(-arrowSize, arrowSize / 2);
-            ctx.moveTo(0, 0);
-            ctx.lineTo(-arrowSize, -arrowSize / 2);
-            ctx.stroke();
-            ctx.restore();
-
         }
     }
 
     ctx.restore();
 }
+
 
 
 export function renderBounds(ctx: CanvasRenderingContext2D, bounds: BoundingBox) {

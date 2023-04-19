@@ -295,16 +295,39 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
         ctx.save();
         ctx.translate(x, y);
         ctx.rotate(angle);
+        ctx.beginPath()
         ctx.moveTo(0, 0);
         ctx.lineTo(size, -1 * size / 2);
         ctx.lineTo(size, size / 2);
         ctx.closePath()
         ctx.stroke();
+        ctx.fill()
+        ctx.restore();
+    }
+
+    function line(x: number, y: number, size: number, angle: number) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+        ctx.moveTo(0, - size / 2);
+        ctx.lineTo(0, size / 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    function circle(x: number, y: number, size: number) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.beginPath()
+        ctx.arc(0, 0, Math.min(7, Math.abs(size / 2)), 0, 360)
+        ctx.stroke();
+        ctx.fill()
         ctx.restore();
     }
 
     if (item.structure === "curve") {
         ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
+        ctx.stroke()
         const angle = Math.atan2(endPoint.y - controlPoint.y, endPoint.x - controlPoint.x);
         const angle2 = Math.atan2(controlPoint.y, controlPoint.x);
         const arrowSize = Math.min(15, 0.3 * (Math.max(Math.abs(endPoint.y - points[0].y), Math.abs(endPoint.x - points[0].x))))
@@ -314,6 +337,10 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
                 arrow(0, 0, arrowSize, angle2)
             } else if (item.head === "triangle") {
                 triangle(0, 0, arrowSize, angle2)
+            } else if (item.head === "line") {
+                line(0, 0, arrowSize, angle2)
+            } else {
+                circle(0, 0, arrowSize)
             }
         }
 
@@ -322,6 +349,10 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
                 arrow(endPoint.x, endPoint.y, 0 - arrowSize, angle)
             } else if (item.tail === "triangle") {
                 triangle(endPoint.x, endPoint.y, 0 - arrowSize, angle)
+            } else if (item.tail === "line") {
+                line(endPoint.x, endPoint.y, 0 - arrowSize, angle)
+            } else {
+                circle(endPoint.x, endPoint.y, arrowSize)
             }
         }
 
@@ -342,6 +373,10 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
                 arrow(0, 0, arrowSize, angle)
             } else if (item.head === "triangle") {
                 triangle(0, 0, arrowSize, angle)
+            } else if (item.head === "line") {
+                line(0, 0, arrowSize, angle)
+            } else {
+                circle(0, 0, arrowSize)
             }
         }
 
@@ -352,8 +387,12 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
             }
             if (item.tail === "arrow") {
                 arrow(endPoint.x, endPoint.y, -arrowSize, angle)
-            } else if (item.head === "triangle") {
+            } else if (item.tail === "triangle") {
                 triangle(endPoint.x, endPoint.y, -arrowSize, angle)
+            } else if (item.tail === "line") {
+                line(endPoint.x, endPoint.y, -arrowSize, angle)
+            } else {
+                circle(endPoint.x, endPoint.y, arrowSize)
             }
         }
     }

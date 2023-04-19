@@ -497,7 +497,9 @@ export default function Canvas() {
             }
             setCurrent(intialStates)
         }
-        if ((state.drew && mainState.tool !== "select") || (mainState.tool !== "move" && state.resizeDir === "")) {
+        if ((state.drew && mainState.tool !== "select")) {
+            updateMainState({ ...mainState, tool: itemID ? mainState.tool : "select", selectedItemID: itemID ? itemID : mainState.selectedItemID })
+        } else if ((mainState.tool !== "move" && state.resizeDir === "")) {
             updateMainState({ ...mainState, tool: itemID ? "select" : mainState.tool, selectedItemID: itemID ? itemID : mainState.selectedItemID })
         }
         if (state.moved || state.resizeDir !== "") {
@@ -505,26 +507,27 @@ export default function Canvas() {
         }
         stateRef.current.multiMove = false
         let drew = state.drew
+        let moved = state.moved
         if (multipleSelectionBounds) {
             if (!selection && !state.moved && !state.resizeDir) {
                 setMultipleSelectionBounds(null)
             }
-            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: true, moveStart: false, moved: false, drew: false })
+            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: true, moveStart: false, moved: false })
         } else {
-            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false, drew: false })
+            setState({ ...state, drawInProcess: false, startRectX: 0, startRectY: 0, multiSelected: false, moveStart: false, moved: false })
         }
         setPanStart(null)
 
-        if (touch && !drew) {
+        if (touch && !drew && !moved) {
             let x = event.pageX + (-1 * cameraOffset.x)
             let y = event.pageY + (-1 * cameraOffset.y)
             let selectedItemID = selectedItem ? selectedItem.id : ""
             if (state.resizeDir === "" || (!selectedItem && !multipleSelectionBounds)) {
                 selectedItemID = getItemEnclosingPoint(x, y, items)
             }
-            setState({ ...state, resizeDir: "" })
+            setState({ ...state, resizeDir: "", drew: false })
             setSelection(null)
-            updateMainState({ ...mainState, multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })
+            updateMainState({ ...mainState, tool: selectedItemID ? mainState.tool : "select", multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })
         }
     }
 
@@ -532,10 +535,13 @@ export default function Canvas() {
         let x = event.pageX + (-1 * cameraOffset.x)
         let y = event.pageY + (-1 * cameraOffset.y)
         let selectedItemID = selectedItem ? selectedItem.id : ""
-        if (state.resizeDir === "" || (!selectedItem && !multipleSelectionBounds)) {
-            selectedItemID = getItemEnclosingPoint(x, y, items)
+        if (!state.drew) {
+            if (state.resizeDir === "" || (!selectedItem && !multipleSelectionBounds)) {
+                selectedItemID = getItemEnclosingPoint(x, y, items)
+            }
         }
-        setState({ ...state, resizeDir: "" })
+
+        setState({ ...state, resizeDir: "", drew: false })
         setSelection(null)
         updateMainState({ ...mainState, multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })
     }

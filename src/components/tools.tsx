@@ -134,11 +134,11 @@ export default function Tools() {
 
 export function CanvasTool({ onClick, tool, selectedTool, children }: { onClick: () => void, tool: Tool, selectedTool: Tool, children: ReactNode }) {
     return (
-        <button className={`w-fit p-2 rounded hover:bg-[#faecd2]  hover:text-[darkorange] ${selectedTool === tool ? "text-[darkorange]" : "text-[var(--accents-7)]"}`}
+        <button className={`w-fit p-2 rounded hover:bg-[var(--p-light)]  hover:text-[var(--p-dark)] ${selectedTool === tool ? "text-[var(--p-dark)]" : "text-[var(--accents-7)]"}`}
             onClick={onClick}
             style={{
-                backgroundColor: selectedTool === tool ? "#faecd2" : "",
-                fill: selectedTool === tool ? "darkorange" : "none",
+                backgroundColor: selectedTool === tool ? "var(--p-light)" : "",
+                fill: selectedTool === tool ? "var(--p-dark)" : "none",
             }}
         >
             <div className="relative h-[18px] w-[18px] md:h-[22px] md:w-[22px]">

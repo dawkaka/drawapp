@@ -18,10 +18,9 @@
   --accents-6: #444;
   --accents-7: #333;
   --accents-8: #111;
+  --p-light: #faecd2;
+  --p-dark: darkorange;
   --tw-gradient-stops: red, orange, yellow, green, blue, indigo, violet;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
   --tools-bg: rgba(255, 255, 255, 0.9);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -63,6 +62,8 @@ a:hover {
   --accents-6: #999;
   --accents-7: #EAEAEA;
   --accents-8: #FAFAFA;
+  --p-light: darkorange;
+  --p-dark: #faecd2;
   --modal-overlay: rgba(1, 1, 1, 0.75);
   --border: 1px solid #333;
   color: var(--foreground);

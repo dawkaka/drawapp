@@ -628,7 +628,7 @@ export default function Canvas() {
                 rows={1}
                 style={{
                     overflow: "hidden",
-                    border: "1px solid darkorange",
+                    border: "1px solid var(--p-dark)",
                     backgroundColor: "transparent",
                     scrollbarWidth: "none",
                     width: current.text.fontSize,

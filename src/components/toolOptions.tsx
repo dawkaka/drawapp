@@ -196,7 +196,7 @@ function ArrowHeadPicker({ type, value }: { type: "head" | "tail", value: ArrowH
 
     return (
         <div className="relative" onClick={(e) => e.stopPropagation()}>
-            <button className={`w-fit p-1 rounded hover:bg-[#faecd2] hover:text-[darkorange] text-[var(--accents-7)]`}
+            <button className={`w-fit p-1 rounded hover:bg-[var(--p-light)] hover:text-[var(--p-dark)] text-[var(--accents-7)]`}
                 onClick={showOpts}
                 style={{
                     border: `1px solid var(--accents-2)`,
@@ -441,7 +441,7 @@ export function Opacity() {
     return (
         <div className="w-full">
             <h6 className="text-sm text-[var(--accents-5)] mb-1">Opacity</h6>
-            <input type="range" className="accent-[darkorange] cursor-resize w-full"
+            <input type="range" className="accent-[var(--p-dark)] cursor-resize w-full"
                 onChange={(e) => opacity(e.target.valueAsNumber)}
                 value={appState.opacity} min={0.1} max={1} step={0.1} />
         </div>
@@ -450,12 +450,12 @@ export function Opacity() {
 
 function OptionContainer({ selected, value, onClick, children }: { selected: string, value: string, onClick: (val: string) => void, children: React.ReactNode }) {
     return (
-        <button className={`w-fit p-1 rounded hover:bg-[#faecd2] hover:text-[darkorange] ${selected === value ? "text-[darkorange]" : "text-[var(--accents-7)]"}`}
+        <button className={`w-fit p-1 rounded hover:bg-[var(--p-light)] hover:text-[var(--p-dark)] ${selected === value ? "text-[var(--p-dark)]" : "text-[var(--accents-7)]"}`}
             onClick={() => onClick(value)}
             style={{
-                backgroundColor: selected === value ? "#faecd2" : "",
-                border: `1px solid ${selected === value ? "#faecd2" : "var(--accents-2)"}`,
-                fill: selected === value ? "darkorange" : "none",
+                backgroundColor: selected === value ? "var(--p-light)" : "",
+                border: `1px solid ${selected === value ? "var(--p-light)" : "var(--accents-2)"}`,
+                fill: selected === value ? "var(--p-dark)" : "none",
                 overflow: "hidden",
             }}
         >
@@ -645,11 +645,11 @@ export function BorderRadius() {
 
 export function Radius({ onClick, option, selectedOption }: { onClick: (val: number) => void, option: number, selectedOption: number }) {
     return (
-        <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[#faecd2] text-[var(--accents-7)] hover:text-[darkorange]"
+        <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[var(--p-light)] text-[var(--accents-7)] hover:text-[var(--p-dark)]"
             onClick={() => onClick(option)}
             style={{
-                backgroundColor: selectedOption === option ? "#faecd2" : "",
-                border: `1px solid ${selectedOption === option ? "#faecd2" : "var(--accents-2)"}`
+                backgroundColor: selectedOption === option ? "var(--p-light)" : "",
+                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`
             }}
         >
             <div className="flex items-center justify-center"
@@ -657,7 +657,7 @@ export function Radius({ onClick, option, selectedOption }: { onClick: (val: num
             >
                 <span className="h-full w-full"
                     style={{
-                        border: `2px solid ${selectedOption === option ? "darkorange" : "currentColor"}`,
+                        border: `2px solid ${selectedOption === option ? "var(--p-dark)" : "currentColor"}`,
                         borderTopLeftRadius: `${option * 2}%`,
                     }}
                 >
@@ -669,11 +669,11 @@ export function Radius({ onClick, option, selectedOption }: { onClick: (val: num
 
 function FillOption({ onClick, option, selectedOption }: { onClick: (val: StrokeWidth) => void, option: StrokeWidth, selectedOption: number }) {
     return (
-        <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[#faecd2] text-[var(--accents-7)] hover:text-[darkorange]"
+        <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[var(--p-light)] text-[var(--accents-7)] hover:text-[var(--p-dark)]"
             onClick={() => onClick(option)}
             style={{
-                backgroundColor: selectedOption === option ? "#faecd2" : "",
-                border: `1px solid ${selectedOption === option ? "#faecd2" : "var(--accents-2)"}`
+                backgroundColor: selectedOption === option ? "var(--p-light)" : "",
+                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`
             }}
         >
             <div className="flex items-center justify-center"
@@ -683,7 +683,7 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
                     style={{
                         height: `${option}px`,
                         width: "10px",
-                        backgroundColor: selectedOption === option ? "darkorange" : "currentColor"
+                        backgroundColor: selectedOption === option ? "var(--p-dark)" : "currentColor"
                     }}
                 >
                 </span>
@@ -726,11 +726,11 @@ function StrokeStyle() {
 
 function StrokeStyleOption({ onClick, option, selectedOption }: { onClick: (val: Stroke) => void, option: Stroke, selectedOption: Stroke }) {
     return (
-        <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[#faecd2] text-[var(--accents-7)] hover:text-[darkorange]"
+        <button className="w-fit p-2 flex items-center justify-center rounded hover:bg-[var(--p-light)] text-[var(--accents-7)] hover:text-[var(--p-dark)]"
             onClick={() => onClick(option)}
             style={{
-                backgroundColor: selectedOption === option ? "#faecd2" : "",
-                border: `1px solid ${selectedOption === option ? "#faecd2" : "var(--accents-2)"}`
+                backgroundColor: selectedOption === option ? "var(--p-light)" : "",
+                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`
             }}
         >
             <div className="flex items-center justify-center"
@@ -742,7 +742,7 @@ function StrokeStyleOption({ onClick, option, selectedOption }: { onClick: (val:
                         width: "15px",
                         borderStyle: option,
                         borderTopWidth: "2px",
-                        borderColor: selectedOption === option ? "darkorange" : "currentColor"
+                        borderColor: selectedOption === option ? "var(--p-dark)" : "currentColor"
                     }}
                 >
                 </div>

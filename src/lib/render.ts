@@ -300,8 +300,9 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
         ctx.lineTo(size, -1 * size / 2);
         ctx.lineTo(size, size / 2);
         ctx.closePath()
-        ctx.stroke();
+        ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
         ctx.fill()
+        ctx.stroke();
         ctx.restore();
     }
 
@@ -319,9 +320,11 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
         ctx.save();
         ctx.translate(x, y);
         ctx.beginPath()
-        ctx.arc(0, 0, Math.min(7, Math.abs(size / 2)), 0, 360)
-        ctx.stroke();
+        const r = Math.min(6, Math.abs(size / 2))
+        ctx.arc(0, 0, r, 0, 360)
+        ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
         ctx.fill()
+        ctx.stroke();
         ctx.restore();
     }
 

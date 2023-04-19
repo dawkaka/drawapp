@@ -3,7 +3,7 @@ import { AppState, AppDrawings, SelectionAtom } from "../jotai"
 import { getMultipleSelectionBounds, getRandomID, getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
 import type { Arrow, ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
 import { useState } from "react"
-import { HeadArrowSVG, LineSVG } from "./svgs"
+import { CircleHeadSVG, HeadArrowSVG, LineSVG, NoneSVG, TriangleSVG } from "./svgs"
 
 export function FillToolsOptions() {
     return (
@@ -175,8 +175,25 @@ function ArrowHeadPicker({ type, value }: { type: "head" | "tail", value: ArrowH
         if (opts) {
             opts.style.display = "grid"
         }
-
     }
+    let option = <NoneSVG />
+
+    switch (value) {
+        case "line":
+            option = <LineSVG />
+            break;
+        case "circle":
+            option = <CircleHeadSVG />
+            break;
+        case "triangle":
+            option = <TriangleSVG />
+            break;
+        case "arrow":
+            option = <HeadArrowSVG />
+        default:
+            break;
+    }
+
     return (
         <div className="relative" onClick={(e) => e.stopPropagation()}>
             <button className={`w-fit p-1 rounded hover:bg-[#faecd2] hover:text-[darkorange] text-[var(--accents-7)]`}
@@ -189,7 +206,7 @@ function ArrowHeadPicker({ type, value }: { type: "head" | "tail", value: ArrowH
                 }}
             >
                 <div className="flex items-center justify-center h-[22px] w-[22px]">
-                    <HeadArrowSVG />
+                    {option}
                 </div>
             </button>
 
@@ -200,19 +217,19 @@ function ArrowHeadPicker({ type, value }: { type: "head" | "tail", value: ArrowH
                 id={`arrow-${type}`}
             >
                 <OptionContainer selected={""} value="none" onClick={handleArrowType}>
-                    <LineSVG />
+                    <NoneSVG />
                 </OptionContainer>
                 <OptionContainer selected={""} value="arrow" onClick={handleArrowType}>
                     <HeadArrowSVG />
                 </OptionContainer>
                 <OptionContainer selected={""} value="triangle" onClick={handleArrowType}>
-                    <HeadArrowSVG />
+                    <TriangleSVG />
                 </OptionContainer>
                 <OptionContainer selected={""} value="circle" onClick={handleArrowType}>
-                    <HeadArrowSVG />
+                    <CircleHeadSVG />
                 </OptionContainer>
                 <OptionContainer selected={""} value="line" onClick={handleArrowType}>
-                    <HeadArrowSVG />
+                    <LineSVG />
                 </OptionContainer>
 
             </div>

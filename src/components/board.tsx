@@ -5,6 +5,7 @@ import { useInitialState } from "../hooks";
 import { AppDrawings, AppState, SelectionAtom } from "../jotai";
 import { renderElements, renderCurrentDrawing, renderBounds, drawSelection, drawMultipleSelectionBounds } from "../lib/render";
 import {
+    closeMenus,
     getBoundingBox, getCursor, getItemEnclosingPoint, getMultipleSelection, getMultipleSelectionBounds, getRandomID,
     getSelectedItem, isPointInsideRectangle, isWithinItem, isWithinMultiSelectionResizeArea, isWithinResizeArea,
     measureText,
@@ -532,6 +533,7 @@ export default function Canvas() {
     }
 
     function handleClick(event: any) {
+        closeMenus()
         let x = event.pageX + (-1 * cameraOffset.x)
         let y = event.pageY + (-1 * cameraOffset.y)
         let selectedItemID = selectedItem ? selectedItem.id : ""

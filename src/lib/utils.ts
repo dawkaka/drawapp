@@ -1092,3 +1092,18 @@ export function getInverseColorForTheme(color: string): string {
     }
     return color
 }
+
+export function closeMenus() {
+    const h = document.querySelector("#arrow-head") as HTMLDivElement
+    const t = document.querySelector("#arrow-tail") as HTMLDivElement
+    const m = document.querySelector("#menu") as HTMLDivElement
+    if (m) {
+        m.style.display = "none"
+    }
+    if (h) {
+        h.style.display = "none"
+    }
+    if (t) {
+        t.style.display = "none"
+    }
+}

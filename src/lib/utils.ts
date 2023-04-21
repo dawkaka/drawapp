@@ -1097,6 +1097,8 @@ export function closeMenus() {
     const h = document.querySelector("#arrow-head") as HTMLDivElement
     const t = document.querySelector("#arrow-tail") as HTMLDivElement
     const m = document.querySelector("#menu") as HTMLDivElement
+    const p = document.querySelector("#fill-picker") as HTMLDivElement
+    const f = document.querySelector("#stroke-picker") as HTMLDivElement
     if (m) {
         m.style.display = "none"
     }
@@ -1105,5 +1107,11 @@ export function closeMenus() {
     }
     if (t) {
         t.style.display = "none"
+    }
+    if (p) {
+        p.style.display = "none"
+    }
+    if (f) {
+        f.style.display = 'none'
     }
 }

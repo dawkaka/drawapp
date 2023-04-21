@@ -18,7 +18,7 @@ export default function Side() {
     const [main, setAppState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)
     const [modal, setModal] = useState(false)
-    const [width, setWidth] = useState(300)
+    const [width, setWidth] = useState(220)
     const sideRef = useRef(null)
     const [theme, setTheme] = useState<"dark" | "light">("light")
     const tool = main.tool
@@ -44,7 +44,7 @@ export default function Side() {
     return (
         <>
             <aside
-                className="bg-[var(--accents-1)] fixed  flex flex-col items-center top-0 left-0 bottom-0 border-r border-[var(--accents-2)]  transition-all z-10 overflow-hidden"
+                className="bg-[var(--accents-1)] fixed flex flex-col items-center top-0 left-0 bottom-0 border-r border-[var(--accents-2)]  transition-all z-10 overflow-hidden"
                 ref={sideRef}
                 style={{
                     width: closed ? 0 : width + 'px'

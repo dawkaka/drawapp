@@ -14,11 +14,8 @@ import Menu from "./menu"
 
 export default function Side() {
     const [closed, setClosed] = useState(true)
-    const [opened, setOpened] = useState(false)
     const [main, setAppState] = useAtom(AppState)
-    const [items, setItems] = useAtom(AppDrawings)
-    const [modal, setModal] = useState(false)
-    const [width, setWidth] = useState(220)
+    const [width, setWidth] = useState(200)
     const sideRef = useRef(null)
     const [theme, setTheme] = useState<"dark" | "light">("light")
     const tool = main.tool

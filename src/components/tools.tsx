@@ -61,7 +61,7 @@ export default function Tools() {
                 zIndex: -1
             }}
         >
-            <div className="flex md:flex-wrap gap-3">
+            <div className="flex md:grid grid-cols-3 gap-3">
                 <CanvasTool onClick={() => setState({ ...app, tool: "move" })} tool="move" selectedTool={tool}>
                     <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xmlSpace="preserve" fill="currentColor"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                         <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"></style>
@@ -139,9 +139,10 @@ export function CanvasTool({ onClick, tool, selectedTool, children }: { onClick:
             style={{
                 backgroundColor: selectedTool === tool ? "var(--p-light)" : "",
                 fill: selectedTool === tool ? "var(--p-dark)" : "none",
+                transform: "scale(0.8)"
             }}
         >
-            <div className="relative h-[18px] w-[18px] md:h-[22px] md:w-[22px]">
+            <div className="relative h-[22px] w-[22px]">
                 {children}
             </div>
         </button>

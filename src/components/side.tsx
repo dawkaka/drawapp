@@ -29,8 +29,6 @@ export default function Side() {
     useEffect(() => {
         let w = window.innerWidth
         if (w < 768) {
-            const ww = Math.max(200, w * 0.35)
-            setWidth(ww)
             setClosed(true)
         } else {
             setClosed(false)
@@ -55,10 +53,14 @@ export default function Side() {
                     opened && <DownloadModal items={items} close={() => setOpened(false)} />
                 } */}
 
-                <div className="bg-[var(--accents-1)] relative w-full h-full overflow-y-auto pb-10">
+                <div className="relative bg-[var(--accents-1)] relative w-full h-full overflow-y-auto pb-10"
+                    style={{
+                        overflowX: "hidden"
+                    }}
+                >
                     <ColorPanel />
                     <Tools />
-                    <div className="flex flex-col gap-5 p-2 shadow bg-[var(--background)] mx-3 my-5 rounded p-5">
+                    <div className="flex flex-col gap-3 p-2 shadow bg-[var(--background)] mx-3 my-5 rounded p-5">
                         {
                             (tool === "ellipse" || tool === "rectangle" || tool === "diamond" || tool === "arrow" || tool === "line" || tool === "pencil") && <FillToolsOptions />
                         }

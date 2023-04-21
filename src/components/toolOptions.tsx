@@ -69,38 +69,6 @@ export function ArrowOnlyOptions() {
                 <div className="flex flex-wrap gap-3">
                     <ArrowHeadPicker value={mainState.arrowHead} type="head" />
                     <ArrowHeadPicker value={mainState.arrowTail} type="tail" />
-
-                    {/* <OptionContainer selected={String(mainState.arrowType)} value="end_arrow" onClick={handleArrowType}>
-                        <svg fill="currentColor" viewBox="0 0 24 24" id="right-arrow" data-name="Flat Line" xmlns="http://www.w3.org/2000/svg" className="icon flat-line">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
-                                <line id="primary" x1="3" y1="12" x2="21" y2="12" style={{
-                                    fill: "none", stroke: "currentColor", strokeLinecap: "round", strokeLinejoin:
-                                        "round", strokeWidth: 1.8719999999999999
-                                }}>
-                                </line>
-                                <polyline id="primary-2" data-name="primary" points="18 15 21 12 18 9" style={{
-                                    fill: "none", stroke: "currentColor", strokeLinecap: "round",
-                                    strokeLinejoin: "round", strokeWidth: 1.8719999999999999
-                                }}></polyline>
-                            </g>
-                        </svg>
-
-                    </OptionContainer>
-                    <OptionContainer selected={String(mainState.arrowType)} value="both_arrow" onClick={handleArrowType}>
-                        <svg fill="currentColor" height="18px" width="18px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
-                            viewBox="0 0 492.001 492.001"
-                            xmlSpace="preserve">
-                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g>
-                                <path d="M487.971,235.993l-85.468-85.464c-5.22-5.228-14.396-5.228-19.616,0l-7.452,7.448c-5.4,5.408-5.4,14.548,0.004,19.956 l48.456,48.792H67.911l48.696-49.02c5.408-5.412,5.408-14.384,0-19.796l-7.444-7.524c-5.232-5.232-14.404-5.272-19.624-0.044 L4.035,235.813c-2.672,2.676-4.1,6.24-4.032,9.916c-0.072,3.82,1.36,7.396,4.032,10.068l85.464,85.464 c5.228,5.232,14.396,5.228,19.62,0l7.444-7.448c5.416-5.416,5.416-13.784,0-19.192l-49.856-49.436h358.792l-50.096,49.668 c-2.612,2.604-4.052,5.884-4.052,9.592s1.436,7.088,4.052,9.7l7.444,7.396c2.616,2.612,6.1,4.02,9.812,4.02 c3.716,0,7.196-1.448,9.812-4.06l85.5-85.508c2.664-2.668,4.096-6.248,4.028-9.924 C492.075,242.245,490.639,238.665,487.971,235.993z">
-                                </path>
-                            </g>
-                            </g>
-                            </g>
-                        </svg>
-                    </OptionContainer> */}
-
                 </div>
             </fieldset>
             <fieldset className="flex flex-col gap-2">
@@ -211,7 +179,7 @@ function ArrowHeadPicker({ type, value }: { type: "head" | "tail", value: ArrowH
                 </div>
             </button>
 
-            <div className="absolute hidden grid-cols-3 top-[50%] right-[-120px] z-10 shadow bg-[var(--background)]  p-2 rounded gap-3"
+            <div className="absolute hidden grid-cols-3 top-[50%] right-[-80px] z-10 shadow bg-[var(--background)]  p-2 rounded gap-2"
                 style={{
                     transform: type === "head" ? "rotateY(180deg) scale(0.8)" : "scale(0.8)"
                 }}
@@ -458,6 +426,7 @@ function OptionContainer({ selected, value, onClick, children }: { selected: str
                 border: `1px solid ${selected === value ? "var(--p-light)" : "var(--accents-2)"}`,
                 fill: selected === value ? "var(--p-dark)" : "none",
                 overflow: "hidden",
+                transform: "scale(0.9)"
             }}
         >
             <div className="flex items-center justify-center h-[22px] w-[22px]">
@@ -557,6 +526,9 @@ export function Actions() {
                 <button
                     className="w-fit p-1 rounded hover:bg-[var(--p-light)]  hover:text-[var(--p-dark)]  border border-[var(--accents-2)]"
                     onClick={undo}
+                    style={{
+                        transform: "scale(0.9)"
+                    }}
                 >
                     <svg width="22" height="22" viewBox="0 0 15 15" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={{ transform: "scale(1, 1)" }}>
                         <path d="M10.6707 8.5081C10.6707 10.1923 9.3004 11.5625 7.61631 11.5625H6.5351C6.35593 11.5625 6.21074 11.4173 6.21074 11.2382V11.13C6.21074 10.9508 6.35591 10.8057 6.5351 10.8057H7.61631C8.88313 10.8057 9.91387 9.77492 9.91387 8.5081C9.91387 7.24128 8.88313 6.21054 7.61631 6.21054H5.62155L6.99534 7.58433C7.14289 7.73183 7.14289 7.97195 6.99534 8.11944C6.85216 8.26251 6.60298 8.2623 6.46013 8.11944L4.44045 6.09971C4.36898 6.02824 4.32959 5.93321 4.32959 5.8321C4.32959 5.73106 4.36898 5.63598 4.44045 5.56454L6.46024 3.54472C6.60309 3.40176 6.85248 3.40176 6.99535 3.54472C7.14291 3.69218 7.14291 3.93234 6.99535 4.07979L5.62156 5.45368H7.61631C9.3004 5.45368 10.6707 6.82393 10.6707 8.5081Z">
@@ -566,6 +538,10 @@ export function Actions() {
                 <button
                     className="w-fit p-1 rounded hover:bg-[var(--p-light)]  hover:text-[var(--p-dark)]  border border-[var(--accents-2)]"
                     onClick={redo}
+                    style={{
+                        transform: "scale(0.9)"
+                    }}
+
                 >
                     <svg width="22" height="22" viewBox="0 0 15 15" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={{ transform: "scale(-1, 1)" }}>
                         <path d="M10.6707 8.5081C10.6707 10.1923 9.3004 11.5625 7.61631 11.5625H6.5351C6.35593 11.5625 6.21074 11.4173 6.21074 11.2382V11.13C6.21074 10.9508 6.35591 10.8057 6.5351 10.8057H7.61631C8.88313 10.8057 9.91387 9.77492 9.91387 8.5081C9.91387 7.24128 8.88313 6.21054 7.61631 6.21054H5.62155L6.99534 7.58433C7.14289 7.73183 7.14289 7.97195 6.99534 8.11944C6.85216 8.26251 6.60298 8.2623 6.46013 8.11944L4.44045 6.09971C4.36898 6.02824 4.32959 5.93321 4.32959 5.8321C4.32959 5.73106 4.36898 5.63598 4.44045 5.56454L6.46024 3.54472C6.60309 3.40176 6.85248 3.40176 6.99535 3.54472C7.14291 3.69218 7.14291 3.93234 6.99535 4.07979L5.62156 5.45368H7.61631C9.3004 5.45368 10.6707 6.82393 10.6707 8.5081Z">
@@ -633,7 +609,7 @@ function StrokeWidth() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke width</legend>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
                 <FillOption option={2} selectedOption={mainState.strokeWidth} onClick={width} />
                 <FillOption option={3} selectedOption={mainState.strokeWidth} onClick={width} />
                 <FillOption option={4} selectedOption={mainState.strokeWidth} onClick={width} />
@@ -662,7 +638,7 @@ export function BorderRadius() {
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Border radius</legend>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
                 <Radius option={0} selectedOption={mainState.borderRadius} onClick={changeRadius} />
                 <Radius option={15} selectedOption={mainState.borderRadius} onClick={changeRadius} />
                 <Radius option={25} selectedOption={mainState.borderRadius} onClick={changeRadius} />
@@ -678,7 +654,8 @@ export function Radius({ onClick, option, selectedOption }: { onClick: (val: num
             onClick={() => onClick(option)}
             style={{
                 backgroundColor: selectedOption === option ? "var(--p-light)" : "",
-                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`
+                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`,
+                transform: "scale(0.9)"
             }}
         >
             <div className="flex items-center justify-center"
@@ -702,7 +679,9 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
             onClick={() => onClick(option)}
             style={{
                 backgroundColor: selectedOption === option ? "var(--p-light)" : "",
-                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`
+                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`,
+                transform: "scale(0.9)"
+
             }}
         >
             <div className="flex items-center justify-center"
@@ -743,7 +722,7 @@ function StrokeStyle() {
 
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Stroke style</legend>
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
                 <StrokeStyleOption option={"solid"} selectedOption={selected} onClick={strokeStyleChange} />
                 <StrokeStyleOption option={"dotted"} selectedOption={selected} onClick={strokeStyleChange} />
                 <StrokeStyleOption option={"dashed"} selectedOption={selected} onClick={strokeStyleChange} />
@@ -759,7 +738,9 @@ function StrokeStyleOption({ onClick, option, selectedOption }: { onClick: (val:
             onClick={() => onClick(option)}
             style={{
                 backgroundColor: selectedOption === option ? "var(--p-light)" : "",
-                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`
+                border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`,
+                transform: "scale(0.9)"
+
             }}
         >
             <div className="flex items-center justify-center"

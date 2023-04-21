@@ -107,17 +107,7 @@ function Actions() {
     }
 
 
-    function undo() {
-        let itm = history.undo()
-        setItems(itm)
-        localStorage.setItem("canvasItems", JSON.stringify(itm))
-    }
 
-    function redo() {
-        let itm = history.redo()
-        setItems(itm)
-        localStorage.setItem("canvasItems", JSON.stringify(itm))
-    }
 
     function changeTheme() {
         let root = document.querySelector("#root")!

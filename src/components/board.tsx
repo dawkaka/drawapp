@@ -542,7 +542,6 @@ export default function Canvas() {
                 selectedItemID = getItemEnclosingPoint(x, y, items)
             }
         }
-
         setState({ ...state, resizeDir: "", drew: false })
         setSelection(null)
         updateMainState({ ...mainState, multipleSelections: multipleSelectionBounds ? mainState.multipleSelections : [], selectedItemID: multipleSelectionBounds ? "" : selectedItemID })

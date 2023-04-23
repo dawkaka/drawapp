@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { CanvasItem } from "../types";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useAtom } from "jotai";
 import { AppDrawings } from "../jotai";
 
@@ -162,9 +162,21 @@ export function Save({ close }: { close: () => void }) {
     function saveWork() {
         if (label === "" && selected === "") return
         if (label) {
-            axios.post(`https://drawapp-backend.vercel.app/api/link`, JSON.stringify({ label, data: items }))
+            axios.post<any, AxiosResponse<{ insertedID: number }, any>, string>(`https://drawapp-backend.vercel.app/api/link`, JSON.stringify({ label, data: items }))
                 .then(res => {
                     console.log(res.data)
+                    let links = localStorage.getItem("links")
+                    if (!links) {
+                        localStorage.setItem("links", JSON.stringify([res.data.insertedID]))
+                    } else {
+                        let l = JSON.parse(links)
+                        if (Array.isArray(l)) {
+                            l.push(res.data.insertedID)
+                            localStorage.setItem("links", JSON.stringify(l))
+                        } else {
+                            localStorage.setItem("links", JSON.stringify([res.data.insertedID]))
+                        }
+                    }
                 })
                 .catch(e => {
                     console.log(e)

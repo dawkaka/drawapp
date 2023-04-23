@@ -162,7 +162,7 @@ export function Save({ close }: { close: () => void }) {
     function saveWork() {
         if (label === "" && selected === "") return
         if (label) {
-            axios.put(`https://drawapp-backend.vercel.app/api/link?id=${selected}`, JSON.stringify({ data: items }))
+            axios.post(`https://drawapp-backend.vercel.app/api/link`, JSON.stringify({ label, data: items }))
                 .then(res => {
                     console.log(res.data)
                 })
@@ -170,7 +170,7 @@ export function Save({ close }: { close: () => void }) {
                     console.log(e)
                 })
         } else {
-            axios.post(`https://drawapp-backend.vercel.app/api/link`, JSON.stringify({ label, data: items }))
+            axios.put(`https://drawapp-backend.vercel.app/api/link?id=${selected}`, JSON.stringify({ data: items }))
                 .then(res => {
                     console.log(res.data)
                 })

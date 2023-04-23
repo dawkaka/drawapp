@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CanvasItem } from "../types";
+import axios from "axios";
+import { useAtom } from "jotai";
+import { AppDrawings } from "../jotai";
 
 interface ModalProps {
     clearFunc: () => void;
@@ -155,13 +158,25 @@ function SaveLink({ link, label, selected, select }: { link: string, label: stri
 export function Save({ close }: { close: () => void }) {
     const [label, setLabel] = useState("")
     const [selected, setSelected] = useState("")
-
+    const [items, setItems] = useAtom(AppDrawings)
     function saveWork() {
         if (label === "" && selected === "") return
         if (label) {
-
+            axios.put(`https://drawapp-backend.vercel.app/api/link?id=${selected}`, JSON.stringify({ data: items }))
+                .then(res => {
+                    console.log(res.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
         } else {
-
+            axios.post(`https://drawapp-backend.vercel.app/api/link`, JSON.stringify({ label, data: items }))
+                .then(res => {
+                    console.log(res.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
         }
     }
 

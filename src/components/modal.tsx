@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CanvasItem } from "../types";
 import axios, { AxiosResponse } from "axios";
 import { useAtom } from "jotai";
 import { AppDrawings } from "../jotai";
+import { Error, Loading, Success } from "./mis";
 
 interface ModalProps {
     clearFunc: () => void;
@@ -159,35 +160,71 @@ export function Save({ close }: { close: () => void }) {
     const [label, setLabel] = useState("")
     const [selected, setSelected] = useState("")
     const [items, setItems] = useAtom(AppDrawings)
+    const [success, setSuccess] = useState("")
+    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [savedID, setSavedID] = useState("")
+
+    const [savedLinks, setSavedLinks] = useState<{ id: number, label: string }[]>([])
+
+    useEffect(() => {
+        let links = localStorage.getItem("links")
+        if (links) {
+            let l = JSON.parse(links)
+            if (Array.isArray(l)) {
+                setSavedLinks(l)
+            }
+        }
+    }, [])
+
     function saveWork() {
         if (label === "" && selected === "") return
+        setLoading(true)
         if (label) {
             axios.post<any, AxiosResponse<{ insertedID: number }, any>, string>(`https://drawapp-backend.vercel.app/api/link`, JSON.stringify({ label, data: items }))
                 .then(res => {
-                    console.log(res.data)
                     let links = localStorage.getItem("links")
+                    setSavedID(String(res.data.insertedID))
+
                     if (!links) {
-                        localStorage.setItem("links", JSON.stringify([res.data.insertedID]))
+                        localStorage.setItem("links", JSON.stringify([{ id: res.data.insertedID, label }]))
                     } else {
                         let l = JSON.parse(links)
                         if (Array.isArray(l)) {
-                            l.push(res.data.insertedID)
+                            l.push({ id: res.data.insertedID, label })
                             localStorage.setItem("links", JSON.stringify(l))
                         } else {
-                            localStorage.setItem("links", JSON.stringify([res.data.insertedID]))
+                            localStorage.setItem("links", JSON.stringify({ id: res.data.insertedID, label }))
                         }
                     }
+                    setSelected("")
+                    setLabel("")
+                    setError(false)
+                    setSuccess(`Saved succesfully at: ${window.location.origin}/?id=${res.data.insertedID}`)
                 })
                 .catch(e => {
                     console.log(e)
+                    setError(true)
+                })
+                .finally(() => {
+                    setLoading(false)
                 })
         } else {
             axios.put(`https://drawapp-backend.vercel.app/api/link?id=${selected}`, JSON.stringify({ data: items }))
                 .then(res => {
                     console.log(res.data)
+                    setSelected("")
+                    setLabel("")
+                    setError(false)
+                    setSuccess(`Updated succesfully at: ${window.location.origin}/?id=${selected}`)
+
                 })
                 .catch(e => {
                     console.log(e)
+                    setError(true)
+                })
+                .finally(() => {
+                    setLoading(false)
                 })
         }
     }
@@ -214,38 +251,42 @@ export function Save({ close }: { close: () => void }) {
                         <div>
                             <div className="flex flex-col gap-1">
                                 <label htmlFor="label">Link label</label>
-                                <input type="text" id="label" className="border px-2 py-1 rounded-lg outline-none" maxLength={100} onChange={(e) => setLabel(e.target.value)} />
+                                <input type="text" id="label" className="border px-2 py-1 rounded-lg outline-none" maxLength={100}
+                                    onChange={(e) => {
+                                        setLabel(e.target.value)
+                                        setSelected("")
+                                    }
+                                    }
+                                />
                             </div>
                         </div>
+                        {
+                            success && <Success message={success} />
+                        }
+                        {
+                            error && <Error message="Something went wrong" />
+                        }
                         <h4 className="text-sm font-semibold text-[var(--accents-7)]">Or save to existing link</h4>
                         {
                             label === "" && (
                                 <div className="px-6 pb-6 space-y-6 max-h-[40vh] overflow-y-auto">
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
-                                    <SaveLink label="Link" link="das" selected={selected + label} select={(value: string) => setSelected(value)} />
+                                    {
+                                        savedLinks.map((l) => <SaveLink label={l.label} link={String(l.id)} selected={selected + label} select={(value: string) => setSelected(value)} />
+                                        )
+                                    }
                                 </div>
                             )
                         }
                     </div>
 
                     <div className="px-6 py-3 w-full flex justify-end">
-                        <button className={` ${label === "" && selected === "" ? "bg-blue-100" : "bg-blue-600"} rounded-lg text-white px-6 py-1`}
-                            disabled={label === "" && selected === ""}
-                            onClick={saveWork}
-                        >Save</button>
+                        {
+                            loading ? <Loading /> :
+                                <button className={` ${label === "" && selected === "" ? "bg-blue-100" : "bg-blue-600"} rounded-lg text-white px-6 py-1`}
+                                    disabled={label === "" && selected === ""}
+                                    onClick={saveWork}
+                                >Save</button>
+                        }
                     </div>
                 </div>
             </div>

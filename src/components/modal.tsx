@@ -80,17 +80,93 @@ export function DownloadModal({ items, close }: { items: CanvasItem[], close: ()
 
 
 function Link({ link, label }: { link: string, label: string }) {
+    const [deleted, setDeleted] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [loaded, settLoaded] = useState("")
+    const copyLinkURL = () => {
+        navigator.clipboard.writeText(window.location.origin + "/?id=" + link).then(() => {
+            alert("link copied")
+        }, () => {
+            alert("Failed to copy link")
+        });
+    }
+
+    const loadFromLink = () => {
+        if (confirm("Loading link will erase you current drawing")) {
+            setLoading(true)
+            axios.get(`https://drawapp-backend.vercel.app/api/link?id=${link}`)
+                .then(res => {
+                    if (res.data.data && Array.isArray(res.data.data)) {
+                        setItems(res.data.data)
+                        settLoaded("Loaded")
+                    }
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+                .finally(() => {
+                    setLoading(false)
+                })
+        }
+    }
+
+    const deleteLink = () => {
+        if (confirm("Are you sure you want to delete this link?.\n Action can't be reversed")) {
+            setDeleted(true)
+            axios.delete(`https://drawapp-backend.vercel.app/api/link?id=${link}`)
+                .then(res => {
+                    let links = localStorage.getItem("links")
+                    if (links) {
+                        let l = JSON.parse(links)
+                        if (Array.isArray(l)) {
+                            l = l.filter(v => String(v.id) !== link)
+                            localStorage.setItem("links", JSON.stringify(l))
+                        }
+                    }
+
+                })
+                .catch(e => {
+                    setDeleted(false)
+                })
+        }
+    }
+    if (deleted) {
+        return null
+    }
     return (
-        <div className="flex gap-4 items-center mx-auto">
-            <p className="border px-3 py-1 rounded-lg w-[100%]">{label}</p>
-            <button className="rounded px-2 text-green-500 border border-green-500">Copy</button>
-            <button className="rounded px-2 text-blue-500 border border-blue-500">Load</button>
-            <button className="bg-red-600 rounded px-2 text-white">Delete</button>
-        </div>
+        <>
+            <div className="flex gap-4 items-center mx-auto">
+                {
+                    loading ? <Loading /> : <>  <p className="border px-3 py-1 rounded-lg w-[100%]">{label}</p>
+                        <button className="rounded px-2 text-green-500 border border-green-500" onClick={copyLinkURL}>Copy</button>
+                        <button className="rounded px-2 text-blue-500 border border-blue-500" onClick={loadFromLink}>Load</button>
+                        <button className="bg-red-600 rounded px-2 text-white" onClick={deleteLink}>Delete</button>
+                    </>
+                }
+            </div>
+            {
+                loaded && <Success message="Link laoded" />
+            }
+        </>
+
     )
 }
 
 export function Links({ close }: { close: () => void }) {
+    const [savedLinks, setSavedLinks] = useState<{ id: number, label: string }[]>([])
+
+    useEffect(() => {
+        let links = localStorage.getItem("links")
+        if (links) {
+            let l = JSON.parse(links)
+            if (Array.isArray(l)) {
+                setSavedLinks(l)
+            }
+        }
+    }, [])
+
+
     return (
         <div id="staticModal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true"
             onClick={() => close()}
@@ -110,21 +186,10 @@ export function Links({ close }: { close: () => void }) {
                         </button>
                     </div>
                     <div className="p-6 space-y-6 max-h-[50vh] overflow-y-auto">
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
-                        <Link label="Link" link="das" />
+                        {
+                            savedLinks.map((l) => <Link label={l.label} link={String(l.id)} />
+                            )
+                        }
                     </div>
                     <div className="flex items-center p-6 space-x-2 border-t rounded-b border-[var(--accents-2)]">
                     </div>
@@ -163,7 +228,6 @@ export function Save({ close }: { close: () => void }) {
     const [success, setSuccess] = useState("")
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [savedID, setSavedID] = useState("")
 
     const [savedLinks, setSavedLinks] = useState<{ id: number, label: string }[]>([])
 
@@ -184,8 +248,6 @@ export function Save({ close }: { close: () => void }) {
             axios.post<any, AxiosResponse<{ insertedID: number }, any>, string>(`https://drawapp-backend.vercel.app/api/link`, JSON.stringify({ label, data: items }))
                 .then(res => {
                     let links = localStorage.getItem("links")
-                    setSavedID(String(res.data.insertedID))
-
                     if (!links) {
                         localStorage.setItem("links", JSON.stringify([{ id: res.data.insertedID, label }]))
                     } else {

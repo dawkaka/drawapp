@@ -13,6 +13,7 @@ import {
 } from "../lib/utils";
 import { CurrentState, MultipleSelection, Point, Text } from "../types";
 import History from "../lib/history";
+import axios from "axios";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, multiSelected: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false })
@@ -319,9 +320,23 @@ export default function Canvas() {
         let ctx = c!.getContext("2d")!;
         ctx.canvas.width = window.innerWidth
         ctx.canvas.height = window.innerHeight
-        let itms = JSON.parse(localStorage.getItem("canvasItems") || "[]")
-        setItems(itms)
-        if (JSON.stringify(History.getCurrentState()) !== localStorage.getItem("canvasItems")) {
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        const query1Value = params.get('id');
+        if (query1Value) {
+            axios.get(`https://drawapp-backend.vercel.app/api/link?id=${query1Value}`)
+                .then(res => {
+                    if (res.data.data && Array.isArray(res.data.data)) {
+                        setItems(res.data.data)
+                        History.addHistory(res.data.data)
+                    }
+                })
+                .catch(err => {
+                    alert("Error loading")
+                })
+        } else {
+            let itms = JSON.parse(localStorage.getItem("canvasItems") || "[]")
+            setItems(itms)
             History.addHistory(itms)
         }
     }, [])

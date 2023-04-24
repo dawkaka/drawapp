@@ -14,6 +14,7 @@ import {
 import { CurrentState, MultipleSelection, Point, Text } from "../types";
 import History from "../lib/history";
 import axios from "axios";
+import { Loading } from "./mis";
 
 export default function Canvas() {
     const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, multiSelected: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false })
@@ -29,6 +30,7 @@ export default function Canvas() {
     const [selectedItem] = useAtom(SelectionAtom)
     const [cursor, setCursor] = useState<Cursor>(Cursor.Auto);
     const [text, setText] = useState("")
+    const [loading, setLoading] = useState(false)
 
     function updateState(event: any, drawInProcess: boolean) {
         let pageX;
@@ -324,8 +326,10 @@ export default function Canvas() {
         const params = new URLSearchParams(url.search);
         const query1Value = params.get('id');
         if (query1Value) {
+            setLoading(true)
             axios.get(`https://drawapp-backend.vercel.app/api/link?id=${query1Value}`)
                 .then(res => {
+                    setLoading(true)
                     if (res.data.data && Array.isArray(res.data.data)) {
                         setItems(res.data.data)
                         History.addHistory(res.data.data)
@@ -333,6 +337,9 @@ export default function Canvas() {
                 })
                 .catch(err => {
                     alert("Error loading")
+                })
+                .finally(() => {
+                    setLoading(false)
                 })
         } else {
             let itms = JSON.parse(localStorage.getItem("canvasItems") || "[]")
@@ -657,6 +664,9 @@ export default function Canvas() {
                 }}
             ></textarea>
                 : null
+            }
+            {
+                loading && <Loading />
             }
             <canvas
                 className="appearance-none outline-0"

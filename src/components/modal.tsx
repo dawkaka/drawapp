@@ -192,7 +192,6 @@ export function Links({ close }: { close: () => void }) {
                         }
                         {
                             savedLinks.length === 0 && <p>No links available</p>
-
                         }
                     </div>
                     <div className="flex items-center p-6 space-x-2 border-t rounded-b border-[var(--accents-2)]">

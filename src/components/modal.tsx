@@ -187,7 +187,7 @@ export function Links({ close }: { close: () => void }) {
                     </div>
                     <div className="p-6 space-y-6 max-h-[50vh] overflow-y-auto">
                         {
-                            savedLinks.map((l) => <Link label={l.label} link={String(l.id)} />
+                            savedLinks.map((l) => <Link label={l.label} link={String(l.id)} key={l.id} />
                             )
                         }
                     </div>
@@ -333,7 +333,7 @@ export function Save({ close }: { close: () => void }) {
                             label === "" && (
                                 <div className="px-6 pb-6 space-y-6 max-h-[40vh] overflow-y-auto">
                                     {
-                                        savedLinks.map((l) => <SaveLink label={l.label} link={String(l.id)} selected={selected + label} select={(value: string) => setSelected(value)} />
+                                        savedLinks.map((l) => <SaveLink key={l.id} label={l.label} link={String(l.id)} selected={selected + label} select={(value: string) => setSelected(value)} />
                                         )
                                     }
                                 </div>

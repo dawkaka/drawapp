@@ -161,7 +161,7 @@ export function Links({ close }: { close: () => void }) {
         if (links) {
             let l = JSON.parse(links)
             if (Array.isArray(l)) {
-                setSavedLinks(l)
+                setSavedLinks(l.reverse())
             }
         }
     }, [])
@@ -189,6 +189,10 @@ export function Links({ close }: { close: () => void }) {
                         {
                             savedLinks.map((l) => <Link label={l.label} link={String(l.id)} key={l.id} />
                             )
+                        }
+                        {
+                            savedLinks.length === 0 && <p>No links available</p>
+
                         }
                     </div>
                     <div className="flex items-center p-6 space-x-2 border-t rounded-b border-[var(--accents-2)]">
@@ -236,7 +240,7 @@ export function Save({ close }: { close: () => void }) {
         if (links) {
             let l = JSON.parse(links)
             if (Array.isArray(l)) {
-                setSavedLinks(l)
+                setSavedLinks(l.reverse())
             }
         }
     }, [])
@@ -335,6 +339,9 @@ export function Save({ close }: { close: () => void }) {
                                     {
                                         savedLinks.map((l) => <SaveLink key={l.id} label={l.label} link={String(l.id)} selected={selected + label} select={(value: string) => setSelected(value)} />
                                         )
+                                    }
+                                    {
+                                        savedLinks.length === 0 && <p>No links available</p>
                                     }
                                 </div>
                             )

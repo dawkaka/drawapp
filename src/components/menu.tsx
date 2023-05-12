@@ -73,8 +73,8 @@ function Actions() {
             bounds = getMultipleSelectionBounds(items.map(i => i.id), items);
         }
 
-        const padding = 0
-        const padding2x = 0
+        const padding = 10
+        const padding2x = padding * 2
         const x = - 1 * bounds.x + padding
         const y = -1 * bounds.y + padding
         let modifiedItems

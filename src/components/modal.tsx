@@ -13,7 +13,6 @@ interface ModalProps {
 export function ClearModal({ clearFunc, close }: ModalProps) {
 
     return (
-
         <div className="fixed flex items-center justify-center top-0 left-0 right-0 z-50 bg-[rgba(0,0,0,0.3)] p-4 overflow-x-hidden overflow-y-auto h-modal h-full">
             <div className="relative w-full h-full max-w-md md:h-auto">
                 <div className="relative bg-[var(--background)] rounded-lg shadow dark:bg-gray-700">
@@ -38,7 +37,6 @@ export function ClearModal({ clearFunc, close }: ModalProps) {
                 </div>
             </div>
         </div>
-
     )
 }
 

@@ -17,6 +17,7 @@ import axios from "axios";
 import { Loading } from "./mis";
 
 export default function Canvas() {
+    //TODO: use ref instead
     const [state, setState] = useState({ drawInProcess: false, resizeDir: "", drew: false, multiSelected: false, startRectX: 0, startRectY: 0, moveStart: false, moved: false })
     const [mainState, updateMainState] = useAtom(AppState)
     const [items, setItems] = useAtom(AppDrawings)

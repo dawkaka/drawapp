@@ -25,7 +25,7 @@ export default function Tools() {
 
     function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
         const fs = e.currentTarget.files;
-        if (fs) {
+        if (fs && fs.length > 0) {
             const extInd = fs[0].name.lastIndexOf(".");
             const ext = fs[0].name.substring(extInd);
             if (![".jpeg", ".jpg", ".png"].includes(ext)) {

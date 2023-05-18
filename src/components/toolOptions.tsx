@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { getMultipleSelectionBounds, getRandomID, getSelectedItem, moveItemPosition, updateSingleItem } from "../lib/utils"
+import { getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
 import type { Arrow, ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
 import { useState } from "react"
 import { CircleHeadSVG, HeadArrowSVG, LineSVG, NoneSVG, TriangleSVG } from "./svgs"
@@ -302,8 +302,11 @@ function FontFamily() {
             if (item && item.type === "text") {
                 let c = document.getElementById("canvas") as HTMLCanvasElement
                 let ctx = c.getContext('2d')!;
+                const metr = measureText(item.text, item.fontSize, val)
+                const lines = item.text.split("\n").length
+                item.width = metr.w
+                item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize)
                 ctx.font = `${item.fontSize}px ${val}`
-                item.width = ctx.measureText(item.text).width
                 item.fontFamily = val
                 setItems(updateSingleItem(selectedItem.id, item, items))
             }

@@ -24,32 +24,45 @@ export default function Tools() {
     }
 
     function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
-        const fs = e.currentTarget.files
+        const fs = e.currentTarget.files;
         if (fs) {
-            const extInd = fs[0].name.lastIndexOf(".")
-            const ext = fs[0].name.substring(extInd)
+            const extInd = fs[0].name.lastIndexOf(".");
+            const ext = fs[0].name.substring(extInd);
             if (![".jpeg", ".jpg", ".png"].includes(ext)) {
-                return
+                return;
             }
-            const reader = new FileReader()
-            reader.readAsDataURL(fs[0])
+            const reader = new FileReader();
             reader.onload = () => {
-                const imageItem: Image = {
-                    id: getRandomID(),
-                    type: "image",
-                    data: reader.result as string,
-                    x: window.innerWidth / 2,
-                    y: window.innerHeight / 2,
-                    width: 500,
-                    height: 500,
-                    opacity: 1,
-                }
-                const add = [...items, imageItem]
-                setItems(add)
-                setState({ ...app, selectedItemID: imageItem.id })
-                localStorage.setItem("canvasItems", JSON.stringify(add))
-                e.target.value = ""
-            }
+                const image = new Image();
+                image.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = image.width;
+                    canvas.height = image.height;
+                    const ctx = canvas.getContext("2d");
+                    if (ctx) {
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(image, 0, 0);
+                        const dataURL = canvas.toDataURL("image/png");
+                        const imageItem: Image = {
+                            id: getRandomID(),
+                            type: "image",
+                            data: dataURL,
+                            x: window.innerWidth / 2,
+                            y: window.innerHeight / 2,
+                            width: 500,
+                            height: 500,
+                            opacity: 1,
+                        };
+                        const add = [...items, imageItem];
+                        setItems(add);
+                        setState({ ...app, selectedItemID: imageItem.id });
+                        localStorage.setItem("canvasItems", JSON.stringify(add));
+                        e.target.value = "";
+                    }
+                };
+                image.src = reader.result as string;
+            };
+            reader.readAsDataURL(fs[0]);
         }
     }
 

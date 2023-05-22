@@ -63,7 +63,6 @@ function Actions() {
     }
 
     function downloadCanvas() {
-        const link = document.createElement("a");
         let c = document.createElement('canvas') as HTMLCanvasElement;
         let ctx = c.getContext('2d')!;
         let bounds
@@ -72,8 +71,7 @@ function Actions() {
         } else {
             bounds = getMultipleSelectionBounds(items.map(i => i.id), items);
         }
-
-        const padding = 10
+        const padding = 2
         const padding2x = padding * 2
         const x = - 1 * bounds.x + padding
         const y = -1 * bounds.y + padding

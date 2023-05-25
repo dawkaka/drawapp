@@ -1,23 +1,18 @@
 import { useAtom } from "jotai"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { AppDrawings, AppState } from "../jotai"
-import { renderElements } from "../lib/render"
+import { AppState } from "../jotai"
 import ColorPanel from "./colorpick"
-import { ClearModal, DownloadModal } from "./modal"
 import { Actions, ArrowOnlyOptions, BorderRadius, FillToolsOptions, ImageOptions, Layers, Opacity, TextOptions } from "./toolOptions"
 import Tools from "./tools"
-import history from "../lib/history"
-import { defaultValues } from "../constants"
-import { closeMenus, getInverseColorForTheme, getMultipleSelection, getMultipleSelectionBounds } from "../lib/utils"
-import { CanvasItem } from "../types"
+import { closeMenus } from "../lib/utils"
 import Menu from "./menu"
 
 export default function Side() {
     const [closed, setClosed] = useState(true)
-    const [main, setAppState] = useAtom(AppState)
-    const [width, setWidth] = useState(200)
+    const [main] = useAtom(AppState)
+    const [width] = useState(200)
     const sideRef = useRef(null)
-    const [theme, setTheme] = useState<"dark" | "light">("light")
+    const [, setTheme] = useState<"dark" | "light">("light")
     const tool = main.tool
     useLayoutEffect(() => {
         const t = localStorage.getItem("theme")
@@ -48,11 +43,6 @@ export default function Side() {
                     closeMenus()
                 }}
             >
-
-                {/* {
-                    opened && <DownloadModal items={items} close={() => setOpened(false)} />
-                } */}
-
                 <div className="relative bg-[var(--accents-1)] relative w-full h-full overflow-y-auto pb-10"
                     style={{
                         overflowX: "hidden"

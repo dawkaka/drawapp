@@ -1,12 +1,8 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
 import { AppDrawings, AppState } from "../jotai"
-import { CanvasItem } from "../types"
-import { getInverseColorForTheme, getMultipleSelectionBounds } from "../lib/utils"
-import { renderElements } from "../lib/render"
 import { defaultValues } from "../constants"
-import history from "../lib/history"
-import { ClearModal, Links, Save } from "./modal"
+import { ClearModal, DownloadModal, Links, Save } from "./modal"
 
 export default function Menu() {
     return (
@@ -43,71 +39,13 @@ function Actions() {
     const [theme, setTheme] = useState<"dark" | "light">("light")
     const [linksModal, setLinksModal] = useState(false)
     const [saveModal, setSaveModal] = useState(false)
+    const [downloadModalOpened, setDownloadModalOpened] = useState(false)
 
     function deleteAllItems() {
         setItems([])
         localStorage.setItem("canvasItems", "[]")
         setModal(false)
     }
-
-    function adjustItemsXY(items: CanvasItem[], x: number, y: number): CanvasItem[] {
-        const mod = items.map(item => {
-            return {
-                ...item,
-                x: item.x + x,
-                y: item.y + y
-            }
-
-        })
-        return mod
-    }
-
-    function downloadCanvas() {
-        let c = document.createElement('canvas') as HTMLCanvasElement;
-        let ctx = c.getContext('2d')!;
-        let bounds
-        if (main.multipleSelections.length > 0) {
-            bounds = getMultipleSelectionBounds(main.multipleSelections, items);
-        } else {
-            bounds = getMultipleSelectionBounds(items.map(i => i.id), items);
-        }
-        const padding = 2
-        const padding2x = padding * 2
-        const x = - 1 * bounds.x + padding
-        const y = -1 * bounds.y + padding
-        let modifiedItems
-        if (main.multipleSelections.length > 0) {
-            let v = items.filter(i => main.multipleSelections.includes(i.id))
-            modifiedItems = adjustItemsXY(v, x, y)
-        } else {
-            modifiedItems = adjustItemsXY(items, x, y)
-        }
-
-        bounds = getMultipleSelectionBounds(main.multipleSelections.length > 0 ? main.multipleSelections : modifiedItems.map(i => i.id), modifiedItems);
-
-        c.width = bounds.width + padding2x
-        c.height = bounds.height + padding2x
-        ctx.save()
-        ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
-        ctx.fillRect(0, 0, c.width, c.height)
-        ctx.restore()
-        if (modifiedItems.length > 0) {
-            renderElements(ctx, modifiedItems)
-        }
-
-        c.toBlob((blob) => {
-            if (blob) {
-                const link = document.createElement("a");
-                link.download = `draaaw-${new Date().toISOString()}.png`
-                link.href = URL.createObjectURL(blob);
-                link.click();
-            }
-
-        }, "image/png");
-    }
-
-
-
 
     function changeTheme() {
         let root = document.querySelector("#root")!
@@ -140,6 +78,10 @@ function Actions() {
             onClick={(e) => e.stopPropagation()}
             className="hidden flex-col border bg-[var(--background)] text-[var(--accents-7)] py-2 right-auto w-max absolute bottom-5  z-11">
             {
+                downloadModalOpened && <DownloadModal items={items} close={() => setDownloadModalOpened(false)} />
+            }
+
+            {
                 modal && <ClearModal close={() => setModal(false)} clearFunc={deleteAllItems} />
             }
             {
@@ -149,7 +91,7 @@ function Actions() {
                 saveModal && <Save close={() => setSaveModal(false)} />
             }
             <button className="flex gap-2 py-2 px-4 items-center hover:bg-[var(--p-light)] hover:text-[var(--p-dark)]"
-                onClick={downloadCanvas}
+                onClick={() => setDownloadModalOpened(true)}
             >
                 <svg aria-hidden="true" width="22" height="22" focusable="false" role="img" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                     <path strokeWidth="1.25" d="M3.333 14.167v1.666c0 .92.747 1.667 1.667 1.667h10c.92 0 1.667-.746 1.667-1.667v-1.666M5.833 9.167 10 13.333l4.167-4.166M10 3.333v10">

@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CanvasItem } from "../types";
 import axios, { AxiosResponse } from "axios";
 import { useAtom } from "jotai";
-import { AppDrawings } from "../jotai";
+import { AppDrawings, AppState } from "../jotai";
 import { Error, Loading, Success } from "./mis";
+import { getInverseColorForTheme, getMultipleSelectionBounds } from "../lib/utils";
+import { renderElements } from "../lib/render";
 
 interface ModalProps {
     clearFunc: () => void;
@@ -42,13 +44,80 @@ export function ClearModal({ clearFunc, close }: ModalProps) {
 
 
 export function DownloadModal({ items, close }: { items: CanvasItem[], close: () => void }) {
+    const [main, setAppState] = useAtom(AppState)
+    const canvasRef = useRef<HTMLImageElement>(null)
+    const canvasBlob = useRef<string>("")
+    const [background, setBackground] = useState(true)
+    const [padding, setPadding] = useState(0)
+
+    function adjustItemsXY(items: CanvasItem[], x: number, y: number): CanvasItem[] {
+        const mod = items.map(item => {
+            return {
+                ...item,
+                x: item.x + x,
+                y: item.y + y
+            }
+
+        })
+        return mod
+    }
+
+    const imgWidth = useMemo(() => {
+        let c = document.createElement('canvas') as HTMLCanvasElement;
+        let ctx = c.getContext('2d')!;
+        let bounds
+        if (main.multipleSelections.length > 0) {
+            bounds = getMultipleSelectionBounds(main.multipleSelections, items);
+        } else {
+            bounds = getMultipleSelectionBounds(items.map(i => i.id), items);
+        }
+
+        const padding2x = padding * 2
+        const x = - 1 * bounds.x + padding
+        const y = -1 * bounds.y + padding
+        let modifiedItems
+        if (main.multipleSelections.length > 0) {
+            let v = items.filter(i => main.multipleSelections.includes(i.id))
+            modifiedItems = adjustItemsXY(v, x, y)
+        } else {
+            modifiedItems = adjustItemsXY(items, x, y)
+        }
+
+        bounds = getMultipleSelectionBounds(main.multipleSelections.length > 0 ? main.multipleSelections : modifiedItems.map(i => i.id), modifiedItems);
+        c.width = bounds.width + padding2x
+        c.height = bounds.height + padding2x
+        ctx.save()
+        if (background) {
+            ctx.fillStyle = getInverseColorForTheme("#FFFFFF") === "#FFFFFF" ? "#000000" : "#FFFFFF"
+            ctx.fillRect(0, 0, c.width, c.height)
+        }
+        ctx.restore()
+        if (modifiedItems.length > 0) {
+            renderElements(ctx, modifiedItems)
+        }
+        c.toBlob((blob) => {
+            if (blob) {
+                canvasRef.current!.src = URL.createObjectURL(blob);
+                canvasBlob.current = URL.createObjectURL(blob)
+            }
+        }, 'image/png');
+        return bounds.width + padding2x
+    }, [background, padding])
+
+    function saveToDisk() {
+        const link = document.createElement("a");
+        link.download = `draaaw-${new Date().toISOString()}.png`
+        link.href = canvasBlob.current
+        link.click();
+    }
+
     return (
         <div id="staticModal" data-modal-backdrop="static" tabIndex={-1} aria-hidden="true"
             className="fixed flex items-center justify-center top-0 bg-[rgba(0,0,0,0.3)] left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-full max-h-full">
             <div className="relative w-full max-w-2xl max-h-full">
                 <div className="relative bg-[var(--background)] rounded-lg shadow dark:bg-gray-700">
                     <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-xl font-semibold text-[var(--accents-7)]">
                             Download
                         </h3>
                         <button type="button"
@@ -57,17 +126,21 @@ export function DownloadModal({ items, close }: { items: CanvasItem[], close: ()
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                         </button>
                     </div>
-                    <div className="p-6 space-y-6">
-                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                            With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
-                        </p>
-                        <p className="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-                            The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
-                        </p>
+                    <div className="p-4 flex justify-center space-y-6 bg-[url('/trbackground.png')]">
+                        <img ref={canvasRef} style={{ width: imgWidth, objectFit: "contain" }} />
                     </div>
-                    <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b dark:border-gray-600">
-                        <button data-modal-hide="staticModal" type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">I accept</button>
-                        <button data-modal-hide="staticModal" type="button" className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600">Decline</button>
+                    <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b justify-between">
+                        <div className="flex gap-4 items-center">
+                            <div className="flex flex-col gap-1 items-center">
+                                <label className="text-[var(--accents-6)]">Background</label>
+                                <input type="checkbox" checked={background} onChange={(e) => setBackground(e.target.checked)} />
+                            </div>
+                            <div className="flex flex-col gap-1 items-center">
+                                <label className="text-[var(--accents-6)]">Padding</label>
+                                <input type="range" min={0} max={50} value={padding} step={1} onChange={(e) => setPadding(Number(e.target.value))} />
+                            </div>
+                        </div>
+                        <button onClick={saveToDisk} data-modal-hide="staticModal" type="button" className="text-white bg-[darkorange] focus:ring-4 focus:outline-none focus:ring-[#faecd2] font-medium rounded-lg text-sm px-5 py-2.5 text-center">Download</button>
                     </div>
                 </div>
             </div>

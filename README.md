@@ -37,7 +37,7 @@ All contributions to this project are welcomed! Here's how you can get started:
 
 `git checkout -b my-new-feature`
 
-4. Make changes and commit them:
+4. Make changes by looking through the issues and commit them:
 
 ```git add .
  git commit -m "Add some feature"

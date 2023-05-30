@@ -1090,6 +1090,10 @@ export function flipItemsX(bounds: MultipleSelection, selected: string[], items:
         const diff = selectedItem.x - bX
         const posx = (bX + bW - (diff + selectedItem.width))
         selectedItem.x = posx
+        if (selectedItem.type === "arrow" || selectedItem.type === "line") {
+            selectedItem.points[0].x *= -1
+            selectedItem.points[1].x *= -1
+        }
     })
 
     return [...items]
@@ -1102,6 +1106,10 @@ export function flipItemsY(bounds: MultipleSelection, selected: string[], items:
         const diff = selectedItem.y - bY
         const posy = (bY + bH - (diff + selectedItem.height))
         selectedItem.y = posy
+        if (selectedItem.type === "arrow" || selectedItem.type === "line") {
+            selectedItem.points[0].y *= -1
+            selectedItem.points[1].y *= -1
+        }
     })
 
     return [...items]

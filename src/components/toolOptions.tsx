@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
+import { flipItemsX, flipItemsY, getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
 import type { ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
 import { CircleHeadSVG, HeadArrowSVG, LineSVG, NoneSVG, TriangleSVG } from "./svgs"
 import history from "../lib/history"
@@ -503,11 +503,19 @@ export function Actions() {
     }
 
     function flipX() {
-
+        if (appState.multipleSelections.length > 0) {
+            let bounds = getMultipleSelectionBounds(appState.multipleSelections, items)
+            let flipedItems = flipItemsX(bounds, appState.multipleSelections, items)
+            setItems(flipedItems)
+        }
     }
 
     function flipY() {
-
+        if (appState.multipleSelections.length > 0) {
+            let bounds = getMultipleSelectionBounds(appState.multipleSelections, items)
+            let flipedItems = flipItemsY(bounds, appState.multipleSelections, items)
+            setItems(flipedItems)
+        }
     }
 
     return (

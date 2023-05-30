@@ -1082,6 +1082,31 @@ function resizeHandDrawnPath(points: Point[], dx: number, dy: number) {
     return result;
 }
 
+
+export function flipItemsX(bounds: MultipleSelection, selected: string[], items: CanvasItem[]) {
+    const selectedItems = items.filter(item => selected.includes(item.id))
+    const { x: bX, width: bW } = bounds
+    selectedItems.forEach(selectedItem => {
+        const diff = selectedItem.x - bX
+        const posx = (bX + bW - (diff + selectedItem.width))
+        selectedItem.x = posx
+    })
+
+    return [...items]
+}
+
+export function flipItemsY(bounds: MultipleSelection, selected: string[], items: CanvasItem[]) {
+    const selectedItems = items.filter(item => selected.includes(item.id))
+    const { y: bY, height: bH } = bounds
+    selectedItems.forEach(selectedItem => {
+        const diff = selectedItem.y - bY
+        const posy = (bY + bH - (diff + selectedItem.height))
+        selectedItem.y = posy
+    })
+
+    return [...items]
+}
+
 export function getInverseColorForTheme(color: string): string {
     const theme = localStorage.getItem("theme")
     if (!theme) return color

@@ -1094,6 +1094,10 @@ export function flipItemsX(bounds: MultipleSelection, selected: string[], items:
             selectedItem.points[0].x *= -1
             selectedItem.points[1].x *= -1
         }
+        if (selectedItem.type === "image") {
+            selectedItem.x += selectedItem.width
+            selectedItem.width *= - 1
+        }
     })
 
     return [...items]
@@ -1109,6 +1113,10 @@ export function flipItemsY(bounds: MultipleSelection, selected: string[], items:
         if (selectedItem.type === "arrow" || selectedItem.type === "line") {
             selectedItem.points[0].y *= -1
             selectedItem.points[1].y *= -1
+        }
+        if (selectedItem.type === "image") {
+            selectedItem.y += selectedItem.height
+            selectedItem.height *= -1
         }
     })
 

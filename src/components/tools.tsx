@@ -154,6 +154,7 @@ export function CanvasTool({ onClick, tool, selectedTool, children }: { onClick:
                 fill: selectedTool === tool ? "var(--p-dark)" : "none",
                 transform: "scale(0.8)"
             }}
+            title={`__${tool}__`}
         >
             <div className="relative h-[22px] w-[22px]">
                 {children}

@@ -686,6 +686,7 @@ export function Radius({ onClick, option, selectedOption }: { onClick: (val: num
                 border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`,
                 transform: "scale(0.9)"
             }}
+            title={`__${option}__`}
         >
             <div className="flex items-center justify-center"
                 style={{ width: "15px", height: "15px" }}
@@ -729,7 +730,6 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
         </button>
     )
 }
-
 
 function StrokeStyle() {
     const [mainState, setSelected] = useAtom(AppState)

@@ -712,6 +712,7 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
                 transform: "scale(0.9)"
 
             }}
+            title={`__${option}__`}
         >
             <div className="flex items-center justify-center"
                 style={{ width: "15px", height: "15px" }}
@@ -771,6 +772,7 @@ function StrokeStyleOption({ onClick, option, selectedOption }: { onClick: (val:
                 transform: "scale(0.9)"
 
             }}
+            title={`__${option}__`}
         >
             <div className="flex items-center justify-center"
                 style={{ width: "15px", height: "15px" }}

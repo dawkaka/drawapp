@@ -1,8 +1,7 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
-import type { Arrow, ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
-import { useState } from "react"
+import { flipItemsX, flipItemsY, getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
+import type { ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
 import { CircleHeadSVG, HeadArrowSVG, LineSVG, NoneSVG, TriangleSVG } from "./svgs"
 import history from "../lib/history"
 
@@ -431,6 +430,7 @@ function OptionContainer({ selected, value, onClick, children }: { selected: str
                 overflow: "hidden",
                 transform: "scale(0.9)"
             }}
+            title={`__${value}__`}
         >
             <div className="flex items-center justify-center h-[22px] w-[22px]">
                 {children}
@@ -438,6 +438,7 @@ function OptionContainer({ selected, value, onClick, children }: { selected: str
         </button>
     )
 }
+
 export function Actions() {
     let selected = ""
     const [items, setItems] = useAtom(AppDrawings)
@@ -501,11 +502,28 @@ export function Actions() {
         setItems(itm)
         localStorage.setItem("canvasItems", JSON.stringify(itm))
     }
+
+    function flipX() {
+        if (appState.multipleSelections.length > 0) {
+            let bounds = getMultipleSelectionBounds(appState.multipleSelections, items)
+            let flipedItems = flipItemsX(bounds, appState.multipleSelections, items)
+            setItems(flipedItems)
+        }
+    }
+
+    function flipY() {
+        if (appState.multipleSelections.length > 0) {
+            let bounds = getMultipleSelectionBounds(appState.multipleSelections, items)
+            let flipedItems = flipItemsY(bounds, appState.multipleSelections, items)
+            setItems(flipedItems)
+        }
+    }
+
     return (
         <fieldset className="flex flex-col gap-2">
             <legend className="text-sm text-[var(--accents-5)] mb-1">Action</legend>
             <div className="flex flex-wrap gap-3">
-                <OptionContainer selected={selected} value="to-back" onClick={handleCopy}>
+                <OptionContainer selected={selected} value="copy" onClick={handleCopy}>
                     <svg fill="currentColor" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                         xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64" xmlSpace="preserve">
                         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -532,6 +550,7 @@ export function Actions() {
                     style={{
                         transform: "scale(0.9)"
                     }}
+                    title={`__undo__`}
                 >
                     <svg width="22" height="22" viewBox="0 0 15 15" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={{ transform: "scale(1, 1)" }}>
                         <path d="M10.6707 8.5081C10.6707 10.1923 9.3004 11.5625 7.61631 11.5625H6.5351C6.35593 11.5625 6.21074 11.4173 6.21074 11.2382V11.13C6.21074 10.9508 6.35591 10.8057 6.5351 10.8057H7.61631C8.88313 10.8057 9.91387 9.77492 9.91387 8.5081C9.91387 7.24128 8.88313 6.21054 7.61631 6.21054H5.62155L6.99534 7.58433C7.14289 7.73183 7.14289 7.97195 6.99534 8.11944C6.85216 8.26251 6.60298 8.2623 6.46013 8.11944L4.44045 6.09971C4.36898 6.02824 4.32959 5.93321 4.32959 5.8321C4.32959 5.73106 4.36898 5.63598 4.44045 5.56454L6.46024 3.54472C6.60309 3.40176 6.85248 3.40176 6.99535 3.54472C7.14291 3.69218 7.14291 3.93234 6.99535 4.07979L5.62156 5.45368H7.61631C9.3004 5.45368 10.6707 6.82393 10.6707 8.5081Z">
@@ -544,12 +563,19 @@ export function Actions() {
                     style={{
                         transform: "scale(0.9)"
                     }}
-
+                    title={`__redo__`}
                 >
                     <svg width="22" height="22" viewBox="0 0 15 15" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style={{ transform: "scale(-1, 1)" }}>
                         <path d="M10.6707 8.5081C10.6707 10.1923 9.3004 11.5625 7.61631 11.5625H6.5351C6.35593 11.5625 6.21074 11.4173 6.21074 11.2382V11.13C6.21074 10.9508 6.35591 10.8057 6.5351 10.8057H7.61631C8.88313 10.8057 9.91387 9.77492 9.91387 8.5081C9.91387 7.24128 8.88313 6.21054 7.61631 6.21054H5.62155L6.99534 7.58433C7.14289 7.73183 7.14289 7.97195 6.99534 8.11944C6.85216 8.26251 6.60298 8.2623 6.46013 8.11944L4.44045 6.09971C4.36898 6.02824 4.32959 5.93321 4.32959 5.8321C4.32959 5.73106 4.36898 5.63598 4.44045 5.56454L6.46024 3.54472C6.60309 3.40176 6.85248 3.40176 6.99535 3.54472C7.14291 3.69218 7.14291 3.93234 6.99535 4.07979L5.62156 5.45368H7.61631C9.3004 5.45368 10.6707 6.82393 10.6707 8.5081Z">
                         </path></svg>
                 </button>
+
+                <OptionContainer selected={""} value="Flip horizontally" onClick={() => flipX()}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.97 15.25h-2.72c-5.3 0-9.5-2.15-9.5-4.5s4.2-4.5 9.5-4.5c3.03 0 5.82.7 7.62 1.86a.75.75 0 1 0 .81-1.26c-2.06-1.33-5.13-2.1-8.43-2.1-6.02 0-11 2.55-11 6s4.98 6 11 6h2.8l-2.3 2.3a.75.75 0 1 0 1.07 1.05l2.83-2.82c.68-.69.68-1.8 0-2.48l-2.83-2.83a.75.75 0 0 0-1.06 1.06l2.21 2.22z"></path></svg>
+                </OptionContainer>
+                <OptionContainer selected={""} value="Flip vertically" onClick={() => { flipY() }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M15.25 8.35v2.4c0 5.3-2.15 9.5-4.5 9.5s-4.5-4.2-4.5-9.5c0-3.03.7-5.82 1.86-7.62a.75.75 0 1 0-1.26-.81c-1.33 2.06-2.1 5.13-2.1 8.43 0 6.02 2.55 11 6 11s6-4.98 6-11V8.27l2.3 2.3A.75.75 0 1 0 20.1 9.5l-2.82-2.83a1.75 1.75 0 0 0-2.48 0L11.97 9.5a.75.75 0 1 0 1.06 1.06l2.22-2.22z"></path></svg>
+                </OptionContainer>
             </div>
         </fieldset>
     )
@@ -660,6 +686,7 @@ export function Radius({ onClick, option, selectedOption }: { onClick: (val: num
                 border: `1px solid ${selectedOption === option ? "var(--p-light)" : "var(--accents-2)"}`,
                 transform: "scale(0.9)"
             }}
+            title={`__${option}__`}
         >
             <div className="flex items-center justify-center"
                 style={{ width: "15px", height: "15px" }}
@@ -686,6 +713,7 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
                 transform: "scale(0.9)"
 
             }}
+            title={`__${option}__`}
         >
             <div className="flex items-center justify-center"
                 style={{ width: "15px", height: "15px" }}
@@ -702,7 +730,6 @@ function FillOption({ onClick, option, selectedOption }: { onClick: (val: Stroke
         </button>
     )
 }
-
 
 function StrokeStyle() {
     const [mainState, setSelected] = useAtom(AppState)
@@ -745,6 +772,7 @@ function StrokeStyleOption({ onClick, option, selectedOption }: { onClick: (val:
                 transform: "scale(0.9)"
 
             }}
+            title={`__${option}__`}
         >
             <div className="flex items-center justify-center"
                 style={{ width: "15px", height: "15px" }}

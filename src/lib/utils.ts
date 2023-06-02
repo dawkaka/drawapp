@@ -1082,6 +1082,47 @@ function resizeHandDrawnPath(points: Point[], dx: number, dy: number) {
     return result;
 }
 
+
+export function flipItemsX(bounds: MultipleSelection, selected: string[], items: CanvasItem[]) {
+    const selectedItems = items.filter(item => selected.includes(item.id))
+    const { x: bX, width: bW } = bounds
+    selectedItems.forEach(selectedItem => {
+        const diff = selectedItem.x - bX
+        const posx = (bX + bW - (diff + selectedItem.width))
+        selectedItem.x = posx
+        if (selectedItem.type === "arrow" || selectedItem.type === "line") {
+            selectedItem.points[0].x *= -1
+            selectedItem.points[1].x *= -1
+        }
+        if (selectedItem.type === "image") {
+            selectedItem.x += selectedItem.width
+            selectedItem.width *= - 1
+        }
+    })
+
+    return [...items]
+}
+
+export function flipItemsY(bounds: MultipleSelection, selected: string[], items: CanvasItem[]) {
+    const selectedItems = items.filter(item => selected.includes(item.id))
+    const { y: bY, height: bH } = bounds
+    selectedItems.forEach(selectedItem => {
+        const diff = selectedItem.y - bY
+        const posy = (bY + bH - (diff + selectedItem.height))
+        selectedItem.y = posy
+        if (selectedItem.type === "arrow" || selectedItem.type === "line") {
+            selectedItem.points[0].y *= -1
+            selectedItem.points[1].y *= -1
+        }
+        if (selectedItem.type === "image") {
+            selectedItem.y += selectedItem.height
+            selectedItem.height *= -1
+        }
+    })
+
+    return [...items]
+}
+
 export function getInverseColorForTheme(color: string): string {
     const theme = localStorage.getItem("theme")
     if (!theme) return color

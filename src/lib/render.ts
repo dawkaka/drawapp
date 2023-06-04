@@ -517,18 +517,22 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
     ctx.lineJoin = "round"
     ctx.fillStyle = getInverseColorForTheme(item.strokeStyle)
     ctx.globalAlpha = item.opacity
-    ctx.font = `${item.fontSize}px ${item.fontFamily}`
+    ctx.font = `${item.textItalic ? "italic" : ""} ${item.textBold ? "bold" : ""} ${item.fontSize}px ${item.fontFamily}`
     const texts = item.text.split("\n")
     let h = 0
     for (let text of texts) {
         let x = item.x
+        const textWidth = ctx.measureText(text).width
         if (item.alignment === "right") {
-            x = item.x + (item.width - ctx.measureText(text).width)
+            x = item.x + (item.width - textWidth)
         } else if (item.alignment === "center") {
-            x = item.x + (item.width - ctx.measureText(text).width) / 2
+            x = item.x + (item.width - textWidth) / 2
         }
         ctx.fillText(text, x, item.y + h + item.fontSize / 2)
         h += item.fontSize
+        if (item.textUnderline) {
+            ctx.fillRect(item.x, item.y + (h - item.fontSize / 2 + (item.fontSize * 0.01)), textWidth, item.fontSize * 0.05)
+        }
     }
     ctx.restore()
 }

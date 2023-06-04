@@ -257,12 +257,14 @@ function FontSize() {
         if (selectedItem) {
             const item = getSelectedItem(selectedItem.id, items)
             if (item && item.type === "text") {
-                let c = document.getElementById("canvas") as HTMLCanvasElement
-                let ctx = c.getContext('2d')!;
-                ctx.font = `${v}px ${item.fontFamily}`
+                const bold = item.textBold ? "bold" : ""
+                const size = v
+                const font = `${bold} ${size}px ${item.fontFamily}`
+                const metr = measureText(item.text, font)
+                const lines = item.text.split("\n").length
                 item.fontSize = v
-                item.width = ctx.measureText(item.text).width
-                item.height = item.text.split("\n").length * v
+                item.width = metr.w
+                item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize)
                 setItems(updateSingleItem(selectedItem.id, item, items))
             }
         }
@@ -296,13 +298,13 @@ function FontFamily() {
         if (selectedItem) {
             const item = getSelectedItem(selectedItem.id, items)
             if (item && item.type === "text") {
-                let c = document.getElementById("canvas") as HTMLCanvasElement
-                let ctx = c.getContext('2d')!;
-                const metr = measureText(item.text, item.fontSize, val)
+                const bold = item.textBold ? "bold" : ""
+                const size = item.fontSize
+                const font = `${bold} ${size}px ${val}`
+                const metr = measureText(item.text, font)
                 const lines = item.text.split("\n").length
                 item.width = metr.w
                 item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize)
-                ctx.font = `${item.fontSize}px ${val}`
                 item.fontFamily = val
                 setItems(updateSingleItem(selectedItem.id, item, items))
             }

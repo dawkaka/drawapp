@@ -529,10 +529,14 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
             x = item.x + (item.width - textWidth) / 2
         }
         ctx.fillText(text, x, item.y + h + item.fontSize / 2)
+        if (item.textStrikethrough) {
+            ctx.fillRect(x, item.y + (h + (item.fontSize / 4) - (item.fontSize * 0.025)), textWidth, item.fontSize * 0.05)
+        }
         h += item.fontSize
         if (item.textUnderline) {
-            ctx.fillRect(item.x, item.y + (h - item.fontSize / 2 + (item.fontSize * 0.01)), textWidth, item.fontSize * 0.05)
+            ctx.fillRect(x, item.y + (h - item.fontSize / 2 + (item.fontSize * 0.01)), textWidth, item.fontSize * 0.05)
         }
+
     }
     ctx.restore()
 }

@@ -17,7 +17,11 @@ export const defaultValues: AppState = {
     textAlign: "left",
     arrowStructure: "curve",
     arrowHead: "none",
-    arrowTail: "arrow"
+    arrowTail: "arrow",
+    textBold: false,
+    textItalic: false,
+    textStrikethrough: false,
+    textUnderline: false
 }
 
 export enum Cursor {

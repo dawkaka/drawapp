@@ -953,7 +953,11 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
                 fontFamily: item.fontFamily,
                 fontSize: item.fontSize,
                 tool: item.type,
-                textAlign: item.alignment
+                textAlign: item.alignment,
+                textBold: item.textBold,
+                textUnderline: item.textUnderline,
+                textItalic: item.textItalic,
+                textStrikethrough: item.textStrikethrough
             })
             break;
         case "arrow":

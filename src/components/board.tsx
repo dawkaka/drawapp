@@ -152,7 +152,11 @@ export default function Canvas() {
                             strokeWidth: mainState.strokeWidth,
                             strokeStyle: mainState.strokeColor,
                             fillStyle: mainState.fillColor,
-                            alignment: mainState.textAlign
+                            alignment: mainState.textAlign,
+                            textBold: mainState.textBold,
+                            textItalic: mainState.textItalic,
+                            textStrikethrough: mainState.textStrikethrough,
+                            textUnderline: mainState.textUnderline
                         }
                     })
                 default:

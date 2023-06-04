@@ -18,6 +18,10 @@ export interface AppState {
     fontSize: number,
     textStyle: "fill" | "stroke"
     textAlign: "center" | "left" | "right",
+    textBold: boolean,
+    textItalic: boolean,
+    textUnderline: boolean,
+    textStrikethrough: boolean,
     arrowStructure: "curve" | "sharp",
     arrowHead: ArrowHead,
     arrowTail: ArrowHead
@@ -103,6 +107,10 @@ export interface Text extends CanvasItemConstants {
     fontFamily: string,
     fontSize: number,
     alignment: "center" | "left" | "right"
+    textBold: boolean,
+    textItalic: boolean,
+    textUnderline: boolean,
+    textStrikethrough: boolean,
 }
 
 export type CanvasItem = Pencil | Line | Rectangle | Diamond | Ellipse | Arrow | Image | Text

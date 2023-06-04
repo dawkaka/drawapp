@@ -413,7 +413,10 @@ export function resizeMultipleItems(dir: string, dx: number, dy: number, selecti
             }
         } else if (item.type === "text") {
             const fontSize = (Math.abs(newWidth) * item.fontSize) / item.width
-            const metr = measureText(item.text, fontSize, item.fontFamily)
+            const bold = item.textBold ? "bold" : ""
+            const fam = item.fontFamily
+            const font = `${bold} ${fontSize}px ${fam}`
+            const metr = measureText(item.text, font)
             const width = metr.w
             const lines = item.text.split("\n").length
             const height = lines * metr.h * 0.6 + ((lines - 1) * fontSize / 2)
@@ -483,11 +486,11 @@ export function getCursor(dir: string): Cursor {
     }
 }
 
-export function measureText(text: string, fontSize: number, fontFamily: string) {
+export function measureText(text: string, font: string) {
     let c = document.getElementById("canvas") as HTMLCanvasElement
     let ctx = c.getContext('2d')!;
     ctx.save()
-    ctx.font = `${fontSize}px ${fontFamily}`
+    ctx.font = font
     const textLines = text.split("\n")
     let max = ""
     for (let line of textLines) {
@@ -520,7 +523,11 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const metr = measureText(item.text, item.fontSize, item.fontFamily)
+            const bold = item.textBold ? "bold" : ""
+            const size = item.fontSize
+            const fam = item.fontFamily
+            const font = `${bold} ${size}px ${fam}`
+            const metr = measureText(item.text, font)
             item.width = metr.w
             const lines = item.text.split("\n").length
             item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize / 2)
@@ -544,7 +551,11 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const metr = measureText(item.text, item.fontSize, item.fontFamily)
+            const bold = item.textBold ? "bold" : ""
+            const size = item.fontSize
+            const fam = item.fontFamily
+            const font = `${bold} ${size}px ${fam}`
+            const metr = measureText(item.text, font)
             let pw = item.width, ph = item.height
             item.width = metr.w
             const lines = item.text.split("\n").length
@@ -574,7 +585,11 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const metr = measureText(item.text, item.fontSize, item.fontFamily)
+            const bold = item.textBold ? "bold" : ""
+            const size = item.fontSize
+            const fam = item.fontFamily
+            const font = `${bold} ${size}px ${fam}`
+            const metr = measureText(item.text, font)
             let ph = item.height
             item.width = metr.w
             const lines = item.text.split("\n").length
@@ -602,7 +617,11 @@ export function resizeSelected(dir: string, dx: number, dy: number, item: Select
             }
             const diagonal = Math.sqrt(dx * dx + dy * dy)
             item.fontSize += d * diagonal
-            const metr = measureText(item.text, item.fontSize, item.fontFamily)
+            const bold = item.textBold ? "bold" : ""
+            const size = item.fontSize
+            const fam = item.fontFamily
+            const font = `${bold} ${size}px ${fam}`
+            const metr = measureText(item.text, font)
             let pw = item.width
             item.width = metr.w
             const lines = item.text.split("\n").length
@@ -953,7 +972,11 @@ export function updateAppStateFromSelectedItem(setState: (update: SetStateAction
                 fontFamily: item.fontFamily,
                 fontSize: item.fontSize,
                 tool: item.type,
-                textAlign: item.alignment
+                textAlign: item.alignment,
+                textBold: item.textBold,
+                textUnderline: item.textUnderline,
+                textItalic: item.textItalic,
+                textStrikethrough: item.textStrikethrough
             })
             break;
         case "arrow":

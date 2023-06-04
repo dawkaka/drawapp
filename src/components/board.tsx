@@ -152,7 +152,11 @@ export default function Canvas() {
                             strokeWidth: mainState.strokeWidth,
                             strokeStyle: mainState.strokeColor,
                             fillStyle: mainState.fillColor,
-                            alignment: mainState.textAlign
+                            alignment: mainState.textAlign,
+                            textBold: mainState.textBold,
+                            textItalic: mainState.textItalic,
+                            textStrikethrough: mainState.textStrikethrough,
+                            textUnderline: mainState.textUnderline
                         }
                     })
                 default:
@@ -613,7 +617,11 @@ export default function Canvas() {
                     const target = e.target as HTMLTextAreaElement
                     const itemID = getRandomID()
                     const textLines = target.value.split("\n")
-                    const metr = measureText(e.target.value, current.text.fontSize, current.text.fontFamily)
+                    const bold = current.text.textBold ? "bold" : ""
+                    const size = current.text.fontSize
+                    const fam = current.text.fontFamily
+                    const font = `${bold} ${size}px ${fam}`
+                    const metr = measureText(e.target.value, font)
 
                     const textItem: Text = {
                         ...current.text,
@@ -636,7 +644,11 @@ export default function Canvas() {
                 value={text}
                 onChange={(e) => {
                     const textLines = e.currentTarget.value.split("\n")
-                    const metr = measureText(e.target.value, current.text.fontSize, current.text.fontFamily)
+                    const bold = current.text.textBold ? "bold" : ""
+                    const size = current.text.fontSize
+                    const fam = current.text.fontFamily
+                    const font = `${bold} ${size}px ${fam}`
+                    const metr = measureText(e.target.value, font)
                     e.currentTarget.style.width = "1px";
                     e.currentTarget.style.width = metr.w + current.text.fontSize - (current.text.fontSize / 2) + "px"
                     e.currentTarget.style.maxWidth = "100%";

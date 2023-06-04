@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
 import { flipItemsX, flipItemsY, getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
-import type { ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth } from "../types"
+import type { ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth, Text } from "../types"
 import { CircleHeadSVG, HeadArrowSVG, LineSVG, NoneSVG, TriangleSVG } from "./svgs"
 import history from "../lib/history"
 
@@ -18,6 +18,7 @@ export function TextOptions() {
     return (
         <>
             <FontSize />
+            <TextStyles />
             <FontFamily />
             <TextAlign />
         </>
@@ -256,12 +257,14 @@ function FontSize() {
         if (selectedItem) {
             const item = getSelectedItem(selectedItem.id, items)
             if (item && item.type === "text") {
-                let c = document.getElementById("canvas") as HTMLCanvasElement
-                let ctx = c.getContext('2d')!;
-                ctx.font = `${v}px ${item.fontFamily}`
+                const bold = item.textBold ? "bold" : ""
+                const size = v
+                const font = `${bold} ${size}px ${item.fontFamily}`
+                const metr = measureText(item.text, font)
+                const lines = item.text.split("\n").length
                 item.fontSize = v
-                item.width = ctx.measureText(item.text).width
-                item.height = item.text.split("\n").length * v
+                item.width = metr.w
+                item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize)
                 setItems(updateSingleItem(selectedItem.id, item, items))
             }
         }
@@ -281,10 +284,6 @@ function FontSize() {
                 <OptionContainer selected={String(mainState.fontSize)} value="30" onClick={changeFontSize}>
                     <span>L</span>
                 </OptionContainer>
-                <OptionContainer selected={String(mainState.fontSize)} value="48" onClick={changeFontSize}>
-                    <span>XL</span>
-                </OptionContainer>
-
             </div>
         </fieldset>
     )
@@ -299,13 +298,13 @@ function FontFamily() {
         if (selectedItem) {
             const item = getSelectedItem(selectedItem.id, items)
             if (item && item.type === "text") {
-                let c = document.getElementById("canvas") as HTMLCanvasElement
-                let ctx = c.getContext('2d')!;
-                const metr = measureText(item.text, item.fontSize, val)
+                const bold = item.textBold ? "bold" : ""
+                const size = item.fontSize
+                const font = `${bold} ${size}px ${val}`
+                const metr = measureText(item.text, font)
                 const lines = item.text.split("\n").length
                 item.width = metr.w
                 item.height = lines * metr.h * 0.6 + ((lines - 1) * item.fontSize)
-                ctx.font = `${item.fontSize}px ${val}`
                 item.fontFamily = val
                 setItems(updateSingleItem(selectedItem.id, item, items))
             }
@@ -339,6 +338,69 @@ function FontFamily() {
                 </OptionContainer>
             </div>
         </fieldset >
+    )
+}
+
+function TextStyles() {
+    const [mainState, setMainState] = useAtom(AppState)
+    const [items, setItems] = useAtom(AppDrawings)
+    const [selectedItem] = useAtom(SelectionAtom)
+
+    function handleStyle(style: Extract<keyof Text, "textBold" | "textItalic" | "textUnderline" | "textStrikethrough">) {
+        if (selectedItem) {
+            const item = getSelectedItem(selectedItem.id, items)
+            console.log(item)
+            if (item && item.type === "text") {
+                item[style] = !item[style]
+                setItems(updateSingleItem(selectedItem.id, item, items))
+            }
+        }
+        const nw = { ...mainState }
+        nw[style] = !nw[style]
+        setMainState(nw)
+    }
+
+    return (
+        <fieldset className="flex flex-col gap-2">
+            <legend className="text-sm text-[var(--accents-5)] mb-1">Text Formating</legend>
+            <div className="flex flex-wrap gap-3">
+                <OptionContainer selected={mainState.textBold ? "bold" : ""} value="bold" onClick={() => handleStyle("textBold")}>
+                    <svg viewBox="0 0 24 24" height="18px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd"
+                            clip-rule="evenodd" d="M14.3333 2.5H6.5C5.94772 2.5 5.5 2.94771 5.5 3.5V20.5C5.5 21.0523 5.94772 21.5 6.5 21.5H15.3077C16.7253 21.5 18.058 20.8888 19.0208 19.8458C19.9798 18.8069 20.5 17.4217 20.5 16C20.5 14.5783 19.9798 13.1931 19.0208 12.1542C18.802 11.9172 18.5642 11.7025 18.3106 11.5122C19.0848 10.5188 19.5 9.27337 19.5 8C19.5 6.58139 18.9846 5.19744 18.0318 4.15799C17.0749 3.11416 15.7478 2.5 14.3333 2.5ZM14.3333 10.5C14.8638 10.5 15.4019 10.2713 15.8203 9.81484C16.2428 9.35401 16.5 8.70312 16.5 8C16.5 7.29688 16.2428 6.64599 15.8203 6.18516C15.4019 5.7287 14.8638 5.5 14.3333 5.5H8.5V10.5H14.3333ZM8.5 13.5V18.5H15.3077C15.8486 18.5 16.3942 18.2683 16.8163 17.811C17.2422 17.3497 17.5 16.7001 17.5 16C17.5 15.2999 17.2422 14.6503 16.8163 14.189C16.3942 13.7317 15.8486 13.5 15.3077 13.5H8.5Z" fill="currentColor">
+                        </path>
+                        </g>
+                    </svg>
+                </OptionContainer>
+                <OptionContainer selected={mainState.textItalic ? "italic" : ""} value="italic" onClick={() => handleStyle("textItalic")}>
+                    <svg viewBox="0 0 24 24" height="18px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier"> <path d="M9.62012 3H18.8701" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M5.12012 21H14.3701" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M14.25 3L9.75 21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                    </svg>
+                </OptionContainer>
+
+                <OptionContainer selected={mainState.textUnderline ? "underline" : ""} value="underline" onClick={() => handleStyle("textUnderline")}>
+                    <svg viewBox="0 0 24 24" height="18px" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier"> <path d="M5 21H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M5 3V10C5 13.87 8.13 17 12 17C15.87 17 19 13.87 19 10V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </g>
+                    </svg>
+                </OptionContainer>
+                <OptionContainer selected={mainState.textStrikethrough ? "strike" : ""} value="strike" onClick={() => handleStyle("textStrikethrough")}>
+                    <svg viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>Text-Strikethrough</title>
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g id="Text-Strikethrough"> <rect id="Rectangle" fill-rule="nonzero" x="0" y="0" width="24" height="24"> </rect>
+                                <path d="M18,6 L18,13 C18,16.3137 15.3137,19 12,19 L12,19 C8.68629,19 6,16.3137 6,13 L6,6" id="Path" stroke="currentColor" stroke-width="2" stroke-linecap="round"> </path>
+                                <line x1="20" y1="13" x2="4" y2="13" id="Path" stroke="currentColor" stroke-width="2" stroke-linecap="round"> </line> </g>
+                            </g>
+                        </g>
+                    </svg>
+                </OptionContainer>
+            </div>
+        </fieldset>
     )
 }
 

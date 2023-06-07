@@ -27,7 +27,7 @@ export default function Canvas() {
     const [panStart, setPanStart] = useState<{ x: number, y: number } | null>(null);
     const [selection, setSelection] = useState<{ x: number, y: number, w: number, h: number } | null>(null)
     const [multipleSelectionBounds, setMultipleSelectionBounds] = useState<MultipleSelection | null>(null)
-    const stateRef = useRef<{ selectedItems: string[], multiMove: boolean, multiMoved: boolean }>({ multiMove: false, multiMoved: false, selectedItems: [] })
+    const stateRef = useRef<{ selectedItems: string[], multiMove: boolean, multiMoved: boolean, typing: boolean }>({ multiMove: false, multiMoved: false, selectedItems: [], typing: false })
     const [selectedItem] = useAtom(SelectionAtom)
     const [cursor, setCursor] = useState<Cursor>(Cursor.Auto);
     const [text, setText] = useState("")
@@ -452,6 +452,48 @@ export default function Canvas() {
     }
 
     useEffect(() => {
+        document.addEventListener('keyup', handleKeyDown);
+
+        return () => {
+            document.removeEventListener('keyup', handleKeyDown);
+        }
+    }, []);
+
+    function handleKeyDown(e: any) {
+        if (stateRef.current.typing) return
+        switch (e.key) {
+            case "l":
+                updateMainState({ ...mainState, tool: "line" })
+                break;
+            case "a":
+                updateMainState({ ...mainState, tool: "arrow" })
+                break;
+            case "r":
+                updateMainState({ ...mainState, tool: "rectangle" })
+                break;
+            case "t":
+                updateMainState({ ...mainState, tool: "text" })
+                break;
+            case "e":
+                updateMainState({ ...mainState, tool: "ellipse" })
+                break;
+            case "d":
+                updateMainState({ ...mainState, tool: "diamond" })
+                break;
+            case "s":
+                updateMainState({ ...mainState, tool: "select" })
+                break;
+            case "m":
+                updateMainState({ ...mainState, tool: "move" })
+                break;
+            default:
+                break;
+        }
+    }
+
+
+
+    useEffect(() => {
         let c = document.getElementById("canvas") as HTMLCanvasElement
         let ctx = c.getContext('2d')!;
 
@@ -609,6 +651,7 @@ export default function Canvas() {
             {(mainState.tool === "text" && current.text.x !== 0) ? <textarea
                 className="absolute outline-0 overflow-hidden"
                 onBlur={(e) => {
+                    stateRef.current.typing = false
                     if (e.target.value.trim() === "") {
                         setCurrent(intialStates)
                         updateMainState({ ...mainState, tool: "select", selectedItemID: "" })
@@ -649,6 +692,7 @@ export default function Canvas() {
                     const fam = current.text.fontFamily
                     const font = `${bold} ${size}px ${fam}`
                     const metr = measureText(e.target.value, font)
+                    stateRef.current.typing = true
                     e.currentTarget.style.width = "1px";
                     e.currentTarget.style.width = metr.w + current.text.fontSize - (current.text.fontSize / 2) + "px"
                     e.currentTarget.style.maxWidth = "100%";

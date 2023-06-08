@@ -489,6 +489,28 @@ export default function Canvas() {
             default:
                 break;
         }
+        if (e.ctrlKey && e.key === "d") {
+            if (selectedItem) {
+                let ind = items.findIndex((v) => v.id === selectedItem.id)
+                if (ind < 0) {
+                    return
+                }
+                let dup = { ...items[ind] }
+                dup.x += 5
+                dup.y += 5
+                dup.id = getRandomID()
+                if (dup.type === "arrow" || dup.type === "line") {
+                    dup.points = dup.points.map(p => {
+                        return {
+                            ...p
+                        }
+                    })
+                }
+
+                let updatedItems = [...items.slice(0, ind + 1), dup, ...items.slice(ind + 1)]
+                setItems(updatedItems)
+            }
+        }
     }
 
 

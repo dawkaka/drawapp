@@ -452,67 +452,73 @@ export default function Canvas() {
     }
 
     useEffect(() => {
-        document.addEventListener('keyup', handleKeyDown);
+
+        function handleKeyDown(e: any) {
+            if (stateRef.current.typing) return
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                e.stopPropagation();
+                if (selectedItem) {
+                    console.log("here");
+                    let ind = items.findIndex((v) => v.id === selectedItem.id);
+                    if (ind < 0) {
+                        return;
+                    }
+                    let dup = { ...items[ind] };
+                    dup.x += 5;
+                    dup.y += 5;
+                    const id = getRandomID();
+                    dup.id = id;
+                    if (dup.type === "arrow" || dup.type === "line") {
+                        dup.points = dup.points.map((p) => {
+                            return { ...p };
+                        });
+                    }
+                    let updatedItems = [...items, dup];
+                    updateMainState({ ...mainState, selectedItemID: id });
+                    setItems(updatedItems);
+                    updateAppStateFromSelectedItem(updateMainState, mainState, dup);
+                }
+            }
+
+            switch (e.key) {
+                case "l":
+                    updateMainState({ ...mainState, tool: "line" })
+                    break;
+                case "a":
+                    updateMainState({ ...mainState, tool: "arrow" })
+                    break;
+                case "r":
+                    updateMainState({ ...mainState, tool: "rectangle" })
+                    break;
+                case "t":
+                    updateMainState({ ...mainState, tool: "text" })
+                    break;
+                case "e":
+                    updateMainState({ ...mainState, tool: "ellipse" })
+                    break;
+                case "d":
+                    updateMainState({ ...mainState, tool: "diamond" })
+                    break;
+                case "s":
+                    updateMainState({ ...mainState, tool: "select" })
+                    break;
+                case "m":
+                    updateMainState({ ...mainState, tool: "move" })
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        document.addEventListener('keydown', handleKeyDown);
 
         return () => {
-            document.removeEventListener('keyup', handleKeyDown);
+            document.removeEventListener('keydown', handleKeyDown);
         }
     }, []);
 
-    function handleKeyDown(e: any) {
-        if (stateRef.current.typing) return
-        switch (e.key) {
-            case "l":
-                updateMainState({ ...mainState, tool: "line" })
-                break;
-            case "a":
-                updateMainState({ ...mainState, tool: "arrow" })
-                break;
-            case "r":
-                updateMainState({ ...mainState, tool: "rectangle" })
-                break;
-            case "t":
-                updateMainState({ ...mainState, tool: "text" })
-                break;
-            case "e":
-                updateMainState({ ...mainState, tool: "ellipse" })
-                break;
-            case "d":
-                updateMainState({ ...mainState, tool: "diamond" })
-                break;
-            case "s":
-                updateMainState({ ...mainState, tool: "select" })
-                break;
-            case "m":
-                updateMainState({ ...mainState, tool: "move" })
-                break;
-            default:
-                break;
-        }
-        if (e.ctrlKey && e.key === "d") {
-            console.log("here")
-            if (selectedItem) {
-                let ind = items.findIndex((v) => v.id === selectedItem.id)
-                if (ind < 0) {
-                    return
-                }
-                let dup = { ...items[ind] }
-                dup.x += 5
-                dup.y += 5
-                dup.id = getRandomID()
-                if (dup.type === "arrow" || dup.type === "line") {
-                    dup.points = dup.points.map(p => {
-                        return {
-                            ...p
-                        }
-                    })
-                }
 
-                let updatedItems = [...items.slice(0, ind + 1), dup, ...items.slice(ind + 1)]
-                setItems(updatedItems);
-            }
-        }
-    }
 
 
 

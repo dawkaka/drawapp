@@ -490,6 +490,7 @@ export default function Canvas() {
                 break;
         }
         if (e.ctrlKey && e.key === "d") {
+            console.log("here")
             if (selectedItem) {
                 let ind = items.findIndex((v) => v.id === selectedItem.id)
                 if (ind < 0) {
@@ -508,7 +509,7 @@ export default function Canvas() {
                 }
 
                 let updatedItems = [...items.slice(0, ind + 1), dup, ...items.slice(ind + 1)]
-                setItems(updatedItems)
+                setItems(updatedItems);
             }
         }
     }

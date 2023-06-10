@@ -453,34 +453,7 @@ export default function Canvas() {
 
     useEffect(() => {
 
-        function handleKeyDown(e: any) {
-            if (stateRef.current.typing) return
-            if (e.ctrlKey && e.key === 'd') {
-                e.preventDefault();
-                e.stopPropagation();
-                if (selectedItem) {
-                    console.log("here");
-                    let ind = items.findIndex((v) => v.id === selectedItem.id);
-                    if (ind < 0) {
-                        return;
-                    }
-                    let dup = { ...items[ind] };
-                    dup.x += 5;
-                    dup.y += 5;
-                    const id = getRandomID();
-                    dup.id = id;
-                    if (dup.type === "arrow" || dup.type === "line") {
-                        dup.points = dup.points.map((p) => {
-                            return { ...p };
-                        });
-                    }
-                    let updatedItems = [...items, dup];
-                    updateMainState({ ...mainState, selectedItemID: id });
-                    setItems(updatedItems);
-                    updateAppStateFromSelectedItem(updateMainState, mainState, dup);
-                }
-            }
-
+        function handleKeyDown(e: KeyboardEvent) {
             switch (e.key) {
                 case "l":
                     updateMainState({ ...mainState, tool: "line" })
@@ -498,7 +471,7 @@ export default function Canvas() {
                     updateMainState({ ...mainState, tool: "ellipse" })
                     break;
                 case "d":
-                    updateMainState({ ...mainState, tool: "diamond" })
+                    if (!e.ctrlKey) updateMainState({ ...mainState, tool: "diamond" })
                     break;
                 case "s":
                     updateMainState({ ...mainState, tool: "select" })
@@ -729,7 +702,9 @@ export default function Canvas() {
                     e.currentTarget.style.maxHeight = "100%";
                     setText(e.target.value)
                 }}
-
+                onKeyDown={(e) => {
+                    e.stopPropagation()
+                }}
                 autoComplete="off"
                 autoCorrect="off"
                 autoFocus={current.text.x >= 0 && current.text.y >= 0}

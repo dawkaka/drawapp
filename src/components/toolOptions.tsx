@@ -1,9 +1,10 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { flipItemsX, flipItemsY, getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
+import { flipItemsX, flipItemsY, getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateAppStateFromSelectedItem, updateSingleItem } from "../lib/utils"
 import type { ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth, Text } from "../types"
 import { CircleHeadSVG, HeadArrowSVG, LineSVG, NoneSVG, TriangleSVG } from "./svgs"
 import history from "../lib/history"
+import { useEffect } from "react"
 
 export function FillToolsOptions() {
     return (
@@ -508,7 +509,7 @@ export function Actions() {
     const [appState, setAppState] = useAtom(AppState)
 
 
-    function handleCopy(val: string) {
+    function handleCopy() {
         if (selectedItem) {
             let ind = items.findIndex((v) => v.id === selectedItem.id)
             if (ind < 0) {
@@ -537,8 +538,11 @@ export function Actions() {
             })
             let bounds = getMultipleSelectionBounds(appState.multipleSelections, items)
             let ofsset = Math.min(bounds.height, bounds.width)
+            const newIDs: string[] = []
             copArray.forEach(item => {
-                item.id = getRandomID()
+                const id = getRandomID()
+                item.id = id
+                newIDs.push(id)
                 item.x += ofsset
                 item.y += ofsset
                 if (item.type === "arrow" || item.type === "line") {
@@ -551,6 +555,7 @@ export function Actions() {
 
             })
             setItems([...items, ...copArray])
+            setAppState({ ...appState, multipleSelections: newIDs })
         }
     }
     function undo() {
@@ -558,6 +563,33 @@ export function Actions() {
         setItems(itm)
         localStorage.setItem("canvasItems", JSON.stringify(itm))
     }
+
+
+    useEffect(() => {
+
+        document.addEventListener('keydown', actionShortCuts);
+
+        return () => {
+            document.removeEventListener('keydown', actionShortCuts);
+        }
+    }, [selectedItem, appState.multipleSelections])
+
+    function actionShortCuts(e: KeyboardEvent) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.ctrlKey && e.key === 'd') {
+            if (selectedItem || appState.multipleSelections.length > 0) {
+                handleCopy()
+            }
+        }
+        if (e.ctrlKey && e.key === 'z') {
+            undo()
+        }
+        if (e.ctrlKey && e.key === 'y') {
+            redo()
+        }
+    }
+
 
     function redo() {
         let itm = history.redo()

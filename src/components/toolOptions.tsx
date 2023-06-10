@@ -575,6 +575,7 @@ export function Actions() {
     }, [selectedItem, appState.multipleSelections])
 
     function actionShortCuts(e: KeyboardEvent) {
+        console.log(e)
         e.preventDefault();
         e.stopPropagation();
         if (e.ctrlKey && e.key === 'd') {
@@ -585,8 +586,22 @@ export function Actions() {
         if (e.ctrlKey && e.key === 'z') {
             undo()
         }
+
         if (e.ctrlKey && e.key === 'y') {
             redo()
+        }
+
+        if (e.ctrlKey && e.shiftKey && (e.key === 'F' || e.key === "f")) {
+            flipX()
+            flipY()
+        }
+
+        if (e.ctrlKey && e.shiftKey && (e.key === 'X' || e.key === "x")) {
+            flipX()
+        }
+
+        if (e.ctrlKey && e.shiftKey && (e.key === 'Y' || e.key === "y")) {
+            flipY()
         }
     }
 

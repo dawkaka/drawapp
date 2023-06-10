@@ -572,10 +572,9 @@ export function Actions() {
         return () => {
             document.removeEventListener('keydown', actionShortCuts);
         }
-    }, [selectedItem, appState.multipleSelections])
+    }, [selectedItem, appState.multipleSelections, items])
 
     function actionShortCuts(e: KeyboardEvent) {
-        console.log(e)
         e.preventDefault();
         e.stopPropagation();
         if (e.ctrlKey && e.key === 'd') {
@@ -696,6 +695,8 @@ export function Layers() {
     const selected = ""
     const [items, setItems] = useAtom(AppDrawings)
     const [selectedItem] = useAtom(SelectionAtom)
+    const [appState, setAppState] = useAtom(AppState)
+
 
     function handleSelect(val: string) {
         if (selectedItem) {
@@ -703,6 +704,42 @@ export function Layers() {
             setItems(updatedItemLayer)
         }
     }
+
+
+    useEffect(() => {
+
+        document.addEventListener('keydown', LayersShortCuts);
+
+        return () => {
+            document.removeEventListener('keydown', LayersShortCuts);
+        }
+    }, [selectedItem])
+
+    function LayersShortCuts(e: KeyboardEvent) {
+        e.preventDefault();
+        if (selectedItem) {
+            if (e.ctrlKey && e.key === ']') {
+                const updatedItemLayer = moveItemPosition("step-forward", selectedItem, items)
+                setItems(updatedItemLayer)
+            }
+
+            if (e.ctrlKey && e.shiftKey && e.key === '}') {
+                const updatedItemLayer = moveItemPosition("to-front", selectedItem, items)
+                setItems(updatedItemLayer)
+            }
+
+            if (e.ctrlKey && e.key === '[') {
+                const updatedItemLayer = moveItemPosition("step-backward", selectedItem, items)
+                setItems(updatedItemLayer)
+            }
+
+            if (e.ctrlKey && e.shiftKey && e.key === '{') {
+                const updatedItemLayer = moveItemPosition("to-back", selectedItem, items)
+                setItems(updatedItemLayer)
+            }
+        }
+    }
+
 
     return (
         <fieldset className="flex flex-col gap-2">

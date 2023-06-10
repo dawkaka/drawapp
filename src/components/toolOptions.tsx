@@ -575,32 +575,41 @@ export function Actions() {
     }, [selectedItem, appState.multipleSelections, items])
 
     function actionShortCuts(e: KeyboardEvent) {
-        e.preventDefault();
-        e.stopPropagation();
+        let isShortcut = false
         if (e.ctrlKey && e.key === 'd') {
             if (selectedItem || appState.multipleSelections.length > 0) {
                 handleCopy()
             }
+            isShortcut = true
         }
         if (e.ctrlKey && e.key === 'z') {
             undo()
-        }
+            isShortcut = true
 
+        }
         if (e.ctrlKey && e.key === 'y') {
             redo()
+            isShortcut = true
         }
 
         if (e.ctrlKey && e.shiftKey && (e.key === 'F' || e.key === "f")) {
             flipX()
             flipY()
+            isShortcut = true
         }
 
         if (e.ctrlKey && e.shiftKey && (e.key === 'X' || e.key === "x")) {
             flipX()
+            isShortcut = true
         }
 
         if (e.ctrlKey && e.shiftKey && (e.key === 'Y' || e.key === "y")) {
             flipY()
+            isShortcut = true
+        }
+        if (isShortcut) {
+            e.preventDefault();
+            e.stopPropagation();
         }
     }
 
@@ -695,7 +704,6 @@ export function Layers() {
     const selected = ""
     const [items, setItems] = useAtom(AppDrawings)
     const [selectedItem] = useAtom(SelectionAtom)
-    const [appState, setAppState] = useAtom(AppState)
 
 
     function handleSelect(val: string) {
@@ -716,26 +724,35 @@ export function Layers() {
     }, [selectedItem])
 
     function LayersShortCuts(e: KeyboardEvent) {
-        e.preventDefault();
         if (selectedItem) {
+            let isShortcut = false
             if (e.ctrlKey && e.key === ']') {
                 const updatedItemLayer = moveItemPosition("step-forward", selectedItem, items)
                 setItems(updatedItemLayer)
+                isShortcut = true
             }
 
             if (e.ctrlKey && e.shiftKey && e.key === '}') {
                 const updatedItemLayer = moveItemPosition("to-front", selectedItem, items)
                 setItems(updatedItemLayer)
+                isShortcut = true
             }
 
             if (e.ctrlKey && e.key === '[') {
                 const updatedItemLayer = moveItemPosition("step-backward", selectedItem, items)
                 setItems(updatedItemLayer)
+                isShortcut = true
             }
 
             if (e.ctrlKey && e.shiftKey && e.key === '{') {
                 const updatedItemLayer = moveItemPosition("to-back", selectedItem, items)
                 setItems(updatedItemLayer)
+                isShortcut = true
+            }
+
+            if (isShortcut) {
+                e.preventDefault();
+                e.stopPropagation();
             }
         }
     }

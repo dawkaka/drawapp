@@ -1,9 +1,10 @@
 import { useAtom } from "jotai"
 import { AppState, AppDrawings, SelectionAtom } from "../jotai"
-import { flipItemsX, flipItemsY, getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateSingleItem } from "../lib/utils"
+import { flipItemsX, flipItemsY, getMultipleSelectionBounds, getRandomID, getSelectedItem, measureText, moveItemPosition, updateAppStateFromSelectedItem, updateSingleItem } from "../lib/utils"
 import type { ArrowHead, CanvasItem, LayerMoves, Stroke, StrokeWidth, Text } from "../types"
 import { CircleHeadSVG, HeadArrowSVG, LineSVG, NoneSVG, TriangleSVG } from "./svgs"
 import history from "../lib/history"
+import { useEffect } from "react"
 
 export function FillToolsOptions() {
     return (
@@ -508,7 +509,7 @@ export function Actions() {
     const [appState, setAppState] = useAtom(AppState)
 
 
-    function handleCopy(val: string) {
+    function handleCopy() {
         if (selectedItem) {
             let ind = items.findIndex((v) => v.id === selectedItem.id)
             if (ind < 0) {
@@ -537,8 +538,11 @@ export function Actions() {
             })
             let bounds = getMultipleSelectionBounds(appState.multipleSelections, items)
             let ofsset = Math.min(bounds.height, bounds.width)
+            const newIDs: string[] = []
             copArray.forEach(item => {
-                item.id = getRandomID()
+                const id = getRandomID()
+                item.id = id
+                newIDs.push(id)
                 item.x += ofsset
                 item.y += ofsset
                 if (item.type === "arrow" || item.type === "line") {
@@ -551,6 +555,7 @@ export function Actions() {
 
             })
             setItems([...items, ...copArray])
+            setAppState({ ...appState, multipleSelections: newIDs })
         }
     }
     function undo() {
@@ -558,6 +563,56 @@ export function Actions() {
         setItems(itm)
         localStorage.setItem("canvasItems", JSON.stringify(itm))
     }
+
+
+    useEffect(() => {
+
+        document.addEventListener('keydown', actionShortCuts);
+
+        return () => {
+            document.removeEventListener('keydown', actionShortCuts);
+        }
+    }, [selectedItem, appState.multipleSelections, items])
+
+    function actionShortCuts(e: KeyboardEvent) {
+        let isShortcut = false
+        if (e.ctrlKey && e.key === 'd') {
+            if (selectedItem || appState.multipleSelections.length > 0) {
+                handleCopy()
+            }
+            isShortcut = true
+        }
+        if (e.ctrlKey && e.key === 'z') {
+            undo()
+            isShortcut = true
+
+        }
+        if (e.ctrlKey && e.key === 'y') {
+            redo()
+            isShortcut = true
+        }
+
+        if (e.ctrlKey && e.shiftKey && (e.key === 'F' || e.key === "f")) {
+            flipX()
+            flipY()
+            isShortcut = true
+        }
+
+        if (e.ctrlKey && e.shiftKey && (e.key === 'X' || e.key === "x")) {
+            flipX()
+            isShortcut = true
+        }
+
+        if (e.ctrlKey && e.shiftKey && (e.key === 'Y' || e.key === "y")) {
+            flipY()
+            isShortcut = true
+        }
+        if (isShortcut) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+
 
     function redo() {
         let itm = history.redo()
@@ -650,12 +705,58 @@ export function Layers() {
     const [items, setItems] = useAtom(AppDrawings)
     const [selectedItem] = useAtom(SelectionAtom)
 
+
     function handleSelect(val: string) {
         if (selectedItem) {
             const updatedItemLayer = moveItemPosition(val as LayerMoves, selectedItem, items)
             setItems(updatedItemLayer)
         }
     }
+
+
+    useEffect(() => {
+
+        document.addEventListener('keydown', LayersShortCuts);
+
+        return () => {
+            document.removeEventListener('keydown', LayersShortCuts);
+        }
+    }, [selectedItem])
+
+    function LayersShortCuts(e: KeyboardEvent) {
+        if (selectedItem) {
+            let isShortcut = false
+            if (e.ctrlKey && e.key === ']') {
+                const updatedItemLayer = moveItemPosition("step-forward", selectedItem, items)
+                setItems(updatedItemLayer)
+                isShortcut = true
+            }
+
+            if (e.ctrlKey && e.shiftKey && e.key === '}') {
+                const updatedItemLayer = moveItemPosition("to-front", selectedItem, items)
+                setItems(updatedItemLayer)
+                isShortcut = true
+            }
+
+            if (e.ctrlKey && e.key === '[') {
+                const updatedItemLayer = moveItemPosition("step-backward", selectedItem, items)
+                setItems(updatedItemLayer)
+                isShortcut = true
+            }
+
+            if (e.ctrlKey && e.shiftKey && e.key === '{') {
+                const updatedItemLayer = moveItemPosition("to-back", selectedItem, items)
+                setItems(updatedItemLayer)
+                isShortcut = true
+            }
+
+            if (isShortcut) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+    }
+
 
     return (
         <fieldset className="flex flex-col gap-2">

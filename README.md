@@ -29,6 +29,8 @@ A canvas drawing app for the web!
 
 🔙 Undo / Redo.
 
+⌨️ Keyboard shortcuts
+
 ## Installation
 
 To install and run the project, follow these steps:

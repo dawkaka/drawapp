@@ -17,7 +17,7 @@ A canvas drawing app for the web!
 
 🌙 Dark mode.
 
-🔍 Zoom? and panning support.
+🔍 Panning support.
 
 📷 Image support.
 

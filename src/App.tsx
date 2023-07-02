@@ -1,23 +1,23 @@
-import { useEffect } from 'react'
-import { Provider } from "jotai"
-import './App.css'
-import Side from "./components/side"
-import Canvas from "./components/board"
+import { useEffect } from 'react';
+import { Provider } from 'jotai';
+import './App.css';
+import Side from './components/side';
+import Canvas from './components/board';
 
 function App() {
   useEffect(() => {
-    const t = localStorage.getItem("theme")
+    const t = localStorage.getItem('theme');
     if (t) {
-      const root = document.querySelector("#root")!
-      if (t === "dark") {
-        root.className = "dark"
-        document.documentElement.style.colorScheme = "dark"
+      const root = document.querySelector('#root')!;
+      if (t === 'dark') {
+        root.className = 'dark';
+        document.documentElement.style.colorScheme = 'dark';
       } else {
-        root.className = "light"
-        document.documentElement.style.colorScheme = "light"
+        root.className = 'light';
+        document.documentElement.style.colorScheme = 'light';
       }
     }
-  }, [])
+  }, []);
 
   return (
     <Provider>
@@ -26,7 +26,7 @@ function App() {
         <Canvas />
       </div>
     </Provider>
-  )
+  );
 }
 
-export default App
+export default App;

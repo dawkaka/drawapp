@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16"
+   height="16"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (1:1.2.2+202305151914+b0a8486541)"
+   sodipodi:docname="pencilLogo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="4"
+     inkscape:cx="1"
+     inkscape:cy="-16.875"
+     inkscape:window-width="2560"
+     inkscape:window-height="1016"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g4235">
+    <inkscape:grid
+       type="xygrid"
+       id="grid132"
+       empspacing="4" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g4235">
+      <path
+         id="path810"
+         style="fill:#feffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;fill-opacity:1"
+         d="M 13,3 C 11,1 10.757813,0.48437496 8,3 l -7.00000004,7 v 5 H 6 l 7,-7 c 2.515626,-2.7578126 2,-3 0,-5 z"
+         sodipodi:nodetypes="scccccs" />
+      <path
+         style="fill:#feffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;fill-opacity:1"
+         d="M 6,12 10,8"
+         id="path814"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:#feffff;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;fill-opacity:1"
+         d="M 4,10 8,6"
+         id="path816"
+         sodipodi:nodetypes="cc" />
+      <path
+         style="fill:#feffff;stroke:#000000;stroke-linecap:butt;stroke-linejoin:round;fill-opacity:1"
+         d="m 1,10 5,5"
+         id="path5451" />
+      <path
+         style="fill:#feffff;stroke:#000000;stroke-linecap:butt;stroke-linejoin:round;fill-opacity:1"
+         d="m 8,3 5,5"
+         id="path5453"
+         sodipodi:nodetypes="cc" />
+    </g>
+  </g>
+</svg>

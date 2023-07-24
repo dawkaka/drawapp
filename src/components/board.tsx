@@ -30,6 +30,7 @@ import {
   resizeSelected,
   simplifyPath,
   updateAppStateFromSelectedItem,
+  updateSingleItem,
 } from '../lib/utils';
 import { CurrentState, MultipleSelection, Point, Text } from '../types';
 import History from '../lib/history';
@@ -47,6 +48,8 @@ export default function Canvas() {
     startRectY: 0,
     moveStart: false,
     moved: false,
+    editText: false,
+    textId: '',
   });
   const [mainState, updateMainState] = useAtom(AppState);
   const [items, setItems] = useAtom(AppDrawings);
@@ -809,6 +812,27 @@ export default function Canvas() {
     let y = event.pageY;
     let px = event.pageX + -1 * cameraOffset.x;
     let py = event.pageY + -1 * cameraOffset.y;
+    let item = getSelectedItem(getItemEnclosingPoint(px, py, items), items);
+
+    if (item && item.type === 'text') {
+      updateMainState({ ...mainState, tool: 'text', selectedItemID: '' });
+      setText(item.text);
+      setState({
+        ...state,
+        editText: true,
+        textId: item.id,
+      });
+      setCurrent({
+        ...current,
+        text: {
+          ...item,
+          x: item.x + 1 * cameraOffset.x,
+          y: item.y + 1 * cameraOffset.y,
+        },
+      });
+      setItems(updateSingleItem(item.id, { ...item, text: '' }, items));
+      return;
+    }
     updateMainState({ ...mainState, tool: 'text' });
     setState({
       ...state,
@@ -851,7 +875,8 @@ export default function Canvas() {
               return;
             }
             const target = e.target as HTMLTextAreaElement;
-            const itemID = getRandomID();
+            const itemID = state.editText ? state.textId : getRandomID();
+            console.log(itemID);
             const textLines = target.value.split('\n');
             const bold = current.text.textBold ? 'bold' : '';
             const size = current.text.fontSize;
@@ -871,11 +896,20 @@ export default function Canvas() {
                 ((textLines.length - 1) * current.text.fontSize) / 2,
             };
             setText('');
+            if (state.editText) {
+              setItems(updateSingleItem(itemID, textItem, items));
+            } else {
+              setItems([...items, textItem]);
+            }
             setCurrent((prevState) => ({
               ...prevState,
               text: textItem,
             }));
-            setItems([...items, textItem]);
+            setState({
+              ...state,
+              editText: false,
+              textId: '',
+            });
             setCurrent(intialStates);
             updateMainState({
               ...mainState,

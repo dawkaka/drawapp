@@ -815,7 +815,6 @@ export default function Canvas() {
     let item = getSelectedItem(getItemEnclosingPoint(px, py, items), items);
 
     if (item && item.type === 'text') {
-      updateMainState({ ...mainState, tool: 'text', selectedItemID: '' });
       setText(item.text);
       setState({
         ...state,
@@ -830,6 +829,7 @@ export default function Canvas() {
           y: item.y + 1 * cameraOffset.y,
         },
       });
+      updateMainState({ ...mainState, tool: 'text' });
       setItems(updateSingleItem(item.id, { ...item, text: '' }, items));
       return;
     }
@@ -865,7 +865,7 @@ export default function Canvas() {
           className="absolute outline-0 overflow-hidden"
           onBlur={(e) => {
             stateRef.current.typing = false;
-            if (e.target.value.trim() === '') {
+            if (text.trim() === '') {
               setCurrent(intialStates);
               updateMainState({
                 ...mainState,
@@ -875,15 +875,13 @@ export default function Canvas() {
               return;
             }
             const target = e.target as HTMLTextAreaElement;
-            const itemID = state.editText ? state.textId : getRandomID();
-            console.log(itemID);
+            const itemID = getRandomID();
             const textLines = target.value.split('\n');
             const bold = current.text.textBold ? 'bold' : '';
             const size = current.text.fontSize;
             const fam = current.text.fontFamily;
             const font = `${bold} ${size}px ${fam}`;
             const metr = measureText(e.target.value, font);
-
             const textItem: Text = {
               ...current.text,
               x: current.text.x + -1 * cameraOffset.x,
@@ -895,8 +893,9 @@ export default function Canvas() {
                 textLines.length * metr.h * 0.6 +
                 ((textLines.length - 1) * current.text.fontSize) / 2,
             };
-            setText('');
             if (state.editText) {
+              const itemID = state.textId;
+              textItem.id = itemID;
               setItems(updateSingleItem(itemID, textItem, items));
             } else {
               setItems([...items, textItem]);
@@ -905,6 +904,7 @@ export default function Canvas() {
               ...prevState,
               text: textItem,
             }));
+            setText('');
             setState({
               ...state,
               editText: false,
@@ -948,7 +948,17 @@ export default function Canvas() {
             border: '1px solid var(--p-dark)',
             backgroundColor: 'transparent',
             scrollbarWidth: 'none',
-            width: current.text.fontSize,
+            width:
+              text.length > 0
+                ? measureText(
+                    text,
+                    `${current.text.textBold ? 'bold' : ''} ${
+                      current.text.fontSize
+                    }px ${current.text.fontFamily}`
+                  ).w +
+                  current.text.fontSize -
+                  current.text.fontSize / 2
+                : current.text.fontSize,
             resize: 'none',
             top: current.text.y + 3 - current.text.fontSize / 2,
             left: current.text.x,

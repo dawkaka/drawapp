@@ -710,8 +710,24 @@ export default function Canvas() {
     ) {
       itemID = current[mainState.tool].id;
       if (itemID) {
-        setItems([...items, current[mainState.tool]]);
-        History.addHistory([...items, current[mainState.tool]]);
+        if (mainState.tool === 'text' && state.editText) {
+          setItems(
+            updateSingleItem(
+              current[mainState.tool].id,
+              current[mainState.tool],
+              items
+            )
+          );
+          setText('');
+          setState({
+            ...state,
+            editText: false,
+            textId: '',
+          });
+        } else {
+          setItems([...items, current[mainState.tool]]);
+          History.addHistory([...items, current[mainState.tool]]);
+        }
       }
       setCurrent(intialStates);
     }
@@ -889,14 +905,7 @@ export default function Canvas() {
               });
               return;
             }
-            const target = e.target as HTMLTextAreaElement;
-            const itemID = getRandomID();
-            // const textLines = target.value.split('\n');
-            // const bold = current.text.textBold ? 'bold' : '';
-            // const size = current.text.fontSize;
-            // const fam = current.text.fontFamily;
-            // const font = `${bold} ${size}px ${fam}`;
-            // const metr = measureText(e.target.value, font);
+            let itemID = getRandomID();
             const textItem: Text = {
               ...current.text,
               x: current.text.x + -1 * cameraOffset.x,
@@ -907,11 +916,13 @@ export default function Canvas() {
               height: textMeasurement.h,
             };
             if (state.editText) {
-              const itemID = state.textId;
+              let itemID = state.textId;
               textItem.id = itemID;
               setItems(updateSingleItem(itemID, textItem, items));
             } else {
-              setItems([...items, textItem]);
+              if (!items.find((v) => v.id === textItem.id)) {
+                setItems([...items, textItem]);
+              }
             }
             setCurrent((prevState) => ({
               ...prevState,

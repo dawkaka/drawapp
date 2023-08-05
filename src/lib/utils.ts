@@ -1180,6 +1180,7 @@ export function updateSingleItem(
   newVAlue: CanvasItem,
   items: CanvasItem[]
 ): CanvasItem[] {
+  console.log(id)
   const targetIndex = items.findIndex((item) => item.id === id);
   if (targetIndex >= 0) {
     items[targetIndex] = newVAlue;

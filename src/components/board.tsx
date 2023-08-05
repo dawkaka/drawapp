@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Cursor, defaultValues } from '../constants';
 import { useInitialState } from '../hooks';
 import { AppDrawings, AppState, SelectionAtom } from '../jotai';
@@ -858,6 +858,21 @@ export default function Canvas() {
     });
   }
 
+  const textMeasurement = useMemo(() => {
+    const textLines = text.split('\n');
+    const bold = current.text.textBold ? 'bold' : '';
+    const size = current.text.fontSize;
+    const fam = current.text.fontFamily;
+    const font = `${bold} ${size}px ${fam}`;
+    const m = measureText(text, font);
+    return {
+      w: m.w,
+      h:
+        textLines.length * m.h * 0.6 +
+        ((textLines.length - 1) * current.text.fontSize) / 2,
+    };
+  }, [text]);
+
   return (
     <main className="relative">
       {mainState.tool === 'text' && current.text.x !== 0 ? (
@@ -876,22 +891,20 @@ export default function Canvas() {
             }
             const target = e.target as HTMLTextAreaElement;
             const itemID = getRandomID();
-            const textLines = target.value.split('\n');
-            const bold = current.text.textBold ? 'bold' : '';
-            const size = current.text.fontSize;
-            const fam = current.text.fontFamily;
-            const font = `${bold} ${size}px ${fam}`;
-            const metr = measureText(e.target.value, font);
+            // const textLines = target.value.split('\n');
+            // const bold = current.text.textBold ? 'bold' : '';
+            // const size = current.text.fontSize;
+            // const fam = current.text.fontFamily;
+            // const font = `${bold} ${size}px ${fam}`;
+            // const metr = measureText(e.target.value, font);
             const textItem: Text = {
               ...current.text,
               x: current.text.x + -1 * cameraOffset.x,
               y: current.text.y + -1 * cameraOffset.y,
               id: itemID,
               text: text,
-              width: metr.w,
-              height:
-                textLines.length * metr.h * 0.6 +
-                ((textLines.length - 1) * current.text.fontSize) / 2,
+              width: textMeasurement.w,
+              height: textMeasurement.h,
             };
             if (state.editText) {
               const itemID = state.textId;
@@ -948,18 +961,10 @@ export default function Canvas() {
             backgroundColor: 'transparent',
             scrollbarWidth: 'none',
             width:
-              text.length > 0
-                ? measureText(
-                    text,
-                    `${current.text.textBold ? 'bold' : ''} ${
-                      current.text.fontSize
-                    }px ${current.text.fontFamily}`
-                  ).w +
-                  current.text.fontSize -
-                  current.text.fontSize / 2
-                : current.text.fontSize,
+              textMeasurement.w > 0 ? textMeasurement.w : current.text.fontSize,
+            minHeight: textMeasurement.h,
             resize: 'none',
-            top: current.text.y - current.text.fontSize / 2,
+            top: current.text.y,
             left: current.text.x,
             fontFamily: current.text.fontFamily,
             fontSize: current.text.fontSize,

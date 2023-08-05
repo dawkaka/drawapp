@@ -945,7 +945,6 @@ export default function Canvas() {
           rows={1}
           style={{
             overflow: 'hidden',
-            border: '1px solid var(--p-dark)',
             backgroundColor: 'transparent',
             scrollbarWidth: 'none',
             width:
@@ -960,7 +959,7 @@ export default function Canvas() {
                   current.text.fontSize / 2
                 : current.text.fontSize,
             resize: 'none',
-            top: current.text.y + 3 - current.text.fontSize / 2,
+            top: current.text.y - current.text.fontSize / 2,
             left: current.text.x,
             fontFamily: current.text.fontFamily,
             fontSize: current.text.fontSize,

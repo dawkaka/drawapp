@@ -831,6 +831,7 @@ export default function Canvas() {
     let item = getSelectedItem(getItemEnclosingPoint(px, py, items), items);
 
     if (item && item.type === 'text') {
+      setItems(updateSingleItem(item.id, { ...item, text: '' }, items));
       setText(item.text);
       setState({
         ...state,
@@ -846,7 +847,6 @@ export default function Canvas() {
         },
       });
       updateMainState({ ...mainState, tool: 'text' });
-      setItems(updateSingleItem(item.id, { ...item, text: '' }, items));
       return;
     }
     updateMainState({ ...mainState, tool: 'text' });
@@ -969,7 +969,9 @@ export default function Canvas() {
           rows={1}
           style={{
             overflow: 'hidden',
-            backgroundColor: 'transparent',
+            backgroundColor: state.editText
+              ? 'rgba(255,255,255,0.8)'
+              : 'transparent',
             scrollbarWidth: 'none',
             width:
               textMeasurement.w > 0 ? textMeasurement.w : current.text.fontSize,

@@ -130,36 +130,36 @@ export type RectBounds = {
 
 export type BoundingBox =
   | (RectBounds & {
-      type: 'rectangle' | 'ellipse' | 'diamond' | 'pencil';
-      resizeAreas: {
-        ptl: RectBounds;
-        ptr: RectBounds;
-        pbl: RectBounds;
-        pbr: RectBounds;
-        mt: RectBounds;
-        mr: RectBounds;
-        mb: RectBounds;
-        ml: RectBounds;
-      };
-    })
+    type: 'rectangle' | 'ellipse' | 'diamond' | 'pencil';
+    resizeAreas: {
+      ptl: RectBounds;
+      ptr: RectBounds;
+      pbl: RectBounds;
+      pbr: RectBounds;
+      mt: RectBounds;
+      mr: RectBounds;
+      mb: RectBounds;
+      ml: RectBounds;
+    };
+  })
   | (RectBounds & {
-      type: 'line';
-      curveControl: Point;
-    })
+    type: 'line';
+    curveControl: Point;
+  })
   | (RectBounds & {
-      type: 'arrow' | 'line';
-      curveControl: Point;
-      structure: 'curve' | 'sharp';
-    })
+    type: 'arrow' | 'line';
+    curveControl: Point;
+    structure: 'curve' | 'sharp';
+  })
   | (RectBounds & {
-      type: 'image' | 'text';
-      resizeAreas: {
-        ptl: RectBounds;
-        ptr: RectBounds;
-        pbl: RectBounds;
-        pbr: RectBounds;
-      };
-    });
+    type: 'image' | 'text';
+    resizeAreas: {
+      ptl: RectBounds;
+      ptr: RectBounds;
+      pbl: RectBounds;
+      pbr: RectBounds;
+    };
+  });
 
 type BoxSelection = {
   type: 'rectangle' | 'ellipse' | 'diamond' | 'image';

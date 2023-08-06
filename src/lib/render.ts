@@ -76,9 +76,7 @@ export async function renderElements(
         arrowDraw(ctx, item);
         break;
       case 'text':
-        if (item.text !== '') {
-          textDraw(ctx, item);
-        }
+        textDraw(ctx, item);
         break;
       case 'image':
         imageDraw(ctx, item, imageData[item.id]);

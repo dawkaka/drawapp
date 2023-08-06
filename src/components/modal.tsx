@@ -276,9 +276,7 @@ function Link({ link, label }: { link: string; label: string }) {
             settLoaded('Loaded');
           }
         })
-        .catch((e) => {
-          console.log(e);
-        })
+        .catch((e) => {})
         .finally(() => {
           setLoading(false);
         });
@@ -504,7 +502,6 @@ export function Save({ close }: { close: () => void }) {
           );
         })
         .catch((e) => {
-          console.log(e);
           setError(true);
         })
         .finally(() => {
@@ -517,7 +514,6 @@ export function Save({ close }: { close: () => void }) {
           JSON.stringify({ data: items })
         )
         .then((res) => {
-          console.log(res.data);
           setSelected('');
           setLabel('');
           setError(false);
@@ -526,7 +522,6 @@ export function Save({ close }: { close: () => void }) {
           );
         })
         .catch((e) => {
-          console.log(e);
           setError(true);
         })
         .finally(() => {

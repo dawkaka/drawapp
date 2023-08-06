@@ -654,7 +654,7 @@ export default function Canvas() {
     }
     if (selection) {
       drawSelection(ctx, selection);
-    } else if (selectedItem) {
+    } else if (selectedItem && !state.editText) {
       const bounds = getBoundingBox(selectedItem);
       if (bounds) {
         renderBounds(ctx, bounds);

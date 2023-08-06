@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai';
-import { MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Cursor, defaultValues } from '../constants';
 import { useInitialState } from '../hooks';
 import { AppDrawings, AppState, SelectionAtom } from '../jotai';
@@ -30,6 +30,7 @@ import {
   resizeSelected,
   simplifyPath,
   updateAppStateFromSelectedItem,
+  updateSingleItem,
 } from '../lib/utils';
 import { CurrentState, MultipleSelection, Point, Text } from '../types';
 import History from '../lib/history';
@@ -47,6 +48,8 @@ export default function Canvas() {
     startRectY: 0,
     moveStart: false,
     moved: false,
+    editText: false,
+    textId: '',
   });
   const [mainState, updateMainState] = useAtom(AppState);
   const [items, setItems] = useAtom(AppDrawings);
@@ -651,7 +654,7 @@ export default function Canvas() {
     }
     if (selection) {
       drawSelection(ctx, selection);
-    } else if (selectedItem) {
+    } else if (selectedItem && !state.editText) {
       const bounds = getBoundingBox(selectedItem);
       if (bounds) {
         renderBounds(ctx, bounds);
@@ -707,8 +710,24 @@ export default function Canvas() {
     ) {
       itemID = current[mainState.tool].id;
       if (itemID) {
-        setItems([...items, current[mainState.tool]]);
-        History.addHistory([...items, current[mainState.tool]]);
+        if (mainState.tool === 'text' && state.editText) {
+          setItems(
+            updateSingleItem(
+              current[mainState.tool].id,
+              current[mainState.tool],
+              items
+            )
+          );
+          setText('');
+          setState({
+            ...state,
+            editText: false,
+            textId: '',
+          });
+        } else {
+          setItems([...items, current[mainState.tool]]);
+          History.addHistory([...items, current[mainState.tool]]);
+        }
       }
       setCurrent(intialStates);
     }
@@ -809,6 +828,27 @@ export default function Canvas() {
     let y = event.pageY;
     let px = event.pageX + -1 * cameraOffset.x;
     let py = event.pageY + -1 * cameraOffset.y;
+    let item = getSelectedItem(getItemEnclosingPoint(px, py, items), items);
+
+    if (item && item.type === 'text') {
+      setItems(updateSingleItem(item.id, { ...item, text: '' }, items));
+      setText(item.text);
+      setState({
+        ...state,
+        editText: true,
+        textId: item.id,
+      });
+      setCurrent({
+        ...current,
+        text: {
+          ...item,
+          x: item.x + 1 * cameraOffset.x,
+          y: item.y + 1 * cameraOffset.y,
+        },
+      });
+      updateMainState({ ...mainState, tool: 'text' });
+      return;
+    }
     updateMainState({ ...mainState, tool: 'text' });
     setState({
       ...state,
@@ -834,6 +874,21 @@ export default function Canvas() {
     });
   }
 
+  const textMeasurement = useMemo(() => {
+    const textLines = text.split('\n');
+    const bold = current.text.textBold ? 'bold' : '';
+    const size = current.text.fontSize;
+    const fam = current.text.fontFamily;
+    const font = `${bold} ${size}px ${fam}`;
+    const m = measureText(text, font);
+    return {
+      w: m.w,
+      h:
+        textLines.length * m.h * 0.6 +
+        ((textLines.length - 1) * current.text.fontSize) / 2,
+    };
+  }, [text]);
+
   return (
     <main className="relative">
       {mainState.tool === 'text' && current.text.x !== 0 ? (
@@ -841,7 +896,7 @@ export default function Canvas() {
           className="absolute outline-0 overflow-hidden"
           onBlur={(e) => {
             stateRef.current.typing = false;
-            if (e.target.value.trim() === '') {
+            if (text.trim() === '') {
               setCurrent(intialStates);
               updateMainState({
                 ...mainState,
@@ -850,32 +905,35 @@ export default function Canvas() {
               });
               return;
             }
-            const target = e.target as HTMLTextAreaElement;
-            const itemID = getRandomID();
-            const textLines = target.value.split('\n');
-            const bold = current.text.textBold ? 'bold' : '';
-            const size = current.text.fontSize;
-            const fam = current.text.fontFamily;
-            const font = `${bold} ${size}px ${fam}`;
-            const metr = measureText(e.target.value, font);
-
+            let itemID = getRandomID();
             const textItem: Text = {
               ...current.text,
               x: current.text.x + -1 * cameraOffset.x,
               y: current.text.y + -1 * cameraOffset.y,
               id: itemID,
               text: text,
-              width: metr.w,
-              height:
-                textLines.length * metr.h * 0.6 +
-                ((textLines.length - 1) * current.text.fontSize) / 2,
+              width: textMeasurement.w,
+              height: textMeasurement.h,
             };
-            setText('');
+            if (state.editText) {
+              let itemID = state.textId;
+              textItem.id = itemID;
+              setItems(updateSingleItem(itemID, textItem, items));
+            } else {
+              if (!items.find((v) => v.id === textItem.id)) {
+                setItems([...items, textItem]);
+              }
+            }
             setCurrent((prevState) => ({
               ...prevState,
               text: textItem,
             }));
-            setItems([...items, textItem]);
+            setText('');
+            setState({
+              ...state,
+              editText: false,
+              textId: '',
+            });
             setCurrent(intialStates);
             updateMainState({
               ...mainState,
@@ -911,12 +969,15 @@ export default function Canvas() {
           rows={1}
           style={{
             overflow: 'hidden',
-            border: '1px solid var(--p-dark)',
-            backgroundColor: 'transparent',
+            backgroundColor: state.editText
+              ? 'rgba(255,255,255,0.8)'
+              : 'transparent',
             scrollbarWidth: 'none',
-            width: current.text.fontSize,
+            width:
+              textMeasurement.w > 0 ? textMeasurement.w : current.text.fontSize,
+            minHeight: textMeasurement.h,
             resize: 'none',
-            top: current.text.y + 3 - current.text.fontSize / 2,
+            top: current.text.y,
             left: current.text.x,
             fontFamily: current.text.fontFamily,
             fontSize: current.text.fontSize,

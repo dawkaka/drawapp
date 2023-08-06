@@ -383,10 +383,10 @@ function arrowDraw(ctx: CanvasRenderingContext2D, item: Arrow) {
     const arrowSize = Math.min(
       15,
       0.3 *
-        Math.max(
-          Math.abs(endPoint.y - points[0].y),
-          Math.abs(endPoint.x - points[0].x)
-        )
+      Math.max(
+        Math.abs(endPoint.y - points[0].y),
+        Math.abs(endPoint.x - points[0].x)
+      )
     );
 
     if (item.head !== 'none') {
@@ -592,9 +592,8 @@ function textDraw(ctx: CanvasRenderingContext2D, item: Text) {
   ctx.lineJoin = 'round';
   ctx.fillStyle = getInverseColorForTheme(item.strokeStyle);
   ctx.globalAlpha = item.opacity;
-  ctx.font = `${item.textItalic ? 'italic' : ''} ${
-    item.textBold ? 'bold' : ''
-  } ${item.fontSize}px ${item.fontFamily}`;
+  ctx.font = `${item.textItalic ? 'italic' : ''} ${item.textBold ? 'bold' : ''
+    } ${item.fontSize}px ${item.fontFamily}`;
   const texts = item.text.split('\n');
   let h = 0;
   for (let text of texts) {

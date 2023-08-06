@@ -560,7 +560,6 @@ function TextStyles() {
   ) {
     if (selectedItem) {
       const item = getSelectedItem(selectedItem.id, items);
-      console.log(item);
       if (item && item.type === 'text') {
         item[style] = !item[style];
         setItems(updateSingleItem(selectedItem.id, item, items));

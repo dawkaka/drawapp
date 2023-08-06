@@ -583,6 +583,7 @@ export function getCursor(dir: string): Cursor {
 
 export function measureText(text: string, font: string) {
   let c = document.getElementById('canvas') as HTMLCanvasElement;
+  if (!c) return { w: 0, h: 0 };
   let ctx = c.getContext('2d')!;
   ctx.save();
   ctx.font = font;

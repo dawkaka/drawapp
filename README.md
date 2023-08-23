@@ -1,6 +1,6 @@
 # Draaaw
 
-A canvas drawing app for the web!
+A canvas drawing app for the web, use it, please!
 
 ## Table of Contents
 
@@ -11,25 +11,25 @@ A canvas drawing app for the web!
 
 ## Features
 
-💯 Free & open-source.
+💯 Free & open-source
 
-🎨 Infinite, canvas-based whiteboard.
+🎨 Infinite, canvas-based whiteboard
 
-🌙 Dark mode.
+🌙 Dark mode
 
-🔍 Panning support.
+🍳 Panning support
 
-📷 Image support.
+📷 Image support
 
-🖼️ Export to PNG, SVG & clipboard.
+🖼️ Export to PNG, SVG & clipboard
 
-💾 Save drawings on the edge and share links.
+💾 Save drawings on the edge and share links
 
-🔨 Wide range of tools - rectangle, circle, diamond, image, arrow, line, free-draw, eraser...
+🔨 Wide range of tools - rectangle, circle, diamond, image, arrow, line, free-draw, eraser etc
 
-🔙 Undo / Redo.
+🔙 Undo / Redo
 
-⌨️ Keyboard shortcuts
+⌨️ Keyboard shortcuts!
 
 ## Installation
 

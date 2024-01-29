@@ -72,7 +72,7 @@ All contributions to this project are welcomed! Here's how you can get started:
 
 6. Submit a pull request to the original repository.
 
-I'll review your pull request and get back to you as soon as possible. Thanks for contributing!
+I'll merge without a review (YOLO). Thanks for contributing!
 
 ## License
 

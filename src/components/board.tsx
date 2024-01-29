@@ -51,6 +51,7 @@ export default function Canvas() {
     editText: false,
     textId: '',
   });
+
   const [mainState, updateMainState] = useAtom(AppState);
   const [items, setItems] = useAtom(AppDrawings);
   const intialStates = useInitialState();
@@ -59,6 +60,7 @@ export default function Canvas() {
   const [panStart, setPanStart] = useState<{ x: number; y: number } | null>(
     null
   );
+
   const [selection, setSelection] = useState<{
     x: number;
     y: number;
